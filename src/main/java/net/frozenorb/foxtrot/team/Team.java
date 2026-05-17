@@ -144,7 +144,7 @@ public class Team {
     }
 
     public int getDeathsTilRaidable() {
-        return (int) Math.ceil(getDTR());
+        return (int) Math.ceil(getDTR() / Foxtrot.getInstance().getServerHandler().getDTRLoss((org.bukkit.Location) null));
     }
 
     public void setDTR(double newDTR) {
@@ -890,7 +890,7 @@ public class Team {
         for (Player player : Foxtrot.getInstance().getServer().getOnlinePlayers()) {
             if (isMember(player.getUniqueId())) {
                 player.sendMessage(ChatColor.RED + "Member Death: " + ChatColor.WHITE + playerName);
-                player.sendMessage(ChatColor.RED + "DTR: " + ChatColor.WHITE + Math.ceil(newDTR));
+                player.sendMessage(ChatColor.RED + "DTR: " + ChatColor.WHITE + DTR_FORMAT.format(newDTR));
             }
         }
 
@@ -1642,8 +1642,8 @@ public class Team {
 
         balance.send(player);
 
-        int totalHearts = (int) Math.ceil(getMaxDTR());
-        int currentHearts = (int) Math.ceil(getDTR());
+        int totalHearts = (int) Math.ceil(getMaxDTR() / Foxtrot.getInstance().getServerHandler().getDTRLoss((org.bukkit.Location) null));
+        int currentHearts = (int) Math.ceil(getDTR() / Foxtrot.getInstance().getServerHandler().getDTRLoss((org.bukkit.Location) null));
 
         StringBuilder aids = new StringBuilder();
 
@@ -1682,7 +1682,7 @@ public class Team {
         FancyMessage dtrMessage = new FancyMessage(ChatColor.YELLOW + "Deaths Until Raidable: " + getDTRColor() + aids + getDTRSuffix());
 
         if (!Foxtrot.getInstance().getDTRDisplayMap().isHearts(player.getUniqueId())) {
-            dtrMessage = new FancyMessage(ChatColor.YELLOW + "Deaths Until Raidable: " + getDTRColor() + Math.ceil(getDTR()) + getDTRSuffix());
+            dtrMessage = new FancyMessage(ChatColor.YELLOW + "DTR: " + getDTRColor() + DTR_FORMAT.format(getDTR()) + getDTRSuffix());
         }
 
         if (player.hasPermission("foxtrot.manage")) {
@@ -1743,7 +1743,7 @@ public class Team {
     }
 
     public String formatDTR() {
-        return getDTRColor().toString() + Math.ceil(getDTR()) + getDTRSuffix();
+        return getDTRColor().toString() + DTR_FORMAT.format(getDTR()) + getDTRSuffix();
     }
 
     public List<TrapDoor> findTrapDoors() {

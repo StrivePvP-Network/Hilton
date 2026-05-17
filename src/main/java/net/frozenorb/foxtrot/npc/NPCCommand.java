@@ -121,4 +121,12 @@ public class NPCCommand {
             e.printStackTrace();
         }
     }
+
+    @Command(names = { "npc setoffset" }, permission = "hilton.npc.edit")
+    public static void setOffset(Player player, @Parameter(name = "npc") NPC npc, @Parameter(name = "offset") double offset) {
+        npc.setHologramOffset(offset);
+        Foxtrot.getInstance().getNpcHandler().updateHolograms(npc);
+        Foxtrot.getInstance().getNpcHandler().updateNPC(npc);
+        player.sendMessage(ChatColor.GREEN + "Hologram offset for NPC '" + npc.getId() + "' set to " + offset + ".");
+    }
 }

@@ -78,7 +78,7 @@ public class CrateEditorMenu extends Menu {
         @Override
         public void clicked(Player player, int slot, ClickType clickType) {
             if (clickType.isShiftClick()) {
-                Foxtrot.getInstance().getCrateHandler().getCrates().remove(crate);
+                Foxtrot.getInstance().getCrateHandler().deleteCrate(crate);
                 player.sendMessage(ChatColor.RED + "Deleted crate " + crate.getId() + ".");
                 new CrateEditorMenu().openMenu(player);
                 return;

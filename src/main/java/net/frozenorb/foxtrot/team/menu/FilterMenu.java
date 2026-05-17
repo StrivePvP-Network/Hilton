@@ -102,7 +102,7 @@ public class FilterMenu extends PaginatedMenu {
                     String dtrFormat = team.formatDTR();
 
                     if (Foxtrot.getInstance().getDTRDisplayMap().isHearts(player.getUniqueId())) {
-                        int currentHearts = (int) Math.ceil(team.getDTR());
+                        int currentHearts = (int) Math.ceil(team.getDTR() / Foxtrot.getInstance().getServerHandler().getDTRLoss((org.bukkit.Location) null));
 
                         dtrFormat = team.getDTRColor().toString() + currentHearts + "❤" + team.getDTRSuffix();
                     }

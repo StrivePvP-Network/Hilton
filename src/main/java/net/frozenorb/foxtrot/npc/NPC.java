@@ -32,7 +32,7 @@ public class NPC {
     private ItemStack[] armor = new ItemStack[4];
 
     private boolean lookAtPlayer = true;
-    private double hologramOffset = 2.8;
+    private double hologramOffset = 3.3;
 
     public NPC(String id, Location location) {
         this.id = id;
@@ -88,12 +88,12 @@ public class NPC {
 
         if (dbObject.containsField("hologramOffset")) {
             double offset = dbObject.getDouble("hologramOffset");
-            if (offset < 2.5 || offset == 3.2) {
-                offset = 2.8;
+            if (offset < 2.5 || offset == 3.2 || offset == 2.8) {
+                offset = 3.3;
             }
             npc.setHologramOffset(offset);
         } else {
-            npc.setHologramOffset(2.8);
+            npc.setHologramOffset(3.3);
         }
 
         npc.setSkinName(dbObject.getString("skinName"));

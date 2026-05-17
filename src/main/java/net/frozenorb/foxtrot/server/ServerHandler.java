@@ -347,6 +347,10 @@ public class ServerHandler {
             dtrLoss = 0.01D;
         }
 
+        if (location == null) {
+            return dtrLoss;
+        }
+
         Team ownerTo = LandBoard.getInstance().getTeam(location);
         if (Foxtrot.getInstance().getConquestHandler().getGame() != null && location.getWorld().getEnvironment() == Environment.THE_END && ownerTo != null && ownerTo.hasDTRBitmask(DTRBitmask.CONQUEST)) {
             dtrLoss = Math.min(dtrLoss, 0.50D);

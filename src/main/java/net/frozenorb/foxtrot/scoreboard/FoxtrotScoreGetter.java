@@ -481,7 +481,7 @@ public class FoxtrotScoreGetter implements ScoreGetter {
                 String dtrFormat = focusedTeam.formatDTR();
 
                 if (Foxtrot.getInstance().getDTRDisplayMap().isHearts(player.getUniqueId())) {
-                    int currentHearts = (int) Math.ceil(focusedTeam.getDTR());
+                    int currentHearts = (int) Math.ceil(focusedTeam.getDTR() / Foxtrot.getInstance().getServerHandler().getDTRLoss((org.bukkit.Location) null));
 
                     dtrFormat = focusedTeam.getDTRColor().toString() + currentHearts + "❤" + focusedTeam.getDTRSuffix();
                 }

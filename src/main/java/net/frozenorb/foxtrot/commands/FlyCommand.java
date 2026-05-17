@@ -16,8 +16,8 @@ public class FlyCommand {
             return;
         }
 
-        if (!player.hasPermission("command.customrank.fly")) {
-            player.sendMessage(ChatColor.RED + "You must purchase the Custom Rank to use this at https://store.cavepvp.org!");
+        if (!player.hasPermission("command.elite.fly")) {
+            player.sendMessage(ChatColor.RED + "Hey! You must buy the ELITE rank to fly on SOTW. https://store.strivepvp.top");
             return;
         }
 
@@ -44,7 +44,7 @@ public class FlyCommand {
         }
 
         if (!player.hasPermission("command.customrank.fly") && !player.hasPermission("command.fly")) {
-            player.sendMessage(ChatColor.RED + "You must purchase the Custom Rank to use this at https://store.cavepvp.org!");
+            player.sendMessage(ChatColor.RED + "Hey! You must buy the ELITE rank to fly on SOTW. https://store.strivepvp.top");
             return;
         }
 

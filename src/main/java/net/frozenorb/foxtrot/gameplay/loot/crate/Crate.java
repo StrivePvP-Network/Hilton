@@ -110,10 +110,12 @@ public class Crate {
                     crateItem.getSlot());
         }
 
-        try {
-            dataConfig.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (file != null) {
+            try {
+                dataConfig.save(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

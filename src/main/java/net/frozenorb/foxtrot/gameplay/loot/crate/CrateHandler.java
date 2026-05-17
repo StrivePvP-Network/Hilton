@@ -36,6 +36,7 @@ public class CrateHandler {
     private List<Crate> crates = new ArrayList<>();
     @Getter
     private File folder;
+    private com.mongodb.DBCollection collection;
 
     public CrateHandler(Foxtrot instance) {
         this.instance = instance;
@@ -47,15 +48,57 @@ public class CrateHandler {
     }
 
     public void loadData() {
+        this.collection = Foxtrot.getInstance().getMongoPool().getDB(Foxtrot.MONGO_DB_NAME).getCollection("Crates");
+
+        boolean loadedFromMongo = false;
+        try (com.mongodb.DBCursor cursor = this.collection.find()) {
+            while (cursor.hasNext()) {
+                com.mongodb.BasicDBObject dbObject = (com.mongodb.BasicDBObject) cursor.next();
+                String yamlData = dbObject.getString("yamlData");
+                if (yamlData != null) {
+                    YamlConfiguration config = new YamlConfiguration();
+                    try {
+                        config.loadFromString(yamlData);
+                        this.loadFile(config);
+                        loadedFromMongo = true;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        // Migration from local YML files if MongoDB was empty
         this.folder = new File(this.instance.getDataFolder(), "data/crates");
+        if (!loadedFromMongo && this.folder.exists() && this.folder.listFiles() != null) {
+            File[] files = this.folder.listFiles();
+            if (files != null && files.length > 0) {
+                for (File file : files) {
+                    if (file.getName().endsWith(".yml")) {
+                        try {
+                            YamlConfiguration data = YamlConfiguration.loadConfiguration(file);
+                            this.loadFile(data);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
 
-        if (!this.folder.exists()) {
-            this.folder.mkdir();
+                // Save all migrated crates to MongoDB
+                for (Crate crate : this.crates) {
+                    this.saveCrate(crate);
+                }
+
+                // Clean up local files
+                for (File file : files) {
+                    file.delete();
+                }
+                this.folder.delete();
+                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[CrateHandler] Migrated " + this.crates.size() + " local crates to MongoDB and deleted local files.");
+            }
         }
 
-        for (File file : Objects.requireNonNull(this.folder.listFiles())) {
-            this.loadFile(YamlConfiguration.loadConfiguration(file));
-        }
+        Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[CrateHandler] Loaded " + crates.size() + " crates from MongoDB.");
     }
 
     public void loadFile(FileConfiguration data) {
@@ -92,19 +135,32 @@ public class CrateHandler {
     }
 
     public void saveData() {
-        this.crates.forEach(it -> {
-            final File file = new File(this.instance.getDataFolder(), "data/crates/" + it.getId() + ".yml");
+        for (Crate crate : this.crates) {
+            this.saveCrate(crate);
+        }
+    }
 
-            if (!file.exists()) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+    public void saveCrate(Crate crate) {
+        if (this.collection == null) {
+            return;
+        }
 
-            it.saveCrate(file, YamlConfiguration.loadConfiguration(file), it);
-        });
+        YamlConfiguration config = new YamlConfiguration();
+        crate.saveCrate(null, config, crate);
+        String yamlString = config.saveToString();
+
+        com.mongodb.BasicDBObject dbObject = new com.mongodb.BasicDBObject();
+        dbObject.put("id", crate.getId());
+        dbObject.put("yamlData", yamlString);
+
+        this.collection.update(new com.mongodb.BasicDBObject("id", crate.getId()), dbObject, true, false);
+    }
+
+    public void deleteCrate(Crate crate) {
+        this.crates.remove(crate);
+        if (this.collection != null) {
+            this.collection.remove(new com.mongodb.BasicDBObject("id", crate.getId()));
+        }
     }
 
     public Optional<Crate> findByItemStack(ItemStack itemStack) {
