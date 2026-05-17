@@ -42,24 +42,39 @@ public abstract class Ability implements Listener {
 
         if (Foxtrot.getInstance().getMapHandler() != null
                 && Foxtrot.getInstance().getMapHandler().getAbilityHandler() != null) {
-            final Category category = Foxtrot.getInstance().getMapHandler().getAbilityHandler()
-                    .getEffectiveCategory(this);
-
-            if (category != null && category != Category.KIT_MAP && category != Category.ALL) {
-                String categoryLore = ChatColor.translateAlternateColorCodes('&', "&fCan be found in the " + category.getDisplayName() + "&f!");
-                boolean alreadyHas = false;
-                for (String line : finalLore) {
-                    if (ChatColor.stripColor(line).equals(ChatColor.stripColor(categoryLore))) {
-                        alreadyHas = true;
-                        break;
+            if (Foxtrot.getInstance().getCrateHandler() != null) {
+                List<String> crateNames = new ArrayList<>();
+                for (net.frozenorb.foxtrot.gameplay.loot.crate.Crate crate : Foxtrot.getInstance().getCrateHandler().getCrates()) {
+                    boolean containsAbility = false;
+                    for (net.frozenorb.foxtrot.gameplay.loot.crate.item.CrateItem item : crate.getItems()) {
+                        if (item.getItemStack() != null && this.isSimilar(item.getItemStack())) {
+                            containsAbility = true;
+                            break;
+                        }
+                    }
+                    if (containsAbility) {
+                        crateNames.add(crate.getDisplayName());
                     }
                 }
 
-                if (!alreadyHas) {
-                    if (!finalLore.isEmpty() && !finalLore.get(finalLore.size() - 1).isEmpty()) {
-                        finalLore.add("");
+                if (!crateNames.isEmpty()) {
+                    for (String crateName : crateNames) {
+                        String categoryLore = ChatColor.translateAlternateColorCodes('&', "&fCan be found in the &e" + crateName + "&f!");
+                        boolean alreadyHas = false;
+                        for (String line : finalLore) {
+                            if (ChatColor.stripColor(line).equals(ChatColor.stripColor(categoryLore))) {
+                                alreadyHas = true;
+                                break;
+                            }
+                        }
+
+                        if (!alreadyHas) {
+                            if (!finalLore.isEmpty() && !finalLore.get(finalLore.size() - 1).isEmpty()) {
+                                finalLore.add("");
+                            }
+                            finalLore.add(categoryLore);
+                        }
                     }
-                    finalLore.add(categoryLore);
                 }
             }
         }

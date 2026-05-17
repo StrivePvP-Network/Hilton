@@ -121,10 +121,10 @@ public class AbilitySettingsMenu extends Menu {
                 List<String> lore = new ArrayList<>();
                 lore.add("");
                 for (Category cat : Category.values()) {
-                    if (cat == Category.ALL)
+                    if (cat.getName().equalsIgnoreCase("ALL"))
                         continue;
 
-                    boolean current = ability.getCategory() == cat;
+                    boolean current = ability.getCategory() != null && ability.getCategory().getName().equalsIgnoreCase(cat.getName());
                     lore.add((current ? ChatColor.GREEN + " ▶ " : ChatColor.GRAY + "   ") + cat.name());
                 }
                 lore.add("");
@@ -143,14 +143,26 @@ public class AbilitySettingsMenu extends Menu {
                 Category[] categories = Category.values();
                 List<Category> validCategories = new ArrayList<>();
                 for (Category cat : categories) {
-                    if (cat != Category.ALL) {
+                    if (!cat.getName().equalsIgnoreCase("ALL")) {
                         validCategories.add(cat);
                     }
                 }
 
-                int currentIdx = validCategories.indexOf(ability.getCategory());
-                int newIdx;
+                int currentIdx = -1;
+                if (ability.getCategory() != null) {
+                    for (int i = 0; i < validCategories.size(); i++) {
+                        if (validCategories.get(i).getName().equalsIgnoreCase(ability.getCategory().getName())) {
+                            currentIdx = i;
+                            break;
+                        }
+                    }
+                }
+                
+                if (currentIdx == -1) {
+                    currentIdx = 0;
+                }
 
+                int newIdx;
                 if (clickType == ClickType.RIGHT || clickType == ClickType.SHIFT_RIGHT) {
                     newIdx = (currentIdx - 1 + validCategories.size()) % validCategories.size();
                 } else {

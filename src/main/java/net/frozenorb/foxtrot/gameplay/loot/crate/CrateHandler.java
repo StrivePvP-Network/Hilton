@@ -68,7 +68,6 @@ public class CrateHandler {
             }
         }
 
-        // Migration from local YML files if MongoDB was empty
         this.folder = new File(this.instance.getDataFolder(), "data/crates");
         if (!loadedFromMongo && this.folder.exists() && this.folder.listFiles() != null) {
             File[] files = this.folder.listFiles();
@@ -84,21 +83,21 @@ public class CrateHandler {
                     }
                 }
 
-                // Save all migrated crates to MongoDB
                 for (Crate crate : this.crates) {
                     this.saveCrate(crate);
                 }
 
-                // Clean up local files
                 for (File file : files) {
                     file.delete();
                 }
                 this.folder.delete();
-                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[CrateHandler] Migrated " + this.crates.size() + " local crates to MongoDB and deleted local files.");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[Crates] Migrated " + this.crates.size()
+                        + " local crates to MongoDB and deleted local files.");
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[CrateHandler] Loaded " + crates.size() + " crates from MongoDB.");
+        Bukkit.getConsoleSender()
+                .sendMessage(ChatColor.GREEN + "[Crates] Loaded " + crates.size() + " crates from MongoDB.");
     }
 
     public void loadFile(FileConfiguration data) {
@@ -107,7 +106,9 @@ public class CrateHandler {
         final Material material = Material.getMaterial(data.getString("material"));
         final short dataValue = (short) data.getInt("data", 0);
         final Color fireworkColor = Color.fromRGB(data.getInt("fireworkColor"));
-        final Material blockMaterial = data.getString("blockMaterial") != null ? Material.getMaterial(data.getString("blockMaterial")) : Material.CHEST;
+        final Material blockMaterial = data.getString("blockMaterial") != null
+                ? Material.getMaterial(data.getString("blockMaterial"))
+                : Material.CHEST;
         final short blockData = (short) data.getInt("blockData", 0);
         final List<String> lore = data.getStringList("lore");
         final List<String> hologramLines = data.getStringList("hologramLines");
@@ -123,11 +124,13 @@ public class CrateHandler {
                 crateItems.add(
                         new CrateItem(data.getItemStack(finalPath + "itemStack"), data.getDouble(finalPath + "chance"),
                                 data.getString(finalPath + "command"), data.getBoolean(finalPath + "giveItem"),
-                                data.getBoolean(finalPath + "broadcast"), data.getInt(finalPath + "slot", fallbackSlot++)));
+                                data.getBoolean(finalPath + "broadcast"),
+                                data.getInt(finalPath + "slot", fallbackSlot++)));
             }
         }
 
-        Crate crate = new Crate(id, displayName, material, dataValue, blockMaterial, blockData, fireworkColor, lore, hologramLines, rows,
+        Crate crate = new Crate(id, displayName, material, dataValue, blockMaterial, blockData, fireworkColor, lore,
+                hologramLines, rows,
                 fillerItem, crateItems);
         crate.setSellableOnTokenShop(data.getBoolean("sellableOnTokenShop", false));
         crate.setFillerGlow(data.getBoolean("fillerGlow", false));
@@ -172,7 +175,8 @@ public class CrateHandler {
     }
 
     public void openCrate(Player player, Crate crate) {
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou have opened a " + crate.getDisplayName() + "&a."));
+        player.sendMessage(
+                ChatColor.translateAlternateColorCodes('&', "&aYou have opened a " + crate.getDisplayName() + "&a."));
         player.playSound(player.getLocation(), Sound.BAT_LOOP, 1, 1);
         VoucherCommand.spawnFireworks(player.getLocation(), 1, 2, crate.getFireworkColor(), FireworkEffect.Type.BURST);
 
@@ -183,41 +187,46 @@ public class CrateHandler {
             giveArmor(player, armorType);
             player.getInventory().addItem(this.getRandomItem(player, crate, crate.getItems()));
         } else {
-            IntStream.range(0, 6).forEach(it -> player.getInventory().addItem(this.getRandomItem(player, crate, crate.getItems())));
+            IntStream.range(0, 6)
+                    .forEach(it -> player.getInventory().addItem(this.getRandomItem(player, crate, crate.getItems())));
         }
-                    
+
     }
 
     public void giveArmor(Player player, ArmorType armorType) {
 
-        List<String> lore = Arrays.asList("§cHellForged IV", "§cImplants V", "§cMermaid III", "§cRecover I", "§cFireResistance I");
+        List<String> lore = Arrays.asList("§cHellForged IV", "§cImplants V", "§cMermaid III", "§cRecover I",
+                "§cFireResistance I");
 
-                
-        player.getInventory().addItem(ItemBuilder.of(armorType.getHelmet()).name("§6§lReinforce §7┃ §fHelmet").setLore(lore).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 2).enchant(Enchantment.DURABILITY, 5).enchant(Enchantment.PROTECTION_EXPLOSIONS, 5).build());
+        player.getInventory()
+                .addItem(ItemBuilder.of(armorType.getHelmet()).name("§6§lReinforce §7┃ §fHelmet").setLore(lore)
+                        .enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 2).enchant(Enchantment.DURABILITY, 5)
+                        .enchant(Enchantment.PROTECTION_EXPLOSIONS, 5).build());
 
-                
-                        
-                        
         if (armorType == ArmorType.GOLD) {
-            player.getInventory().addItem(ItemBuilder.of(armorType.getChestplate()).name("§6§lReinforce §7┃ §fChestplate").setLore(lore).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 2).enchant(Enchantment.DURABILITY, 5).enchant(Enchantment.PROTECTION_EXPLOSIONS, 5).build());
+            player.getInventory()
+                    .addItem(ItemBuilder.of(armorType.getChestplate()).name("§6§lReinforce §7┃ §fChestplate")
+                            .setLore(lore).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 2)
+                            .enchant(Enchantment.DURABILITY, 5).enchant(Enchantment.PROTECTION_EXPLOSIONS, 5).build());
         } else {
-                    
-                            
-                            
-            player.getInventory().addItem(ItemBuilder.of(armorType.getChestplate()).name("§6§lReinforce §7┃ §fChestplate").setLore(lore).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 2).enchant(Enchantment.DURABILITY, 5).enchant(Enchantment.PROTECTION_EXPLOSIONS, 5).build());
-        }
-                    
-                            
-                            
 
-        player.getInventory().addItem(ItemBuilder.of(armorType.getLeggings()).name("§6§lReinforce §7┃ §fLeggings").setLore(lore).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 2).enchant(Enchantment.DURABILITY, 5).enchant(Enchantment.PROTECTION_EXPLOSIONS, 5).build());
-        player.getInventory().addItem(ItemBuilder.of(armorType.getBoots()).name("§6§lReinforce §7┃ §fBoots").setLore(Arrays.asList("§cHellForged IV", "§cImplants V", "§cMermaid III", "§cRecover I", "§cFireResistance I", "§cSpeed II")).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 2).enchant(Enchantment.DURABILITY, 5).enchant(Enchantment.PROTECTION_EXPLOSIONS, 5).enchant(Enchantment.PROTECTION_FALL, 4).build());
+            player.getInventory()
+                    .addItem(ItemBuilder.of(armorType.getChestplate()).name("§6§lReinforce §7┃ §fChestplate")
+                            .setLore(lore).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 2)
+                            .enchant(Enchantment.DURABILITY, 5).enchant(Enchantment.PROTECTION_EXPLOSIONS, 5).build());
+        }
+
+        player.getInventory()
+                .addItem(ItemBuilder.of(armorType.getLeggings()).name("§6§lReinforce §7┃ §fLeggings").setLore(lore)
+                        .enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 2).enchant(Enchantment.DURABILITY, 5)
+                        .enchant(Enchantment.PROTECTION_EXPLOSIONS, 5).build());
+        player.getInventory()
+                .addItem(ItemBuilder.of(armorType.getBoots()).name("§6§lReinforce §7┃ §fBoots")
+                        .setLore(Arrays.asList("§cHellForged IV", "§cImplants V", "§cMermaid III", "§cRecover I",
+                                "§cFireResistance I", "§cSpeed II"))
+                        .enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 2).enchant(Enchantment.DURABILITY, 5)
+                        .enchant(Enchantment.PROTECTION_EXPLOSIONS, 5).enchant(Enchantment.PROTECTION_FALL, 4).build());
     }
-                
-                        
-                                
-                        
-                        
 
     public ItemStack getRandomItem(Player player, Crate crate, List<CrateItem> crateItems) {
         double sum = crateItems.stream().mapToDouble(CrateItem::getChance).sum();
@@ -239,16 +248,27 @@ public class CrateHandler {
 
         if (choice.getCommand() != null && !choice.getCommand().equalsIgnoreCase("none")) {
             final String command = choice.getCommand();
-            this.instance.getServer().dispatchCommand(this.instance.getServer().getConsoleSender(), command.replace("{player}", player.getName()).replace("{displayName}", choice.getItemStack().getItemMeta().hasDisplayName() ? choice.getItemStack().getItemMeta().getDisplayName() : choice.getItemStack().getType().name()));
+            this.instance.getServer().dispatchCommand(this.instance.getServer().getConsoleSender(),
+                    command.replace("{player}", player.getName()).replace("{displayName}",
+                            choice.getItemStack().getItemMeta().hasDisplayName()
+                                    ? choice.getItemStack().getItemMeta().getDisplayName()
+                                    : choice.getItemStack().getType().name()));
         }
 
         if (choice.isBroadcast()) {
             for (Player onlinePlayer : this.instance.getServer().getOnlinePlayers()) {
                 onlinePlayer.sendMessage("");
                 onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', crate.getDisplayName()));
-                onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f" + player.getName() + " &chas won a " + (choice.getItemStack().getItemMeta().hasDisplayName() ? choice.getItemStack().getItemMeta().getDisplayName() : choice.getItemStack().getType().name()) + "&c!"));
-                onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7Purchase this crate and more in the token shop by typing &f/tokenshop"));
-                new FancyMessage(ChatColor.translateAlternateColorCodes('&', "&a[Click to open the Token Shop]")).command("/tokenshop").send(onlinePlayer);
+                onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                        "&f" + player.getName() + " &chas won a "
+                                + (choice.getItemStack().getItemMeta().hasDisplayName()
+                                        ? choice.getItemStack().getItemMeta().getDisplayName()
+                                        : choice.getItemStack().getType().name())
+                                + "&c!"));
+                onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                        "&7Purchase this crate and more in the token shop by typing &f/tokenshop"));
+                new FancyMessage(ChatColor.translateAlternateColorCodes('&', "&a[Click to open the Token Shop]"))
+                        .command("/tokenshop").send(onlinePlayer);
                 onlinePlayer.sendMessage("");
             }
         }

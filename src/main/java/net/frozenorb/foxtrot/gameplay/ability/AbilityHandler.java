@@ -65,6 +65,7 @@ public class AbilityHandler {
     private FileConfiguration data;
 
     public AbilityHandler(Foxtrot instance) {
+        Category.loadCategories();
         for (Class<?> clazz : ClassUtils.getClassesInPackage(Foxtrot.getInstance(),
                 "net.frozenorb.foxtrot.gameplay.ability.type")) {
 
@@ -310,5 +311,48 @@ public class AbilityHandler {
 
     public Category getEffectiveCategory(Ability ability) {
         return categoryOverrides.getOrDefault(ability.getName(), ability.getCategory());
+    }
+
+    @Command(names = { "ability category create" }, permission = "foxtrot.command.ability.category")
+    public static void createCategory(CommandSender sender,
+            @Parameter(name = "name") String name,
+            @Parameter(name = "displayName") String displayName,
+            @Parameter(name = "displayItem") String displayItem,
+            @Parameter(name = "glassData") int glassData,
+            @Parameter(name = "slot") int slot) {
+
+        Material material;
+        try {
+            material = Material.valueOf(displayItem.toUpperCase());
+        } catch (Exception e) {
+            sender.sendMessage(ChatColor.RED + "Invalid material name! Example: TRIPWIRE_HOOK");
+            return;
+        }
+
+        Category category = new Category(name.toUpperCase(), displayName, name, material, (byte) glassData, slot);
+        Category.saveCategory(category);
+        sender.sendMessage(ChatColor.GREEN + "Category " + name + " created successfully and saved to MongoDB.");
+    }
+
+    @Command(names = { "ability category delete" }, permission = "foxtrot.command.ability.category")
+    public static void deleteCategory(CommandSender sender,
+            @Parameter(name = "name") String name) {
+
+        if (name.equalsIgnoreCase("ALL")) {
+            sender.sendMessage(ChatColor.RED + "You cannot delete the ALL category!");
+            return;
+        }
+
+        Category.deleteCategory(name);
+        sender.sendMessage(ChatColor.RED + "Category " + name + " deleted successfully from memory and MongoDB.");
+    }
+
+    @Command(names = { "ability category list" }, permission = "foxtrot.command.ability.category")
+    public static void listCategories(CommandSender sender) {
+        sender.sendMessage(ChatColor.GOLD + "Ability Categories (" + Category.values().length + ")");
+        for (Category category : Category.values()) {
+            sender.sendMessage(ChatColor.YELLOW + "- " + category.getName() + " (" + category.getDisplayName()
+                    + ChatColor.YELLOW + ") Slot: " + category.getSlot());
+        }
     }
 }
