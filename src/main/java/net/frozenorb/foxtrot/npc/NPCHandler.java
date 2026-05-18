@@ -8,6 +8,7 @@ import lombok.Getter;
 import net.frozenorb.foxtrot.Foxtrot;
 import cc.fyre.proton.Proton;
 import cc.fyre.proton.hologram.construct.Hologram;
+import cc.fyre.proton.hologram.type.BaseHologram;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -121,6 +122,9 @@ public class NPCHandler implements Listener {
                         .at(loc)
                         .addLines(npc.getHologramLines())
                         .build();
+                if (hologram instanceof BaseHologram) {
+                    ((BaseHologram) hologram).setPersistent(false);
+                }
                 hologram.send();
                 holograms.put(npc.getId(), hologram);
             }
