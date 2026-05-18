@@ -46,10 +46,10 @@ public class AirDropListener implements Listener {
         }
 
         event.setCancelled(true);
-        startDrop(event.getPlayer(), event.getItemInHand(), event.getBlockPlaced().getLocation());
+        startDrop(event.getPlayer(), event.getItemInHand(), event.getBlockPlaced().getLocation(), airDropOptional.get());
     }
 
-    private void startDrop(Player player, ItemStack itemStack, Location location) {
+    private void startDrop(Player player, ItemStack itemStack, Location location, AirDrop airDrop) {
         final Block block = location.getBlock();
         final AtomicInteger seconds = new AtomicInteger(4);
 
@@ -65,7 +65,8 @@ public class AirDropListener implements Listener {
             itemStack.setAmount(itemStack.getAmount() - 1);
         }
 
-        boolean airdropAll = itemStack.getItemMeta().getLore().size() > 3;
+        List<String> lore = itemStack.getItemMeta() != null ? itemStack.getItemMeta().getLore() : null;
+        boolean airdropAll = lore != null && lore.size() > 3;
 
         player.updateInventory();
 
@@ -86,12 +87,7 @@ public class AirDropListener implements Listener {
                     block.setType(Material.DROPPER);
                     block.getWorld().playEffect(block.getLocation(), Effect.EXPLOSION_HUGE, 7);
 
-                    Optional<AirDrop> airDropOptional = Foxtrot.getInstance().getAirDropHandler()
-                            .getAirDropByItemStack(itemStack);
-                    if (airDropOptional.isPresent()) {
-                        Foxtrot.getInstance().getAirDropHandler().setContents(block, player, airdropAll,
-                                airDropOptional.get());
-                    }
+                    Foxtrot.getInstance().getAirDropHandler().setContents(block, player, airdropAll, airDrop);
 
                     player.sendMessage(ChatColor.GREEN + "The Airdrop has dropped!");
                     this.cancel();
@@ -206,7 +202,7 @@ public class AirDropListener implements Listener {
                 }
             }
 
-            startDrop(player, itemStack, target);
+            startDrop(player, itemStack, target, airDrop);
         }
     }
 }
