@@ -68,6 +68,14 @@ public class NPCEntity {
             }
         }
 
+        float spawnYaw = npc.getLocation().getYaw();
+        float spawnPitch = npc.getLocation().getPitch();
+        connection.sendPacket(new PacketPlayOutEntityLook(getEntityId(),
+                (byte) (spawnYaw * 256.0F / 360.0F),
+                (byte) (spawnPitch * 256.0F / 360.0F),
+                true));
+        connection.sendPacket(new PacketPlayOutEntityHeadRotation(dummy, (byte) (spawnYaw * 256.0F / 360.0F)));
+
         Bukkit.getScheduler().runTaskLater(Foxtrot.getInstance(), () -> {
             if (player.isOnline()) {
                 connection.sendPacket(PacketPlayOutPlayerInfo.removePlayer(dummy));

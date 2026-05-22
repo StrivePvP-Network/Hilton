@@ -59,6 +59,10 @@ public abstract class PersistMap<T> {
             return (null);
         });
     }
+
+    public void wipe() {
+        wipeValues();
+    }
     
     protected void updateValueSync(final UUID key, final T value) {
         wrappedMap.put(key, value);

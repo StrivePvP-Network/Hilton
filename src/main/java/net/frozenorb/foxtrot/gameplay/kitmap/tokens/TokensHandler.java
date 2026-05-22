@@ -22,11 +22,21 @@ import java.util.concurrent.TimeUnit;
 
 public class TokensHandler implements Listener {
 
+    public static void announcePurchase(Player player, String itemName) {
+        Bukkit.broadcastMessage("");
+        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', " &4&lToken Shop"));
+        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                " &b" + player.getName() + " &7has purchased &b" + itemName + " &7from the &bToken Shop&7!"));
+        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
+                " &7Purchase tokens on our store at &cstore.strivepvp.top &7or earn them in-game!"));
+        Bukkit.broadcastMessage("");
+    }
+
     private static UpdateOptions UPSERT = new UpdateOptions().upsert(true);
     @Getter
     private Map<UUID, Long> pendingTokens = Maps.newConcurrentMap();
     private int lastDateAsInt;
-    
+
     public TokensHandler() {
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(Foxtrot.getInstance(), () -> {
@@ -60,27 +70,31 @@ public class TokensHandler implements Listener {
                 Player player = Bukkit.getPlayer(uuid);
 
                 if (player != null) {
-                    player.sendMessage(ChatColor.YELLOW + "You've received " + ChatColor.LIGHT_PURPLE + "1 token" + ChatColor.YELLOW + " for actively playing!");
-                    player.sendMessage(ChatColor.YELLOW + "Trade your tokens at " + ChatColor.GOLD + "spawn" + ChatColor.YELLOW + " to receive a crate key!");
-                    Foxtrot.getInstance().getKitmapTokensMap().setTokens(uuid, Foxtrot.getInstance().getKitmapTokensMap().getTokens(uuid)+1);
+                    player.sendMessage(ChatColor.YELLOW + "You've received " + ChatColor.LIGHT_PURPLE + "1 token"
+                            + ChatColor.YELLOW + " for actively playing!");
+                    player.sendMessage(ChatColor.YELLOW + "Trade your tokens at " + ChatColor.GOLD + "spawn"
+                            + ChatColor.YELLOW + " to receive a crate key!");
+                    Foxtrot.getInstance().getKitmapTokensMap().setTokens(uuid,
+                            Foxtrot.getInstance().getKitmapTokensMap().getTokens(uuid) + 1);
                     pendingTokens.put(uuid, System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1));
                 }
             }
-        },0, 20L);
+        }, 0, 20L);
 
         Bukkit.getPluginManager().registerEvents(this, Foxtrot.getInstance());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onDamage(EntityDamageEvent event) {
-       if (event.getEntity() instanceof Villager) {
-           Villager villager = (Villager) event.getEntity();
+        if (event.getEntity() instanceof Villager) {
+            Villager villager = (Villager) event.getEntity();
 
-           if (villager.getCustomName() != null && villager.getCustomName().contains(ChatColor.COLOR_CHAR + "") && villager.getCustomName().contains("Token")) {
-               event.setCancelled(true);
-           }
+            if (villager.getCustomName() != null && villager.getCustomName().contains(ChatColor.COLOR_CHAR + "")
+                    && villager.getCustomName().contains("Token")) {
+                event.setCancelled(true);
+            }
 
-       }
+        }
     }
 
     @EventHandler
@@ -88,7 +102,8 @@ public class TokensHandler implements Listener {
         if (event.getRightClicked() instanceof Villager) {
             Villager villager = (Villager) event.getRightClicked();
 
-            if (villager.getCustomName() != null && villager.getCustomName().contains(ChatColor.COLOR_CHAR + "") && villager.getCustomName().contains("Token")) {
+            if (villager.getCustomName() != null && villager.getCustomName().contains(ChatColor.COLOR_CHAR + "")
+                    && villager.getCustomName().contains("Token")) {
                 event.setCancelled(true);
                 int tokens = Foxtrot.getInstance().getKitmapTokensMap().getTokens(event.getPlayer().getUniqueId());
 
@@ -98,19 +113,23 @@ public class TokensHandler implements Listener {
                 }
 
                 if (tokens < 3) {
-                    event.getPlayer().sendMessage(ChatColor.RED + "You need at least 3 tokens to exchange them for a key.");
+                    event.getPlayer()
+                            .sendMessage(ChatColor.RED + "You need at least 3 tokens to exchange them for a key.");
                     return;
                 }
 
                 int keys = 0;
                 while (tokens >= 3) {
-                    tokens -=3;
+                    tokens -= 3;
                     keys++;
                 }
 
-                Foxtrot.getInstance().getKitmapTokensMap().setTokens(event.getPlayer().getUniqueId(), Foxtrot.getInstance().getKitmapTokensMap().getTokens(event.getPlayer().getUniqueId()) % 3);
-                event.getPlayer().sendMessage(ChatColor.GREEN + "You've exchanged your tokens for " + ChatColor.DARK_GREEN + keys + ChatColor.GREEN + " crate keys.");
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "crates give " + event.getPlayer().getName() + " token " + keys);
+                Foxtrot.getInstance().getKitmapTokensMap().setTokens(event.getPlayer().getUniqueId(),
+                        Foxtrot.getInstance().getKitmapTokensMap().getTokens(event.getPlayer().getUniqueId()) % 3);
+                event.getPlayer().sendMessage(ChatColor.GREEN + "You've exchanged your tokens for "
+                        + ChatColor.DARK_GREEN + keys + ChatColor.GREEN + " crate keys.");
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                        "crates give " + event.getPlayer().getName() + " token " + keys);
             }
         }
     }

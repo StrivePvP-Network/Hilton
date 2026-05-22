@@ -134,6 +134,7 @@ public class TokenShopKitConfirmMenu extends Menu {
                     player.sendMessage(ChatColor.GREEN + "You have purchased the "
                             + ChatColor.translateAlternateColorCodes('&', kit.getDisplayName()) + ChatColor.GREEN + " GKit for " + price + " tokens!");
                     kit.apply(player);
+                    net.frozenorb.foxtrot.gameplay.kitmap.tokens.TokensHandler.announcePurchase(player, ChatColor.translateAlternateColorCodes('&', kit.getDisplayName()) + " GKit");
                     player.closeInventory();
                 } else {
                     player.sendMessage(ChatColor.RED + "You do not have enough tokens! You need " + price + " tokens.");

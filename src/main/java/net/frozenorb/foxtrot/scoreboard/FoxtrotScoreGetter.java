@@ -142,10 +142,17 @@ public class FoxtrotScoreGetter implements ScoreGetter {
             if (Foxtrot.getInstance().getMapHandler().isKitMap()) {
                 scores.add("&4&lGems&7: &f" + Foxtrot.getInstance().getGemMap().getGems(player));
             }
-        }
 
-        scores.add("&4&lBalance&7: &a$"
-                + (int) Foxtrot.getInstance().getEconomyHandler().getBalance(player.getUniqueId()));
+            scores.add("&4&lBalance&7: &a$"
+                    + (int) Foxtrot.getInstance().getEconomyHandler().getBalance(player.getUniqueId()));
+        } else {
+            Team ownerTeam = LandBoard.getInstance().getTeam(player.getLocation());
+            if (ownerTeam != null) {
+                scores.add("&4&lClaim&7: &f" + ownerTeam.getName(player));
+            } else {
+                scores.add("&4&lClaim&7: &7Wilderness");
+            }
+        }
 
         for (Event event : Foxtrot.getInstance().getEventHandler().getEvents()) {
 

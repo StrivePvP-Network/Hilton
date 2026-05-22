@@ -51,7 +51,8 @@ public class NPCHandler implements Listener {
                 updateHolograms(npc);
             }
         }
-        Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "[NPCHandler] Loaded " + npcs.size() + " NPCs from MongoDB.");
+        Bukkit.getConsoleSender()
+                .sendMessage(ChatColor.GREEN + "[NPCHandler] Loaded " + npcs.size() + " NPCs from MongoDB.");
     }
 
     public void saveNPCs() {
@@ -161,24 +162,37 @@ public class NPCHandler implements Listener {
     }
 
     private void tick() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            for (NPCEntity renderer : renderers.values()) {
-                NPC npc = renderer.getNpc();
+        for (NPCEntity renderer : renderers.values()) {
+            NPC npc = renderer.getNpc();
 
-                if (npc.isLookAtPlayer()) {
-                    Location npcLoc = npc.getLocation();
-                    Location playerLoc = player.getLocation();
+            if (!npc.isLookAtPlayer()) {
+                continue;
+            }
 
-                    if (npcLoc.getWorld().equals(playerLoc.getWorld()) && npcLoc.distanceSquared(playerLoc) < 64) {
-                        Vector direction = playerLoc.toVector().subtract(npcLoc.toVector()).normalize();
-                        double x = direction.getX();
-                        double z = direction.getZ();
+            Location npcLoc = npc.getLocation();
 
-                        float yaw = (float) Math.toDegrees(Math.atan2(-x, z));
-                        float pitch = (float) Math.toDegrees(Math.asin(-direction.getY()));
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                Location playerLoc = player.getLocation();
 
-                        renderer.updateRotation(player, yaw, pitch);
-                    }
+                if (!npcLoc.getWorld().equals(playerLoc.getWorld())) {
+                    renderer.updateRotation(player, npcLoc.getYaw(), npcLoc.getPitch());
+                    continue;
+                }
+
+                double distSq = npcLoc.distanceSquared(playerLoc);
+
+                if (distSq < 64) {
+                    Vector direction = playerLoc.toVector().add(new Vector(0, 1.5, 0))
+                            .subtract(npcLoc.toVector().add(new Vector(0, 1.62, 0))).normalize();
+                    double x = direction.getX();
+                    double z = direction.getZ();
+
+                    float yaw = (float) Math.toDegrees(Math.atan2(-x, z));
+                    float pitch = (float) Math.toDegrees(Math.asin(-direction.getY()));
+
+                    renderer.updateRotation(player, yaw, pitch);
+                } else {
+                    renderer.updateRotation(player, npcLoc.getYaw(), npcLoc.getPitch());
                 }
             }
         }

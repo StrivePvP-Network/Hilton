@@ -31,8 +31,7 @@ import static org.bukkit.ChatColor.*;
 
 public class ReclaimCommand {
 
-    @Command(
-            names = {"reclaim"}, permission = "")
+    @Command(names = { "reclaim" }, permission = "")
     public static void execute(Player player) {
 
         if (Foxtrot.getInstance().getReclaimMap().hasReclaimed(player.getUniqueId())) {
@@ -41,7 +40,7 @@ public class ReclaimCommand {
         }
 
         if (player.getName().equalsIgnoreCase("Lavaboy29")) {
-            player.getInventory().addItem(new ItemStack(Material.MONSTER_EGG, 64, (byte)91));
+            player.getInventory().addItem(new ItemStack(Material.MONSTER_EGG, 64, (byte) 91));
             player.getInventory().addItem(new ItemStack(Material.LEASH, 32));
         }
 
@@ -49,24 +48,28 @@ public class ReclaimCommand {
 
         if (profile.hasSubscription()) {
             for (String command : Foxtrot.getInstance().getConfig().getStringList("reclaims.VIP.commands")) {
-                Foxtrot.getInstance().getServer().dispatchCommand(Foxtrot.getInstance().getServer().getConsoleSender(),command.replace("{player}",player.getName()).replace("{rankName}", ChatColor.YELLOW + "VIP"));
+                Foxtrot.getInstance().getServer().dispatchCommand(Foxtrot.getInstance().getServer().getConsoleSender(),
+                        command.replace("{player}", player.getName()).replace("{rankName}", ChatColor.YELLOW + "VIP"));
             }
-            Foxtrot.getInstance().getReclaimMap().setReclaimed(player.getUniqueId(),true);
+            Foxtrot.getInstance().getReclaimMap().setReclaimed(player.getUniqueId(), true);
         }
 
-        for (Reclaim reclaim : Foxtrot.getInstance().getReclaimHandler().getReclaims().stream().sorted(Comparator.comparingInt(Reclaim::getPriority)).collect(Collectors.toList())) {
+        for (Reclaim reclaim : Foxtrot.getInstance().getReclaimHandler().getReclaims().stream()
+                .sorted(Comparator.comparingInt(Reclaim::getPriority)).collect(Collectors.toList())) {
             if (player.hasPermission(reclaim.getPermission())) {
-                Foxtrot.getInstance().getReclaimMap().setReclaimed(player.getUniqueId(),true);
+                Foxtrot.getInstance().getReclaimMap().setReclaimed(player.getUniqueId(), true);
 
                 for (String command : reclaim.getCommands()) {
                     try {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("{player}", player.getName()).replace("{uuid}", player.getUniqueId().toString()));
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("{player}", player.getName())
+                                .replace("{uuid}", player.getUniqueId().toString()));
                     } catch (Exception e) {
-                        Foxtrot.getInstance().getLogger().severe("[Reclaims] Failed to execute command: " + command + " for player " + player.getName());
+                        Foxtrot.getInstance().getLogger().severe(
+                                "[Reclaims] Failed to execute command: " + command + " for player " + player.getName());
                         e.printStackTrace();
                     }
                 }
-                
+
                 for (ItemStack item : reclaim.getItems()) {
                     if (item != null) {
                         player.getInventory().addItem(item.clone());
@@ -74,7 +77,25 @@ public class ReclaimCommand {
                 }
                 player.updateInventory();
 
-                Foxtrot.getInstance().getServer().getPluginManager().callEvent(new ReclaimEvent(player, reclaim.getName()));
+                Foxtrot.getInstance().getServer().getPluginManager()
+                        .callEvent(new ReclaimEvent(player, reclaim.getName()));
+
+                Rank activeRank = profile.getActiveRank();
+                String rankDisplay = activeRank != null
+                        ? activeRank.getColor() + activeRank.getName()
+                        : ChatColor.GREEN + reclaim.getName();
+
+                Bukkit.broadcastMessage("");
+                Bukkit.broadcastMessage(ChatColor.RED + ChatColor.BOLD.toString() + "Reclaim ");
+                Bukkit.broadcastMessage(
+                        ChatColor.WHITE + player.getName() + ChatColor.YELLOW + " has just reclaimed their "
+                                + rankDisplay + ChatColor.YELLOW + " rank benefits!");
+                Bukkit.broadcastMessage(
+                        ChatColor.GRAY + "Purchase a rank at " + ChatColor.WHITE + "store.strivepvp.top");
+                Bukkit.broadcastMessage("");
+
+                player.sendMessage(ChatColor.GREEN + "You have successfully reclaimed your " + rankDisplay
+                        + ChatColor.GREEN + " rank benefits!");
                 return;
             }
         }
@@ -82,25 +103,25 @@ public class ReclaimCommand {
         player.sendMessage(ChatColor.RED + "It appears there is no reclaim found for your rank.");
     }
 
-    @Command(
-            names = {"resetreclaim","reclaimreset"},
-            permission = "foxtrot.command.resetreclaim"
-    )
-    public static void execute(CommandSender sender, @Parameter(name = "player")UUID uuid) {
+    @Command(names = { "resetreclaim", "reclaimreset" }, permission = "foxtrot.command.resetreclaim")
+    public static void execute(CommandSender sender, @Parameter(name = "player") UUID uuid) {
 
         if (!Foxtrot.getInstance().getReclaimMap().hasReclaimed(uuid)) {
             sender.sendMessage(ChatColor.RED + "That player has not reclaimed yet this map!");
             return;
         }
 
-        Foxtrot.getInstance().getReclaimMap().setReclaimed(uuid,false);
+        Foxtrot.getInstance().getReclaimMap().setReclaimed(uuid, false);
 
         Piston.getInstance().sendPacketAsync(new StaffBroadcastPacket(
                 NeutronConstants.MANAGER_PERMISSION,
-                ChatColor.translateAlternateColorCodes('&', ChatColor.translateAlternateColorCodes('&', 
-                        LIGHT_PURPLE + "[MC]" + LIGHT_PURPLE + "[" + UniverseAPI.getServerName() + "] &f" + (sender instanceof Player ? ((Player) sender).getDisplayName() : DARK_RED + BOLD.toString() + "Console")
+                ChatColor.translateAlternateColorCodes('&', ChatColor.translateAlternateColorCodes('&',
+                        LIGHT_PURPLE + "[MC]" + LIGHT_PURPLE + "[" + UniverseAPI.getServerName() + "] &f"
+                                + (sender instanceof Player ? ((Player) sender).getDisplayName()
+                                        : DARK_RED + BOLD.toString() + "Console")
                                 + " &7has reset &f" + UUIDUtils.name(uuid) + "'s &7reclaim."))));
 
-        sender.sendMessage(ChatColor.GOLD + "Reset " + ChatColor.YELLOW + uuid.toString() + ChatColor.GOLD + "'s reclaim.");
+        sender.sendMessage(
+                ChatColor.GOLD + "Reset " + ChatColor.YELLOW + uuid.toString() + ChatColor.GOLD + "'s reclaim.");
     }
 }

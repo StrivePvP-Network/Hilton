@@ -9,6 +9,8 @@ import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.util.CC;
 import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.ChatColor;
+import java.text.NumberFormat;
+import java.util.Locale;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -48,6 +50,12 @@ public class VoucherItem {
                 break;
             case COMMAND:
                 lore.add(CC.translate("&e&l┃ &fReward: &7(Special Reward)"));
+                break;
+            case MONEY:
+                lore.add(CC.translate("&e&l┃ &fAmount: &2$&a" + value));
+                break;
+            case LIVES:
+                lore.add(CC.translate("&e&l┃ &fLives: &b" + value));
                 break;
         }
 
@@ -100,20 +108,21 @@ public class VoucherItem {
                 if (profile != null) {
                     cc.fyre.neutron.rank.Rank rank = Neutron.getInstance().getRankHandler().fromName(value);
                     if (rank != null) {
-                        long durationLong = duration.equalsIgnoreCase("perm") ? Long.MAX_VALUE : cc.fyre.proton.util.TimeUtils.parseTime(duration) * 1000L;
-                        
+                        long durationLong = duration.equalsIgnoreCase("perm") ? Long.MAX_VALUE
+                                : cc.fyre.proton.util.TimeUtils.parseTime(duration) * 1000L;
+
                         Grant grant = new Grant(
                                 rank,
                                 player.getUniqueId(),
                                 Long.valueOf(durationLong),
-                                "Auto-generated voucher"
-                        );
-                                        
+                                "Auto-generated voucher");
+
                         profile.getGrants().add(grant);
                         profile.recalculateGrants();
                         profile.save();
                         player.sendMessage(CC.translate(
-                                "&aThe rank &e" + rank.getColor() + rank.getName() + " &ahas been applied to your account."));
+                                "&aThe rank &e" + rank.getColor() + rank.getName()
+                                        + " &ahas been applied to your account."));
                     }
                 }
                 break;
@@ -141,8 +150,45 @@ public class VoucherItem {
                 String cmd = value.replace("_", " ");
                 Foxtrot.getInstance().getServer().dispatchCommand(
                         Foxtrot.getInstance().getServer().getConsoleSender(),
-                        cmd.replace("{player}", player.getName())
-                );
+                        cmd.replace("{player}", player.getName()));
+                break;
+
+            case MONEY:
+                double moneyAmount = Double.parseDouble(value);
+                Foxtrot.getInstance().getEconomyHandler().deposit(player.getUniqueId(), moneyAmount);
+                String formattedAmount = NumberFormat.getNumberInstance(Locale.US).format(moneyAmount);
+
+                Foxtrot.getInstance().getServer().broadcastMessage("");
+                Foxtrot.getInstance().getServer().broadcastMessage(CC.translate("&4&lMoney Voucher"));
+                Foxtrot.getInstance().getServer().broadcastMessage(
+                        ChatColor.WHITE + player.getName() + ChatColor.YELLOW + " has redeemed a " + ChatColor.GREEN
+                                + "$" + formattedAmount + ChatColor.YELLOW + " Money Voucher!");
+                Foxtrot.getInstance().getServer().broadcastMessage(
+                        ChatColor.GRAY + "Purchase your own at " + ChatColor.WHITE + "store.strivepvp.top");
+                Foxtrot.getInstance().getServer().broadcastMessage("");
+
+                player.sendMessage(ChatColor.GREEN + "$" + formattedAmount + " has been added to your balance!");
+                VoucherCommand.spawnFireworks(player.getLocation(), 5, 2, org.bukkit.Color.GREEN,
+                        org.bukkit.FireworkEffect.Type.BALL_LARGE);
+                break;
+
+            case LIVES:
+                int livesAmount = Integer.parseInt(value);
+                int currentLives = Foxtrot.getInstance().getFriendLivesMap().getLives(player.getUniqueId());
+                Foxtrot.getInstance().getFriendLivesMap().setLives(player.getUniqueId(), currentLives + livesAmount);
+
+                Foxtrot.getInstance().getServer().broadcastMessage("");
+                Foxtrot.getInstance().getServer().broadcastMessage(CC.translate("&4&lLife Voucher"));
+                Foxtrot.getInstance().getServer().broadcastMessage(
+                        ChatColor.WHITE + player.getName() + ChatColor.YELLOW + " has redeemed a " + ChatColor.GREEN
+                                + livesAmount + " lives " + ChatColor.YELLOW + "Life Voucher!");
+                Foxtrot.getInstance().getServer().broadcastMessage(
+                        ChatColor.GRAY + "Purchase your own at " + ChatColor.WHITE + "store.strivepvp.top");
+                Foxtrot.getInstance().getServer().broadcastMessage("");
+
+                player.sendMessage(ChatColor.GREEN + "" + livesAmount + " lives have been added to your account!");
+                VoucherCommand.spawnFireworks(player.getLocation(), 5, 2, org.bukkit.Color.GREEN,
+                        org.bukkit.FireworkEffect.Type.BALL_LARGE);
                 break;
         }
     }
@@ -184,6 +230,6 @@ public class VoucherItem {
     }
 
     public enum VoucherType {
-        RANK, AMOUNT, BUNDLE, COMMAND
+        RANK, AMOUNT, BUNDLE, COMMAND, MONEY, LIVES
     }
 }

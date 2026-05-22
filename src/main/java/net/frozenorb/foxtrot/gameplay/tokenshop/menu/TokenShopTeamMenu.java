@@ -65,7 +65,7 @@ public class TokenShopTeamMenu extends Menu {
                 lore.add(ChatColor.GRAY + "This token allows you to generate a base");
                 lore.add(ChatColor.GRAY + "using " + ChatColor.WHITE + "/blueprints" + ChatColor.GRAY + ".");
                 lore.add("");
-                lore.add(ChatColor.GOLD + "Cost: " + ChatColor.YELLOW + "100 Coins");
+                lore.add(ChatColor.GOLD + "Cost: " + ChatColor.YELLOW + "10 Tokens");
                 lore.add("");
                 lore.add(ChatColor.GREEN + "Click to purchase!");
                 return lore;
@@ -89,19 +89,19 @@ public class TokenShopTeamMenu extends Menu {
                     return;
                 }
 
-                PlayerProfile profile = Profiles.getInstance().getPlayerProfileHandler()
-                        .fetchProfile(player.getUniqueId(), player.getName());
-                if (profile.getCoins() < 100) {
-                    player.sendMessage(ChatColor.RED + "You do not have enough coins!");
+                int tokens = Foxtrot.getInstance().getKitmapTokensMap().getTokens(player.getUniqueId());
+                if (tokens < 3) {
+                    player.sendMessage(ChatColor.RED + "You do not have enough tokens! You need 3 tokens.");
                     return;
                 }
 
-                spendCoins(player, 100);
+                Foxtrot.getInstance().getKitmapTokensMap().setTokens(player.getUniqueId(), tokens - 3);
                 team.setBaseTokens(team.getBaseTokens() + 1);
                 team.flagForSave();
 
                 player.sendMessage(ChatColor.GREEN + "You have purchased a " + ChatColor.LIGHT_PURPLE + "Base Token"
                         + ChatColor.GREEN + " for your team!");
+                net.frozenorb.foxtrot.gameplay.kitmap.tokens.TokensHandler.announcePurchase(player, "Base Token");
             }
         });
 
@@ -118,7 +118,7 @@ public class TokenShopTeamMenu extends Menu {
                 lore.add(ChatColor.GRAY + "This token allows you to generate a faller trap");
                 lore.add(ChatColor.GRAY + "using " + ChatColor.WHITE + "/blueprints" + ChatColor.GRAY + ".");
                 lore.add("");
-                lore.add(ChatColor.GOLD + "Cost: " + ChatColor.YELLOW + "200 Coins");
+                lore.add(ChatColor.GOLD + "Cost: " + ChatColor.YELLOW + "20 Tokens");
                 lore.add("");
                 lore.add(ChatColor.GREEN + "Click to purchase!");
                 return lore;
@@ -137,19 +137,19 @@ public class TokenShopTeamMenu extends Menu {
                     return;
                 }
 
-                PlayerProfile profile = Profiles.getInstance().getPlayerProfileHandler()
-                        .fetchProfile(player.getUniqueId(), player.getName());
-                if (profile.getCoins() < 200) {
-                    player.sendMessage(ChatColor.RED + "You do not have enough coins!");
+                int tokens = Foxtrot.getInstance().getKitmapTokensMap().getTokens(player.getUniqueId());
+                if (tokens < 5) {
+                    player.sendMessage(ChatColor.RED + "You do not have enough tokens! You need 5 tokens.");
                     return;
                 }
 
-                spendCoins(player, 200);
+                Foxtrot.getInstance().getKitmapTokensMap().setTokens(player.getUniqueId(), tokens - 5);
                 team.setFallTrapTokens(team.getFallTrapTokens() + 1);
                 team.flagForSave();
 
                 player.sendMessage(ChatColor.GREEN + "You have purchased a " + ChatColor.DARK_RED + "Faller Token"
                         + ChatColor.GREEN + " for your team!");
+                net.frozenorb.foxtrot.gameplay.kitmap.tokens.TokensHandler.announcePurchase(player, "Faller Token");
             }
         });
 

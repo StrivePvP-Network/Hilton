@@ -52,7 +52,7 @@ public class TokenShopMenu extends Menu {
         }
 
 
-        buttons.put(20, new Button() {
+        buttons.put(19, new Button() {
             @Override
             public String getName(Player player) {
                 return ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "Base & Fall";
@@ -63,7 +63,7 @@ public class TokenShopMenu extends Menu {
                 List<String> lore = new ArrayList<>();
                 lore.add(ChatColor.GRAY + "Purchase Base Tokens and");
                 lore.add(ChatColor.GRAY + "Faller Traps for your team");
-                lore.add(ChatColor.GRAY + "using your Coins.");
+                lore.add(ChatColor.GRAY + "using your Tokens.");
                 lore.add("");
                 lore.add(ChatColor.YELLOW + "Click to browse items!");
                 return lore;
@@ -81,7 +81,7 @@ public class TokenShopMenu extends Menu {
         });
 
         if (hasKits) {
-            buttons.put(22, new Button() {
+            buttons.put(21, new Button() {
                 @Override
                 public String getName(Player player) {
                     return ChatColor.AQUA + ChatColor.BOLD.toString() + "GKits";
@@ -110,7 +110,7 @@ public class TokenShopMenu extends Menu {
         }
 
         if (hasCrates) {
-            buttons.put(24, new Button() {
+            buttons.put(23, new Button() {
                 @Override
                 public String getName(Player player) {
                     return ChatColor.GOLD + ChatColor.BOLD.toString() + "Crate Keys";
@@ -137,6 +137,33 @@ public class TokenShopMenu extends Menu {
                 }
             });
         }
+
+        buttons.put(25, new Button() {
+            @Override
+            public String getName(Player player) {
+                return ChatColor.GREEN + ChatColor.BOLD.toString() + "Life Vouchers";
+            }
+
+            @Override
+            public List<String> getDescription(Player player) {
+                List<String> lore = new ArrayList<>();
+                lore.add(ChatColor.GRAY + "Purchase physical Life Vouchers");
+                lore.add(ChatColor.GRAY + "using your Souls Tokens.");
+                lore.add("");
+                lore.add(ChatColor.YELLOW + "Click to browse Vouchers!");
+                return lore;
+            }
+
+            @Override
+            public Material getMaterial(Player player) {
+                return Material.PAPER;
+            }
+
+            @Override
+            public void clicked(Player player, int slot, ClickType clickType) {
+                new net.frozenorb.foxtrot.gameplay.tokenshop.menu.TokenShopVouchersMenu().openMenu(player);
+            }
+        });
 
         buttons.put(4, new Button() {
             @Override

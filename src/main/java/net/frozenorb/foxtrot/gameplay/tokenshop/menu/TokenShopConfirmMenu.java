@@ -149,6 +149,7 @@ public class TokenShopConfirmMenu extends Menu {
                             + ChatColor.translateAlternateColorCodes('&', crate.getDisplayName()) + ChatColor.GREEN + " key for 3 tokens!");
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
                             "crates give " + player.getName() + " " + crate.getId() + " 1");
+                    net.frozenorb.foxtrot.gameplay.kitmap.tokens.TokensHandler.announcePurchase(player, ChatColor.translateAlternateColorCodes('&', crate.getDisplayName()) + " Key");
                     player.closeInventory();
                 } else {
                     player.sendMessage(ChatColor.RED + "You do not have enough tokens! You need 3 tokens.");

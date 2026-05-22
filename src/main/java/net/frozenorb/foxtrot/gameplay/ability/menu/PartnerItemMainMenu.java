@@ -1,75 +1,87 @@
 package net.frozenorb.foxtrot.gameplay.ability.menu;
 
 import cc.fyre.proton.menu.Button;
-import cc.fyre.proton.menu.Menu;
+import cc.fyre.proton.menu.pagination.PaginatedMenu;
+import net.frozenorb.foxtrot.Foxtrot;
+import net.frozenorb.foxtrot.gameplay.ability.Ability;
 import net.frozenorb.foxtrot.gameplay.ability.Category;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Hxmilton (JavaProject)
  * @Contact hxmiltonn (discord)
  */
 
-public class PartnerItemMainMenu extends Menu {
+public class PartnerItemMainMenu extends PaginatedMenu {
+
     @Override
-    public String getTitle(Player player) {
-        return "Partner Items";
+    public String getPrePaginatedTitle(Player player) {
+        return "Ability Items";
     }
 
     @Override
-    public Map<Integer, Button> getButtons(Player player) {
-        final Map<Integer, Button> toReturn = new HashMap<>();
+    public Map<Integer, Button> getAllPagesButtons(Player player) {
+        final Map<Integer, Button> buttons = new HashMap<>();
 
-        for (int i = 0; i < 27; i++) {
-            toReturn.put(i, Button.placeholder(Material.STAINED_GLASS_PANE, (byte)14, ""));
-        }
-
-        toReturn.put(10, Button.placeholder(Material.STAINED_GLASS_PANE, (byte)7, ""));
-        toReturn.put(16, Button.placeholder(Material.STAINED_GLASS_PANE, (byte)7, ""));
-
-        for (Category value : Category.values()) {
-
-            if (value == Category.KIT_MAP || value == Category.PORTABLE_BARD) {
+        final List<Ability> abilities = new ArrayList<>();
+        for (Ability value : Foxtrot.getInstance().getMapHandler().getAbilityHandler().getAbilities().values()) {
+            if (!Foxtrot.getInstance().getMapHandler().getAbilityHandler().isAbilityEnabled(value)) {
                 continue;
             }
 
-            toReturn.put(value.getSlot(), new Button() {
+            if (value.getCategory() == Category.PORTABLE_BARD) {
+                continue;
+            }
+
+            if (!Foxtrot.getInstance().getMapHandler().isKitMap() && value.getCategory() == Category.KIT_MAP) {
+                continue;
+            }
+
+            abilities.add(value);
+        }
+
+        abilities.sort(Comparator.comparing(Ability::getName));
+
+        int index = 0;
+        for (final Ability value : abilities) {
+            buttons.put(index++, new Button() {
                 @Override
                 public String getName(Player player) {
-                    return value.getDisplayName();
+                    return null;
                 }
 
                 @Override
                 public List<String> getDescription(Player player) {
-                    final List<String> toReturn = new ArrayList<>();
-
-                    toReturn.add("");
-                    toReturn.add(ChatColor.GREEN + "Click to view all ability items in this category");
-
-                    return toReturn;
+                    return null;
                 }
 
                 @Override
                 public Material getMaterial(Player player) {
-                    return value.getDisplayItem();
+                    return null;
+                }
+
+                @Override
+                public ItemStack getButtonItem(Player player) {
+                    return value.getItem().clone();
                 }
 
                 @Override
                 public void clicked(Player player, int slot, ClickType clickType) {
-                    new PartnerItemMenu(value).openMenu(player);
+                    if (player.isOp()) {
+                        player.getInventory().addItem(value.getItem().clone());
+                        player.sendMessage(
+                                ChatColor.GREEN + "You received 1x " + value.getDisplayName() + ChatColor.GREEN + ".");
+                    }
                 }
             });
         }
 
-
-        return toReturn;
+        return buttons;
     }
 }
