@@ -107,18 +107,47 @@ public class AbilityHandler {
             return;
         }
 
-        if (this.data.get("abilities") == null) {
-            return;
+        if (this.data.get("abilities") != null) {
+            for (String key : data.getConfigurationSection("abilities").getKeys(false)) {
+                final Ability ability = this.fromName(key);
+
+                if (ability == null) {
+                    continue;
+                }
+
+                this.usedItems.put(ability, data.getInt("abilities." + key));
+            }
         }
 
-        for (String key : data.getConfigurationSection("abilities").getKeys(false)) {
-            final Ability ability = this.fromName(key);
+        if (this.data.get("disabled-abilities") != null) {
+            List<String> disabled = this.data.getStringList("disabled-abilities");
+            this.disabledAbilities.clear();
+            this.disabledAbilities.addAll(disabled);
+            System.out.println("[AbilityHandler] Loaded " + disabled.size() + " disabled abilities from file.");
+        }
 
-            if (ability == null) {
-                continue;
+        if (this.data.get("category-overrides") != null) {
+            for (String key : this.data.getConfigurationSection("category-overrides").getKeys(false)) {
+                String categoryName = this.data.getString("category-overrides." + key);
+                Category category = Category.fromName(categoryName);
+                if (category != null) {
+                    this.categoryOverrides.put(key, category);
+                }
             }
+            System.out.println(
+                    "[AbilityHandler] Loaded " + this.categoryOverrides.size() + " category overrides from file.");
+        }
 
-            this.usedItems.put(ability, data.getInt("abilities." + key));
+        if (this.data.get("ability-metadata") != null) {
+            for (String key : this.data.getConfigurationSection("ability-metadata").getKeys(false)) {
+                Ability ability = this.fromName(key);
+                if (ability != null) {
+                    List<String> meta = this.data.getStringList("ability-metadata." + key);
+                    ability.getMetadata().clear();
+                    ability.getMetadata().addAll(meta);
+                }
+            }
+            System.out.println("[AbilityHandler] Loaded ability metadata tags from file.");
         }
     }
 
@@ -129,6 +158,18 @@ public class AbilityHandler {
 
         for (Map.Entry<Ability, Integer> abilityIntegerEntry : this.usedItems.entrySet()) {
             this.data.set("abilities." + abilityIntegerEntry.getKey().getName(), +abilityIntegerEntry.getValue());
+        }
+
+        this.data.set("disabled-abilities", new ArrayList<>(this.disabledAbilities));
+
+        for (Map.Entry<String, Category> entry : this.categoryOverrides.entrySet()) {
+            this.data.set("category-overrides." + entry.getKey(), entry.getValue().getName());
+        }
+
+        for (Ability ability : this.abilities.values()) {
+            if (!ability.getMetadata().isEmpty()) {
+                this.data.set("ability-metadata." + ability.getName(), new ArrayList<>(ability.getMetadata()));
+            }
         }
 
         try {

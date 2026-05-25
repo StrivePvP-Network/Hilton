@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
+
 public class CouponDropsTask extends BukkitRunnable {
     private Foxtrot instance;
     public static final List<String> ACTIVE_COUPONS;

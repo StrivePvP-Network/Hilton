@@ -442,8 +442,10 @@ public class Foxtrot extends JavaPlugin {
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "lunarclient:all");
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "LC|CP");
-        
+
         this.getLogger().info("[LunarFix] Registered Lunar Client plugin channels.");
+        com.comphenix.protocol.ProtocolLibrary.getProtocolManager()
+                .addPacketListener(new net.frozenorb.foxtrot.protocol.CustomPayloadPacketAdapter());
     }
 
     @Override
@@ -539,7 +541,7 @@ public class Foxtrot extends JavaPlugin {
         this.treasureChestHandler.saveData();
         this.outpostHandler.saveData();
         this.keyAllHandler.saveData();
-        
+
         if (this.npcHandler != null) {
             this.npcHandler.saveNPCs();
         }
@@ -598,7 +600,8 @@ public class Foxtrot extends JavaPlugin {
 
         this.customTimerHandler = new CustomTimerHandler();
         this.voucherHandler = new VoucherHandler(this);
-        this.getServer().getPluginManager().registerEvents(new net.frozenorb.foxtrot.server.voucher.VoucherListener(), this);
+        this.getServer().getPluginManager().registerEvents(new net.frozenorb.foxtrot.server.voucher.VoucherListener(),
+                this);
         this.pollHandler = new PollHandler();
         this.tipsHandler = new TipsHandler(this);
         this.inventorySeeHandler = new InventorySeeHandler();
@@ -609,7 +612,6 @@ public class Foxtrot extends JavaPlugin {
         this.armorClassHandler = new ArmorClassHandler(this);
         this.treasureChestHandler = new TreasureChestHandler(this);
         this.npcHandler = new NPCHandler();
-
 
         if (!this.serverHandler.isTeams() && !this.mapHandler.isKitMap()) {
             this.crateHandler = new CrateHandler(this);

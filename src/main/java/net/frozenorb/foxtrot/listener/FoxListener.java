@@ -484,12 +484,23 @@ public class FoxListener implements Listener {
                         || event.getClickedBlock().getType().name().contains("DOOR")) {
                     CitadelHandler citadelHandler = Foxtrot.getInstance().getCitadelHandler();
 
-                    if (team.getName().equalsIgnoreCase("TreasureCove") && team.getOwner() == null
+                    boolean isTreasureBeachChest = false;
+                    if (event.getClickedBlock().getType() == Material.CHEST
+                            || event.getClickedBlock().getType() == Material.TRAPPED_CHEST) {
+                        net.frozenorb.foxtrot.gameplay.treasurebeach.TreasureBeachHandler tbHandler = Foxtrot
+                                .getInstance().getMapHandler().getTreasureBeachHandler();
+                        if (tbHandler != null && tbHandler.isInside(event.getClickedBlock().getLocation())) {
+                            isTreasureBeachChest = true;
+                        }
+                    }
+
+                    if (isTreasureBeachChest
+                            || team.getName().equalsIgnoreCase("TreasureBeach") && team.getOwner() == null
                             || DTRBitmask.CITADEL.appliesAt(event.getClickedBlock().getLocation())
                                     && citadelHandler.canLootCitadel(event.getPlayer())
                             || DTRBitmask.OUTPOST.appliesAt(event.getClickedBlock().getLocation())
                                     && player.getWorld().getEnvironment().equals(World.Environment.NORMAL)
-                                    && playerTeam.hasRoadOutpost()) {
+                                    && (playerTeam != null && playerTeam.hasRoadOutpost())) {
                         return;
                     }
                 }
@@ -653,9 +664,9 @@ public class FoxListener implements Listener {
             if (onlinePlayer.hasPermission("neutron.staff")) {
                 onlinePlayer.sendMessage("");
                 onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&4&l!!!! ALERT !!!!"));
-                onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', 
+                onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&',
                         "&4&lAn " + event.getEntityType().name() + " has spawned! ALERT SIMPLY IMMEDIATELY!"));
-                onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', 
+                onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&',
                         "&4&lLocation: " + location.getBlockX() + location.getBlockY() + location.getBlockZ()));
                 onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&4&l!!!! ALERT !!!!"));
                 onlinePlayer.sendMessage("");
@@ -909,7 +920,7 @@ public class FoxListener implements Listener {
                 if (killer != null) {
                     Foxtrot.getInstance().getServer().broadcastMessage("");
                     Foxtrot.getInstance().getServer()
-                            .broadcastMessage(ChatColor.translateAlternateColorCodes('&', 
+                            .broadcastMessage(ChatColor.translateAlternateColorCodes('&',
                                     Neutron.getInstance().getProfileHandler().findDisplayName(killer.getUniqueId())
                                             + " &6killed the king!"));
                     Foxtrot.getInstance().getServer().broadcastMessage("");

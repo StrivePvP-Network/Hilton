@@ -33,7 +33,11 @@ public class LootboxRollInventory {
     public LootboxRollInventory(Lootbox lootbox, Player player) {
         this.lootbox = lootbox;
         this.player = player;
-        this.inventory = Bukkit.createInventory(null, 27, ChatColor.translateAlternateColorCodes('&', lootbox.getDisplayName()));
+        String title = ChatColor.translateAlternateColorCodes('&', lootbox.getDisplayName());
+        if (title.length() > 32) {
+            title = title.substring(0, 32);
+        }
+        this.inventory = Bukkit.createInventory(null, 27, title);
     }
 
     public void open() {
@@ -77,13 +81,13 @@ public class LootboxRollInventory {
         }
 
         List<LootboxItem> rollingItems = new ArrayList<>();
-        for (int i = 0; i < 40; i++) {
+        for (int i = 0; i < 39; i++) {
             rollingItems.add(getRandomItem());
         }
 
         LootboxItem winner = getRandomItem();
         rollingItems.add(winner);
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 11; i++)
             rollingItems.add(getRandomItem());
 
         new BukkitRunnable() {

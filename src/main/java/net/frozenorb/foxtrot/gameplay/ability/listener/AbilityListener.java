@@ -28,13 +28,20 @@ public class AbilityListener implements Listener {
     private Foxtrot instance;
     private AbilityHandler abilityHandler;
 
+    private static final long GLOBAL_COOLDOWN_DEFAULT = 5L;
+
+    private static final long GLOBAL_COOLDOWN_EXTENDED = 8L;
+
+    private static final int ABILITY_COUNT_THRESHOLD = 10;
+
     @EventHandler(priority = EventPriority.LOW)
     private void onUse(AbilityUseEvent event) {
         final Player player = event.getPlayer();
         final Ability ability = event.getAbility();
 
         if (!abilityHandler.isAbilityEnabled(ability)) {
-            player.sendMessage(ChatColor.RED + "The " + ability.getDisplayName() + ChatColor.RED + " is currently disabled.");
+            player.sendMessage(
+                    ChatColor.RED + "The " + ability.getDisplayName() + ChatColor.RED + " is currently disabled.");
             event.setCancelled(true);
             return;
         }
@@ -63,7 +70,8 @@ public class AbilityListener implements Listener {
                 teamName = ChatColor.DARK_RED + "WarZone";
             }
 
-            player.sendMessage(ChatColor.RED + "You cannot use a " + ability.getDisplayName() + ChatColor.RED + " in " + teamName + ChatColor.RED + ".");
+            player.sendMessage(ChatColor.RED + "You cannot use a " + ability.getDisplayName() + ChatColor.RED + " in "
+                    + teamName + ChatColor.RED + ".");
             event.setCancelled(true);
             return;
         }
@@ -72,8 +80,31 @@ public class AbilityListener implements Listener {
             return;
         }
 
+        if (!player.hasMetadata("NO_COOLDOWN") && !player.hasMetadata("DEBUG")) {
+            int abilityItemCount = countAbilityItems(player);
+            long globalSeconds = abilityItemCount > ABILITY_COUNT_THRESHOLD ? GLOBAL_COOLDOWN_EXTENDED
+                    : GLOBAL_COOLDOWN_DEFAULT;
+            abilityHandler.getGlobalCooldowns().put(player.getUniqueId(),
+                    System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(globalSeconds));
+        }
+    }
 
+    private int countAbilityItems(Player player) {
+        int count = 0;
 
-//        abilityHandler.getGlobalCooldowns().put(player.getUniqueId(), System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(5));
+        for (ItemStack itemStack : player.getInventory().getContents()) {
+            if (itemStack == null) {
+                continue;
+            }
+
+            for (Ability registeredAbility : abilityHandler.getAbilities().values()) {
+                if (registeredAbility.isSimilar(itemStack)) {
+                    count += itemStack.getAmount();
+                    break;
+                }
+            }
+        }
+
+        return count;
     }
 }

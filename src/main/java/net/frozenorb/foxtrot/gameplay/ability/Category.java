@@ -51,6 +51,11 @@ public class Category {
         return categories.get(name.toUpperCase());
     }
 
+    public static Category fromName(String name) {
+        if (name == null) return null;
+        return categories.get(name.toUpperCase());
+    }
+
     public static void loadCategories() {
         categories.clear();
         DBCollection collection = Foxtrot.getInstance().getMongoPool().getDB(Foxtrot.MONGO_DB_NAME)

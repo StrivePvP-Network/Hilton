@@ -56,12 +56,12 @@ public class KillTagMenu extends Menu {
 
                     toReturn.add(ChatColor.GRAY + value.getDescription());
                     toReturn.add("");
-                    toReturn.add(ChatColor.translateAlternateColorCodes('&', "&cStrawyh&4[0]&e" + value.getDeathTag() + "&c" + player.getName() + "&4[" + Foxtrot.getInstance().getKillsMap().getKills(player.getUniqueId()) + "]"));
+                    toReturn.add(ChatColor.translateAlternateColorCodes('&', "&cHxmilton&4[0]&e" + value.getDeathTag() + "&c" + player.getName() + "&4[" + Foxtrot.getInstance().getKillsMap().getKills(player.getUniqueId()) + "]"));
                     toReturn.add("");
 
                     if (!player.hasPermission("killtags.access")) {
-                        toReturn.add(ChatColor.RED + "You must have VIP status to use this Kill Tag!");
-                        toReturn.add(ChatColor.GRAY + "Purchase VIP status at " + ChatColor.WHITE + "https://store.cavepvp.org" + ChatColor.GRAY + ".");
+                        toReturn.add(ChatColor.RED + "You must have Celestial to use this Kill Tag!");
+                        toReturn.add(ChatColor.GRAY + "Purchase Celestial Rank at " + ChatColor.WHITE + "https://store.strivepvp.top" + ChatColor.GRAY + ".");
                     } else if (value.equals(currentTag)) {
                         toReturn.add(ChatColor.RED + "Click to deactivate this kill tag");
                     } else {

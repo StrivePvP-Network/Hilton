@@ -18,6 +18,8 @@ public class NPCEntity {
     @Getter
     private final NPC npc;
     private final EntityPlayer dummy;
+    @Getter
+    private final java.util.Set<UUID> renderedPlayers = java.util.concurrent.ConcurrentHashMap.newKeySet();
 
     public NPCEntity(NPC npc) {
         this.npc = npc;

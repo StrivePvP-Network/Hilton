@@ -44,7 +44,8 @@ public abstract class Ability implements Listener {
                 && Foxtrot.getInstance().getMapHandler().getAbilityHandler() != null) {
             if (Foxtrot.getInstance().getCrateHandler() != null) {
                 List<String> crateNames = new ArrayList<>();
-                for (net.frozenorb.foxtrot.gameplay.loot.crate.Crate crate : Foxtrot.getInstance().getCrateHandler().getCrates()) {
+                for (net.frozenorb.foxtrot.gameplay.loot.crate.Crate crate : Foxtrot.getInstance().getCrateHandler()
+                        .getCrates()) {
                     boolean containsAbility = false;
                     for (net.frozenorb.foxtrot.gameplay.loot.crate.item.CrateItem item : crate.getItems()) {
                         if (item.getItemStack() != null && this.isSimilar(item.getItemStack())) {
@@ -59,7 +60,8 @@ public abstract class Ability implements Listener {
 
                 if (!crateNames.isEmpty()) {
                     for (String crateName : crateNames) {
-                        String categoryLore = ChatColor.translateAlternateColorCodes('&', "&fCan be found in the &e" + crateName + "&f!");
+                        String categoryLore = ChatColor.translateAlternateColorCodes('&',
+                                "&fCan be found in the &e" + crateName + "&f!");
                         boolean alreadyHas = false;
                         for (String line : finalLore) {
                             if (ChatColor.stripColor(line).equals(ChatColor.stripColor(categoryLore))) {
@@ -140,7 +142,8 @@ public abstract class Ability implements Listener {
 
         player.sendMessage("");
         player.sendMessage(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Ability Items");
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7You have activated the &f" + this.getDisplayName() + "&7!"));
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                "&7You have activated the &f" + this.getDisplayName() + "&7!"));
         if (desc != null && !desc.isEmpty()) {
             player.sendMessage(ChatColor.RED + ChatColor.translateAlternateColorCodes('&', desc));
         }
@@ -158,13 +161,15 @@ public abstract class Ability implements Listener {
     public void applyCooldown(Team team, Player target) {
         String desc = this.fullDescription != null ? this.fullDescription : this.getDescription();
 
-        team.sendMessage(ChatColor.translateAlternateColorCodes('&', target.getName() + " &chas used &f" + this.getDisplayName()
-                + " &cand put your entire team on cooldown for &l"
-                + TimeUtils.formatIntoDetailedString((int) (this.getCooldown() / 1000))));
+        team.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                target.getName() + " &chas used &f" + this.getDisplayName()
+                        + " &cand put your entire team on cooldown for &l"
+                        + TimeUtils.formatIntoDetailedString((int) (this.getCooldown() / 1000))));
 
         target.sendMessage("");
         target.sendMessage(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Ability Items");
-        target.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7You have activated the &f" + this.getDisplayName() + "&7!"));
+        target.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                "&7You have activated the &f" + this.getDisplayName() + "&7!"));
         if (desc != null && !desc.isEmpty()) {
             target.sendMessage(ChatColor.RED + ChatColor.translateAlternateColorCodes('&', desc));
         }
@@ -184,13 +189,15 @@ public abstract class Ability implements Listener {
     public void applyCooldown(Team team, Player target, long time) {
         String desc = this.fullDescription != null ? this.fullDescription : this.getDescription();
 
-        team.sendMessage(ChatColor.translateAlternateColorCodes('&', target.getName() + " &chas used &f" + this.getDisplayName()
-                + " &cand put your entire team on cooldown for &l"
-                + TimeUtils.formatIntoDetailedString((int) (time / 1000))));
+        team.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                target.getName() + " &chas used &f" + this.getDisplayName()
+                        + " &cand put your entire team on cooldown for &l"
+                        + TimeUtils.formatIntoDetailedString((int) (time / 1000))));
 
         target.sendMessage("");
         target.sendMessage(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Ability Items");
-        target.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7You have activated the &f" + this.getDisplayName() + "&7!"));
+        target.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                "&7You have activated the &f" + this.getDisplayName() + "&7!"));
         if (desc != null && !desc.isEmpty()) {
             target.sendMessage(ChatColor.RED + ChatColor.translateAlternateColorCodes('&', desc));
         }
@@ -218,8 +225,12 @@ public abstract class Ability implements Listener {
             long remaining = abilityHandler.getGlobalCooldowns().get(player.getUniqueId()) - System.currentTimeMillis();
             if (remaining > 0) {
                 if (sendMessage) {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou may not use any ability items for another &l"
-                            + TimeUtils.formatIntoDetailedString((int) (remaining / 1000)) + "&c."));
+                    player.sendMessage("");
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&4&lAbility Items"));
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                            "&7You cannot use any ability items for another &b"
+                                    + String.format("%.1f", (double) remaining / 1000.0) + "s&7."));
+                    player.sendMessage("");
                 }
                 return true;
             } else {
@@ -256,5 +267,25 @@ public abstract class Ability implements Listener {
 
     public Boolean DTR(Location location) {
         return isAllowedAtLocation(location);
+    }
+
+    private final List<String> metadata = new ArrayList<>();
+
+    public List<String> getMetadata() {
+        return this.metadata;
+    }
+
+    public boolean hasMetadata(String tag) {
+        return this.metadata.stream().anyMatch(tag::equalsIgnoreCase);
+    }
+
+    public void addMetadata(String tag) {
+        if (!hasMetadata(tag)) {
+            this.metadata.add(tag.toUpperCase());
+        }
+    }
+
+    public void removeMetadata(String tag) {
+        this.metadata.removeIf(t -> t.equalsIgnoreCase(tag));
     }
 }

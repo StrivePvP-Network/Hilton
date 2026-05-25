@@ -272,7 +272,8 @@ public class KOTH implements Event {
 
             if (capper == null || !onCap(capper.getLocation()) || capper.isDead()
                     || capper.getGameMode() == GameMode.CREATIVE || ModHandler.INSTANCE.isInVanish(capper.getUniqueId())
-                    || Foxtrot.getInstance().getPvPTimerMap().hasTimer(capper.getUniqueId())) {
+                    || Foxtrot.getInstance().getPvPTimerMap().hasTimer(capper.getUniqueId())
+                    || (Foxtrot.getInstance().getTeamHandler().getTeam(capper) != null && Foxtrot.getInstance().getTeamHandler().getTeam(capper).getStrikes() >= 3)) {
                 resetCapTime();
             } else if (Foxtrot.getInstance().getTeamHandler().getTeam(capper) == null && isMini()) {
                 capper.sendMessage(ChatColor.RED + "You must be in a faction to capture a Mini KOTH!");
@@ -311,6 +312,13 @@ public class KOTH implements Event {
 
             for (Player player : Foxtrot.getInstance().getServer().getOnlinePlayers()) {
                 if (onCap(player.getLocation())) {
+                    Team team = Foxtrot.getInstance().getTeamHandler().getTeam(player);
+                    if (team != null && team.getStrikes() >= 3) {
+                        if (player.getTicksLived() % 100 == 0) {
+                            player.sendMessage(ChatColor.RED + "Your faction has been disqualified from KOTHs due to 3 or more strikes!");
+                        }
+                        continue;
+                    }
                     if (Foxtrot.getInstance().getBattlePassHandler() != null) {
                         Foxtrot.getInstance().getBattlePassHandler().useProgress(player.getUniqueId(), progress -> {
                             progress.setAttemptCaptureKoth(true);
@@ -319,6 +327,11 @@ public class KOTH implements Event {
                             Foxtrot.getInstance().getBattlePassHandler().checkCompletionsAsync(player);
                         });
                     }
+                }
+
+                Team team = Foxtrot.getInstance().getTeamHandler().getTeam(player);
+                if (team != null && team.getStrikes() >= 3) {
+                    continue;
                 }
 
                 if (onCap(player.getLocation()) && !player.isDead() && player.getGameMode() == GameMode.SURVIVAL

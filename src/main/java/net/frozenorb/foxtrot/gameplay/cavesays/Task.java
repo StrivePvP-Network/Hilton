@@ -70,7 +70,7 @@ public abstract class Task implements Listener {
 
         if (winner == null) {
             instance.getServer().broadcastMessage("");
-            instance.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4&lCave Says"));
+            instance.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4&lStrive Says"));
             instance.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', getTaskDisplayName() + " &7has been forcefully cancelled."));
             instance.getServer().broadcastMessage("");
             return;
@@ -81,7 +81,7 @@ public abstract class Task implements Listener {
         instance.getServer().dispatchCommand(instance.getServer().getConsoleSender(), "airdrops give " + winner.getName() + " " + this.airdrops);
 
         instance.getServer().broadcastMessage("");
-        instance.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4&lCave Says"));
+        instance.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4&lStrive Says"));
         instance.getServer().broadcastMessage("");
         instance.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', winner.getDisplayName() + " &7has completed the task first and received &b&l" + this.airdrops + "x Airdrops&7."));
         instance.getServer().broadcastMessage("");

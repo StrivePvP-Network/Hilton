@@ -135,6 +135,8 @@ public class FoxtrotScoreGetter implements ScoreGetter {
             scores.add("&4&lDeaths&7: &f" + (stats != null ? stats.getDeaths() : 0));
             if (ownerTeam != null) {
                 scores.add("&4&lClaim&7: &f" + ownerTeam.getName(player));
+            } else if (Foxtrot.getInstance().getServerHandler().isWarzone(player.getLocation())) {
+                scores.add("&4&lClaim&7: &cWarzone");
             } else {
                 scores.add("&4&lClaim&7: &7Wilderness");
             }
@@ -149,6 +151,8 @@ public class FoxtrotScoreGetter implements ScoreGetter {
             Team ownerTeam = LandBoard.getInstance().getTeam(player.getLocation());
             if (ownerTeam != null) {
                 scores.add("&4&lClaim&7: &f" + ownerTeam.getName(player));
+            } else if (Foxtrot.getInstance().getServerHandler().isWarzone(player.getLocation())) {
+                scores.add("&4&lClaim&7: &cWarzone");
             } else {
                 scores.add("&4&lClaim&7: &7Wilderness");
             }
@@ -237,12 +241,23 @@ public class FoxtrotScoreGetter implements ScoreGetter {
         }
 
         if (abilityScore != null) {
-            scores.add("&d&lAbility Item&7: &c" + abilityScore);
+            scores.add("&4&lAbility Cooldown&7: &b" + abilityScore);
+        }
+
+        if (player.hasMetadata("treasure_c1")) {
+            Location c1 = (Location) player.getMetadata("treasure_c1").get(0).value();
+            scores.add("&4&lTB Corner 1&7: &b" + c1.getBlockX() + ", " + c1.getBlockZ());
+        }
+        if (player.hasMetadata("treasure_c2")) {
+            Location c2 = (Location) player.getMetadata("treasure_c2").get(0).value();
+            scores.add("&4&lTB Corner 2&7: &b" + c2.getBlockX() + ", " + c2.getBlockZ());
         }
 
         if (Foxtrot.getInstance().getNetworkBoosterHandler().isFrenzy()) {
             scores.add("&b&lFrenzy Booster&7: &c" + getBooster);
         }
+
+
 
         final Iterator<Map.Entry<String, Long>> iterator = CustomTimerCreateCommand.getCustomTimers().entrySet()
                 .iterator();
@@ -332,9 +347,7 @@ public class FoxtrotScoreGetter implements ScoreGetter {
                     + (votePartyHandler.getVotePartyRequirement() - votePartyHandler.getCurrentVotes()) + " away"));
         }
 
-        if (this.getAbilityCooldownsScore(player) != null) {
-            scores.addAll(this.getAbilityCooldownsScore(player));
-        }
+        // Individual ability cooldown lines disabled to show only single Global Cooldown timer
 
         if (AntiBlockup.cache.containsKey(player.getUniqueId())) {
             if (AntiBlockup.cache.get(player.getUniqueId()) < System.currentTimeMillis()) {
@@ -615,7 +628,15 @@ public class FoxtrotScoreGetter implements ScoreGetter {
         if (!scores.isEmpty()) {
             // 'Top' and bottom.
             scores.addFirst("&a&7&m--------------------");
-            scores.add("&b&7&m--------------------");
+
+            net.frozenorb.foxtrot.gameplay.abilitytrader.AbilityTraderHandler traderHandler = Foxtrot.getInstance().getMapHandler().getAbilityTraderHandler();
+            if (traderHandler != null && traderHandler.getActiveNPC() != null && traderHandler.getActiveNPC().isValid()) {
+                scores.add("&b&7&m--------------------");
+                org.bukkit.entity.Villager npc = traderHandler.getActiveNPC();
+                scores.add("&2&lTrader&7: &b" + (int) npc.getHealth() + " &c❤");
+                scores.add("&2&lLocation&7: &b" + npc.getLocation().getBlockX() + ", " + npc.getLocation().getBlockZ());
+            }
+            scores.add("&c&7&m--------------------");
         }
         return new String[0];
     }

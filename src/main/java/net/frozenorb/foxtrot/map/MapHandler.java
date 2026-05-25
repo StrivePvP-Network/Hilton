@@ -23,6 +23,8 @@ import net.frozenorb.foxtrot.scoreboard.FoxtrotScoreboardConfiguration;
 import net.frozenorb.foxtrot.server.ServerHandler;
 import net.frozenorb.foxtrot.server.deathban.Deathban;
 import net.frozenorb.foxtrot.team.track.TeamActionTracker;
+import net.frozenorb.foxtrot.gameplay.treasurebeach.TreasureBeachHandler;
+import net.frozenorb.foxtrot.gameplay.abilitytrader.AbilityTraderHandler;
 import net.minecraft.util.org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -115,12 +117,18 @@ public class MapHandler {
     private KitManager kitManager;
     @Getter
     private KitUpgradesHandler kitUpgradesHandler;
+    @Getter
+    private TreasureBeachHandler treasureBeachHandler;
+    @Getter
+    private AbilityTraderHandler abilityTraderHandler;
 
     public MapHandler() {
     }
 
     public void load() {
         reloadConfig();
+        this.treasureBeachHandler = new TreasureBeachHandler();
+        this.abilityTraderHandler = new AbilityTraderHandler();
 
         Proton.getInstance().getNameTagHandler().registerProvider(new FoxtrotNametagProvider());
         Proton.getInstance().getScoreboardHandler().setConfiguration(FoxtrotScoreboardConfiguration.create());

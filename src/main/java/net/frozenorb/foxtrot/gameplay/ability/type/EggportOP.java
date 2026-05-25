@@ -39,7 +39,7 @@ public class EggportOP extends Ability {
 
     @Override
     public Material getMaterial() {
-        return Material.SNOW_BALL;
+        return Material.EGG;
     }
 
     @Override

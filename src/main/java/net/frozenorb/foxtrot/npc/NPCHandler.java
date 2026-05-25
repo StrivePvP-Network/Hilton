@@ -164,35 +164,47 @@ public class NPCHandler implements Listener {
     private void tick() {
         for (NPCEntity renderer : renderers.values()) {
             NPC npc = renderer.getNpc();
-
-            if (!npc.isLookAtPlayer()) {
-                continue;
-            }
-
             Location npcLoc = npc.getLocation();
 
             for (Player player : Bukkit.getOnlinePlayers()) {
                 Location playerLoc = player.getLocation();
 
                 if (!npcLoc.getWorld().equals(playerLoc.getWorld())) {
-                    renderer.updateRotation(player, npcLoc.getYaw(), npcLoc.getPitch());
+                    if (renderer.getRenderedPlayers().contains(player.getUniqueId())) {
+                        renderer.destroy(player);
+                        renderer.getRenderedPlayers().remove(player.getUniqueId());
+                    }
                     continue;
                 }
 
                 double distSq = npcLoc.distanceSquared(playerLoc);
 
-                if (distSq < 64) {
-                    Vector direction = playerLoc.toVector().add(new Vector(0, 1.5, 0))
-                            .subtract(npcLoc.toVector().add(new Vector(0, 1.62, 0))).normalize();
-                    double x = direction.getX();
-                    double z = direction.getZ();
+                if (distSq < 48 * 48) {
+                    if (!renderer.getRenderedPlayers().contains(player.getUniqueId())) {
+                        renderer.spawn(player);
+                        renderer.getRenderedPlayers().add(player.getUniqueId());
+                    }
+                } else if (distSq > 56 * 56) {
+                    if (renderer.getRenderedPlayers().contains(player.getUniqueId())) {
+                        renderer.destroy(player);
+                        renderer.getRenderedPlayers().remove(player.getUniqueId());
+                    }
+                }
 
-                    float yaw = (float) Math.toDegrees(Math.atan2(-x, z));
-                    float pitch = (float) Math.toDegrees(Math.asin(-direction.getY()));
+                if (npc.isLookAtPlayer() && renderer.getRenderedPlayers().contains(player.getUniqueId())) {
+                    if (distSq < 64) {
+                        Vector direction = playerLoc.toVector().add(new Vector(0, 1.5, 0))
+                                .subtract(npcLoc.toVector().add(new Vector(0, 1.62, 0))).normalize();
+                        double x = direction.getX();
+                        double z = direction.getZ();
 
-                    renderer.updateRotation(player, yaw, pitch);
-                } else {
-                    renderer.updateRotation(player, npcLoc.getYaw(), npcLoc.getPitch());
+                        float yaw = (float) Math.toDegrees(Math.atan2(-x, z));
+                        float pitch = (float) Math.toDegrees(Math.asin(-direction.getY()));
+
+                        renderer.updateRotation(player, yaw, pitch);
+                    } else {
+                        renderer.updateRotation(player, npcLoc.getYaw(), npcLoc.getPitch());
+                    }
                 }
             }
         }
@@ -201,16 +213,21 @@ public class NPCHandler implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         for (NPCEntity renderer : renderers.values()) {
-            renderer.spawn(event.getPlayer());
+            renderer.getRenderedPlayers().remove(event.getPlayer().getUniqueId());
+        }
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        for (NPCEntity renderer : renderers.values()) {
+            renderer.getRenderedPlayers().remove(event.getPlayer().getUniqueId());
         }
     }
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
-        Bukkit.getScheduler().runTaskLater(Foxtrot.getInstance(), () -> {
-            for (NPCEntity renderer : renderers.values()) {
-                renderer.spawn(event.getPlayer());
-            }
-        }, 20L);
+        for (NPCEntity renderer : renderers.values()) {
+            renderer.getRenderedPlayers().remove(event.getPlayer().getUniqueId());
+        }
     }
 }

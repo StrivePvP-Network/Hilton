@@ -9,7 +9,7 @@ import java.util.UUID;
 public class KillTheKingCommand {
     public static UUID king = null;
 
-    @Command(names = {"ktk", "killtheking"}, permission = "op")
+    @Command(names = { "ktk", "killtheking" }, permission = "command.ktk")
     public static void execute(Player player) {
         if (king != null) {
             king = null;
@@ -19,6 +19,6 @@ public class KillTheKingCommand {
 
         king = player.getUniqueId();
 
-        player.sendMessage(ChatColor.RED + "Set yourself as the king!");
+        player.sendMessage(ChatColor.GREEN + "Set yourself as the king!");
     }
 }

@@ -55,87 +55,177 @@ import java.util.concurrent.TimeUnit;
 public class Team {
 
     public static final DecimalFormat DTR_FORMAT = new DecimalFormat("0.00");
-    public static final String GRAY_LINE = ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + StringUtils.repeat("-", 53);
-    public static final String DARK_GRAY_LINE = ChatColor.DARK_GRAY.toString() + ChatColor.STRIKETHROUGH + StringUtils.repeat("-", 53);
+    public static final String GRAY_LINE = ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH
+            + StringUtils.repeat("-", 53);
+    public static final String DARK_GRAY_LINE = ChatColor.DARK_GRAY.toString() + ChatColor.STRIKETHROUGH
+            + StringUtils.repeat("-", 53);
     public static final ChatColor ALLY_COLOR = ChatColor.BLUE;
     public static final int MAX_CLAIMS = 2;
     public static final int MAX_FORCE_INVITES = 5;
-    @Getter @Setter private Waypoint homeWaypoint;
-    @Getter @Setter private Waypoint focusWaypoint;
-    @Getter @Setter private Waypoint rallyWaypoint;
+    @Getter
+    @Setter
+    private Waypoint homeWaypoint;
+    @Getter
+    @Setter
+    private Waypoint focusWaypoint;
+    @Getter
+    @Setter
+    private Waypoint rallyWaypoint;
 
     // Internal //
-    @Getter private boolean needsSave = false;
-    @Getter private boolean loading = false;
+    @Getter
+    private boolean needsSave = false;
+    @Getter
+    private boolean loading = false;
 
     // Persisted //
-    @Getter @Setter private ObjectId uniqueId;
-    @Getter private String name;
-    @Getter private Location HQ;
-    @Getter @Setter private ObjectId raidStealTeam;
-    @Getter private double balance;
-    @Getter private int baseTokens;
-    @Getter private int fallTrapTokens;
-    @Getter private double DTR = 5.05;
-    @Getter @Setter private double maxDTR = 5.05;
-    @Getter @Setter private int trapDoors;
-    @Getter private long DTRCooldown;
-    @Getter private List<Claim> claims = new ArrayList<>();
-    @Getter private List<Subclaim> subclaims = new ArrayList<>();
-    @Getter private UUID owner = null;
-    @Getter private Set<UUID> members = new HashSet<>();
-    @Getter private Set<UUID> captains = new HashSet<>();
-    @Getter private Set<UUID> coleaders = new HashSet<>();
-    @Getter private Set<UUID> invitations = new HashSet<>();
-    @Getter private Map<UUID, Role> roster = new HashMap<>();
-    @Getter private Set<ObjectId> allies = new HashSet<>();
-    @Getter private Set<ObjectId> requestedAllies = new HashSet<>();
-    @Getter private List<PotionEffectType> purchasedEffects = new ArrayList<>();
-    @Getter private List<UpgradeType> purchasedUpgrades = new ArrayList<>();
-    @Getter private String announcement;
-    @Getter private int maxOnline = -1;
-    @Getter private boolean powerFaction = false;
-    @Getter private int lives = 0;
-    @Getter private int kills = 0;
-    @Getter @Setter private int addedGems = 0;
-    @Getter private int removedGems = 0;
-    @Getter private int kothCaptures = 0;
-    @Getter private int miniKothCaptures = 0;
-    @Getter private int furysCaptured = 0;
-    @Getter private int doublePoints = 0;
-    @Getter private int doubleKillPoints = 0;
-    @Getter private int addedPoints = 0;
-    @Getter @Setter private int trappingPoints = 0;
-    @Getter @Setter private int playtimeGems = 0;
-    @Getter private int points = 0;
-    @Getter @Setter private int gems = 0;
-    @Getter private int removedPoints = 0;
-    @Getter @Setter private int factionsMadeRaidable = 0;
-    @Getter private int citadelsCapped = 0;
-    @Getter private int conquestsCapped = 0;
-    @Getter private int spawnersInClaim = 0;
-    @Getter private int diamondsMined = 0;
-    @Getter private int deaths = 0;
-    @Getter private boolean claimLocked = false;
-    @Getter private boolean eotwCapped = false;
-    @Getter @Setter private Location rallyPoint = null;
+    @Getter
+    @Setter
+    private ObjectId uniqueId;
+    @Getter
+    private String name;
+    @Getter
+    private Location HQ;
+    @Getter
+    @Setter
+    private ObjectId raidStealTeam;
+    @Getter
+    private double balance;
+    @Getter
+    private int baseTokens;
+    @Getter
+    private int fallTrapTokens;
+    @Getter
+    private double DTR = 5.05;
+    @Getter
+    @Setter
+    private double maxDTR = 5.05;
+    @Getter
+    @Setter
+    private int trapDoors;
+    @Getter
+    private long DTRCooldown;
+    @Getter
+    private List<Claim> claims = new ArrayList<>();
+    @Getter
+    private List<Subclaim> subclaims = new ArrayList<>();
+    @Getter
+    private UUID owner = null;
+    @Getter
+    private Set<UUID> members = new HashSet<>();
+    @Getter
+    private Set<UUID> captains = new HashSet<>();
+    @Getter
+    private Set<UUID> coleaders = new HashSet<>();
+    @Getter
+    private Set<UUID> invitations = new HashSet<>();
+    @Getter
+    private Map<UUID, Role> roster = new HashMap<>();
+    @Getter
+    private Set<ObjectId> allies = new HashSet<>();
+    @Getter
+    private Set<ObjectId> requestedAllies = new HashSet<>();
+    @Getter
+    private List<PotionEffectType> purchasedEffects = new ArrayList<>();
+    @Getter
+    private List<UpgradeType> purchasedUpgrades = new ArrayList<>();
+    @Getter
+    private String announcement;
+    @Getter
+    private int maxOnline = -1;
+    @Getter
+    private boolean powerFaction = false;
+    @Getter
+    private int lives = 0;
+    @Getter
+    private int kills = 0;
+    @Getter
+    @Setter
+    private int addedGems = 0;
+    @Getter
+    private int removedGems = 0;
+    @Getter
+    private int kothCaptures = 0;
+    @Getter
+    private int miniKothCaptures = 0;
+    @Getter
+    private int furysCaptured = 0;
+    @Getter
+    private int doublePoints = 0;
+    @Getter
+    private int doubleKillPoints = 0;
+    @Getter
+    private int addedPoints = 0;
+    @Getter
+    @Setter
+    private int trappingPoints = 0;
+    @Getter
+    @Setter
+    private int playtimeGems = 0;
+    @Getter
+    private int points = 0;
+    @Getter
+    @Setter
+    private int gems = 0;
+    @Getter
+    private int removedPoints = 0;
+    @Getter
+    @Setter
+    private int factionsMadeRaidable = 0;
+    @Getter
+    private int citadelsCapped = 0;
+    @Getter
+    private int conquestsCapped = 0;
+    @Getter
+    private int spawnersInClaim = 0;
+    @Getter
+    private int diamondsMined = 0;
+    @Getter
+    private int deaths = 0;
+    @Getter
+    private boolean claimLocked = false;
+    @Getter
+    private boolean eotwCapped = false;
+    @Getter
+    @Setter
+    private Location rallyPoint = null;
+    @Getter
+    @Setter
+    private int strikes = 0;
+    @Getter
+    private String[] vaults = new String[] { "", "", "", "", "" };
 
     public void setRally(Location location) {
 
     }
 
-    @Getter private int forceInvites = MAX_FORCE_INVITES;
-    @Getter private Set<UUID> historicalMembers = new HashSet<>(); // this will store all players that were once members
+    @Getter
+    private int forceInvites = MAX_FORCE_INVITES;
+    @Getter
+    private Set<UUID> historicalMembers = new HashSet<>();
 
-    // Not persisted //
-    @Getter @Setter private UUID focused;
-    @Getter @Setter private Team focusedTeam;
-    @Getter @Setter private long lastRequestReport;
-    @Getter @Setter private Player rallyPlayer;
-    
-    @Getter @Setter private int bards;
-    @Getter @Setter private int archers;
-    @Getter @Setter private int rogues;
+    @Getter
+    @Setter
+    private UUID focused;
+    @Getter
+    @Setter
+    private Team focusedTeam;
+    @Getter
+    @Setter
+    private long lastRequestReport;
+    @Getter
+    @Setter
+    private Player rallyPlayer;
+
+    @Getter
+    @Setter
+    private int bards;
+    @Getter
+    @Setter
+    private int archers;
+    @Getter
+    @Setter
+    private int rogues;
 
     public Team(String name) {
         this.name = name;
@@ -144,7 +234,8 @@ public class Team {
     }
 
     public int getDeathsTilRaidable() {
-        return (int) Math.ceil(getDTR() / Foxtrot.getInstance().getServerHandler().getDTRLoss((org.bukkit.Location) null));
+        return (int) Math
+                .ceil(getDTR() / Foxtrot.getInstance().getServerHandler().getDTRLoss((org.bukkit.Location) null));
     }
 
     public void setDTR(double newDTR) {
@@ -161,14 +252,17 @@ public class Team {
         }
 
         if (0 < DTR && newDTR <= 0) {
-            TeamActionTracker.logActionAsync(this, TeamActionType.TEAM_NOW_RAIDABLE, actor == null ? ImmutableMap.of() : ImmutableMap.of("actor", actor.getName()));
+            TeamActionTracker.logActionAsync(this, TeamActionType.TEAM_NOW_RAIDABLE,
+                    actor == null ? ImmutableMap.of() : ImmutableMap.of("actor", actor.getName()));
         }
 
         if (!isLoading()) {
             if (actor != null) {
-                Foxtrot.getInstance().getLogger().info("[DTR Change] " + getName() + ": " + DTR + ChatColor.STRIKETHROUGH + "--" + ">" + newDTR + ". Actor: " + actor.getName());
+                Foxtrot.getInstance().getLogger().info("[DTR Change] " + getName() + ": " + DTR
+                        + ChatColor.STRIKETHROUGH + "--" + ">" + newDTR + ". Actor: " + actor.getName());
             } else {
-                Foxtrot.getInstance().getLogger().info("[DTR Change] " + getName() + ": " + DTR + ChatColor.STRIKETHROUGH + "--" + ">" + newDTR);
+                Foxtrot.getInstance().getLogger()
+                        .info("[DTR Change] " + getName() + ": " + DTR + ChatColor.STRIKETHROUGH + "--" + ">" + newDTR);
             }
         }
 
@@ -226,7 +320,8 @@ public class Team {
                         return (ChatColor.GREEN + "The End Safezone");
                 }
 
-                if (player.getWorld().getName().equalsIgnoreCase("world") && !Foxtrot.getInstance().getMapHandler().isKitMap()) {
+                if (player.getWorld().getName().equalsIgnoreCase("world")
+                        && !Foxtrot.getInstance().getMapHandler().isKitMap()) {
                     return ChatColor.GREEN + "Safe-Zone";
                 }
 
@@ -258,8 +353,6 @@ public class Team {
             return (Team.ALLY_COLOR + getName());
         }
 
-
-
         final Team targetTeam = Foxtrot.getInstance().getTeamHandler().getTeam(player);
 
         if (targetTeam != null && targetTeam.getFocusedTeam() == this) {
@@ -273,10 +366,10 @@ public class Team {
         if (members.add(member)) {
             historicalMembers.add(member);
 
-            if (this.loading) return;
+            if (this.loading)
+                return;
             TeamActionTracker.logActionAsync(this, TeamActionType.PLAYER_JOINED, ImmutableMap.of(
-                    "playerId", member
-            ));
+                    "playerId", member));
 
             flagForSave();
         }
@@ -285,8 +378,7 @@ public class Team {
     public void addCaptain(UUID captain) {
         if (captains.add(captain) && !this.isLoading()) {
             TeamActionTracker.logActionAsync(this, TeamActionType.PROMOTED_TO_CAPTAIN, ImmutableMap.of(
-                    "playerId", captain
-            ));
+                    "playerId", captain));
 
             flagForSave();
         }
@@ -295,8 +387,7 @@ public class Team {
     public void addCoLeader(UUID co) {
         if (coleaders.add(co) && !this.isLoading()) {
             TeamActionTracker.logActionAsync(this, TeamActionType.PROMOTED_TO_CO_LEADER, ImmutableMap.of(
-                    "playerId", co
-            ));
+                    "playerId", co));
 
             flagForSave();
         }
@@ -325,8 +416,7 @@ public class Team {
     public void removeCaptain(UUID captain) {
         if (captains.remove(captain)) {
             TeamActionTracker.logActionAsync(this, TeamActionType.DEMOTED_FROM_CAPTAIN, ImmutableMap.of(
-                    "playerId", captain
-            ));
+                    "playerId", captain));
 
             flagForSave();
         }
@@ -335,8 +425,7 @@ public class Team {
     public void removeCoLeader(UUID co) {
         if (coleaders.remove(co)) {
             TeamActionTracker.logActionAsync(this, TeamActionType.DEMOTED_FROM_CO_LEADER, ImmutableMap.of(
-                    "playerId", co
-            ));
+                    "playerId", co));
 
             flagForSave();
         }
@@ -351,12 +440,12 @@ public class Team {
             captains.remove(owner);
         }
 
-        if (this.loading) return;
+        if (this.loading)
+            return;
 
         if (owner != null) {
             TeamActionTracker.logActionAsync(this, TeamActionType.LEADER_CHANGED, ImmutableMap.of(
-                    "playerId", owner
-            ));
+                    "playerId", owner));
         }
 
         flagForSave();
@@ -370,59 +459,60 @@ public class Team {
     public void setAnnouncement(String announcement) {
         this.announcement = announcement;
 
-        if (this.loading) return;
+        if (this.loading)
+            return;
         TeamActionTracker.logActionAsync(this, TeamActionType.ANNOUNCEMENT_CHANGED, ImmutableMap.of(
-                "newAnnouncement", announcement
-        ));
+                "newAnnouncement", announcement));
 
         flagForSave();
     }
 
     public void setHQ(Location hq) {
-        String oldHQ = this.HQ == null ? "None" : (getHQ().getBlockX() + ", " + getHQ().getBlockY() + ", " + getHQ().getBlockZ());
+        String oldHQ = this.HQ == null ? "None"
+                : (getHQ().getBlockX() + ", " + getHQ().getBlockY() + ", " + getHQ().getBlockZ());
         String newHQ = hq == null ? "None" : (hq.getBlockX() + ", " + hq.getBlockY() + ", " + hq.getBlockZ());
         this.HQ = hq;
 
-        if (this.loading) return;
+        if (this.loading)
+            return;
         TeamActionTracker.logActionAsync(this, TeamActionType.HEADQUARTERS_CHANGED, ImmutableMap.of(
                 "oldHq", oldHQ,
-                "newHq", newHQ
-        ));
+                "newHq", newHQ));
 
         flagForSave();
     }
 
-    public void setPowerFaction( boolean bool ) {
+    public void setPowerFaction(boolean bool) {
         this.powerFaction = bool;
-        if( bool ) {
+        if (bool) {
             TeamHandler.addPowerFaction(this);
         } else {
             TeamHandler.removePowerFaction(this);
         }
 
-        if (this.loading) return;
+        if (this.loading)
+            return;
         TeamActionTracker.logActionAsync(this, TeamActionType.POWER_FAC_STATUS_CHANGED, ImmutableMap.of(
-                "powerFaction", bool
-        ));
+                "powerFaction", bool));
 
         flagForSave();
     }
 
-    public void setLives( int lives ) {
+    public void setLives(int lives) {
         this.lives = lives;
         flagForSave();
     }
 
-    public void addLives( int lives ) {
-        if( lives < 0 ) {
+    public void addLives(int lives) {
+        if (lives < 0) {
             return;
         }
         this.lives += lives;
         flagForSave();
     }
 
-    public void removeLives( int lives ) {
-        if( this.lives < lives || lives < 0) {
+    public void removeLives(int lives) {
+        if (this.lives < lives || lives < 0) {
             return;
         }
         this.lives -= lives;
@@ -439,8 +529,10 @@ public class Team {
                 }
 
                 Foxtrot.getInstance().getEconomyHandler().deposit(owner, refund);
-                Foxtrot.getInstance().getWrappedBalanceMap().setBalance(owner, Foxtrot.getInstance().getEconomyHandler().getBalance(owner));
-                Foxtrot.getInstance().getLogger().info("Economy Logger: Depositing " + refund + " into " + UUIDUtils.name(owner) + "'s account: Disbanded team");
+                Foxtrot.getInstance().getWrappedBalanceMap().setBalance(owner,
+                        Foxtrot.getInstance().getEconomyHandler().getBalance(owner));
+                Foxtrot.getInstance().getLogger().info("Economy Logger: Depositing " + refund + " into "
+                        + UUIDUtils.name(owner) + "'s account: Disbanded team");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -458,7 +550,8 @@ public class Team {
             Foxtrot.getInstance().getChatModeMap().setChatMode(uuid, ChatMode.PUBLIC);
         }
 
-        Foxtrot.getInstance().getTeamHandler().getTeams().stream().filter(it -> it.getFocusedTeam() == this).forEach(it -> it.setFocusedTeam(null));
+        Foxtrot.getInstance().getTeamHandler().getTeams().stream().filter(it -> it.getFocusedTeam() == this)
+                .forEach(it -> it.setFocusedTeam(null));
         Foxtrot.getInstance().getTeamHandler().removeTeam(this);
         LandBoard.getInstance().clear(this);
 
@@ -470,7 +563,8 @@ public class Team {
                     return (null);
                 });
 
-                DBCollection teamsCollection = Foxtrot.getInstance().getMongoPool().getDB(Foxtrot.MONGO_DB_NAME).getCollection("Teams");
+                DBCollection teamsCollection = Foxtrot.getInstance().getMongoPool().getDB(Foxtrot.MONGO_DB_NAME)
+                        .getCollection("Teams");
                 teamsCollection.remove(getJSONIdentifier());
             }
 
@@ -513,8 +607,10 @@ public class Team {
             return (null);
         });
 
-        // We don't need to do anything here as all we're doing is changing the name, not the Unique ID (which is what Mongo uses)
-        // therefore, Mongo will be notified of this once the 'flagForSave()' down below gets processed.
+        // We don't need to do anything here as all we're doing is changing the name,
+        // not the Unique ID (which is what Mongo uses)
+        // therefore, Mongo will be notified of this once the 'flagForSave()' down below
+        // gets processed.
 
         for (Claim claim : getClaims()) {
             claim.setName(claim.getName().replaceAll(oldName, newName));
@@ -537,14 +633,14 @@ public class Team {
 
         this.flagForSave();
     }
-    
+
     public void setDeaths(int deaths) {
         this.deaths = deaths;
         this.recalculatePoints();
         this.recalculateGems();
         this.flagForSave();
     }
-    
+
     public void setKothCaptures(int kothCaptures) {
         this.kothCaptures = kothCaptures;
         this.recalculateGems();
@@ -668,48 +764,42 @@ public class Team {
     }
 
     public void recalculateSpawnersInClaims() {
-//        new BukkitRunnable() {
-//            @Override
-//            public void run() {
-//                setSpawnersInClaim(findSpawners().size());
-//            }
-//        }.runTaskAsynchronously(Foxtrot.getInstance());
+        // new BukkitRunnable() {
+        // @Override
+        // public void run() {
+        // setSpawnersInClaim(findSpawners().size());
+        // }
+        // }.runTaskAsynchronously(Foxtrot.getInstance());
     }
 
     public List<CreatureSpawner> findSpawners() {
         List<CreatureSpawner> list = new ArrayList<>();
 
         // Iterate through chunks' tile entities rather than every block
-//        for (Claim claim : getClaims()) {
-//            final World world = Bukkit.getWorld(claim.getWorld());
-//            final Location minPoint = claim.getMinimumPoint();
-//            final Location maxPoint = claim.getMaximumPoint();
-//            final int minChunkX = ((int) minPoint.getX()) >> 4;
-//            final int minChunkZ = ((int) minPoint.getZ()) >> 4;
-//            final int maxChunkX = ((int) maxPoint.getX()) >> 4;
-//            final int maxChunkZ = ((int) maxPoint.getZ()) >> 4;
-//
-//            for (int chunkX = minChunkX; chunkX < maxChunkX + 1; chunkX++) {
-//                for (int chunkZ = minChunkZ; chunkZ < maxChunkZ + 1; chunkZ++) {
-//                    Chunk chunk = world.getChunkAt(chunkX, chunkZ);
-//
-//                    for (BlockState blockState : chunk.getTileEntities()) {
-//                        // Check if the block is a mob spawner
-//                        if (blockState instanceof CreatureSpawner) {
-//                            // Even though we're iterating through chunks' tile entities
-//                            // we need to make sure that the block's location is within
-//                            // the claim (because claims don't have to align with chunks)
-//                            final Location loc = blockState.getLocation();
-//
-//                            if (loc.getX() >= minPoint.getX() && loc.getZ() >= minPoint.getZ() &&
-//                                    loc.getX() <= maxPoint.getX() && loc.getZ() <= maxPoint.getZ()) {
-//                                list.add((CreatureSpawner) blockState);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        // for (Claim claim : getClaims()) {
+        // final World world = Bukkit.getWorld(claim.getWorld());
+        // final Location minPoint = claim.getMinimumPoint();
+        // final Location maxPoint = claim.getMaximumPoint();
+        // final int minChunkX = ((int) minPoint.getX()) >> 4;
+        // final int minChunkZ = ((int) minPoint.getZ()) >> 4;
+        // final int maxChunkX = ((int) maxPoint.getX()) >> 4;
+        // final int maxChunkZ = ((int) maxPoint.getZ()) >> 4;
+        //
+        // for (int chunkX = minChunkX; chunkX < maxChunkX + 1; chunkX++) {
+        // for (int chunkZ = minChunkZ; chunkZ < maxChunkZ + 1; chunkZ++) {
+        // Chunk chunk = world.getChunkAt(chunkX, chunkZ);
+        //
+
+        //
+        // if (loc.getX() >= minPoint.getX() && loc.getZ() >= minPoint.getZ() &&
+        // loc.getX() <= maxPoint.getX() && loc.getZ() <= maxPoint.getZ()) {
+        // list.add((CreatureSpawner) blockState);
+        // }
+        // }
+        // }
+        // }
+        // }
+        // }
 
         return list;
     }
@@ -776,10 +866,10 @@ public class Team {
             DTR = getMaxDTR();
         }
 
-        if (this.loading) return false;
+        if (this.loading)
+            return false;
         TeamActionTracker.logActionAsync(this, TeamActionType.MEMBER_REMOVED, ImmutableMap.of(
-                "playerId", member
-        ));
+                "playerId", member));
 
         getOnlineMembers().forEach(LunarClientListener::updateNametag);
 
@@ -884,8 +974,7 @@ public class Team {
                 "playerName", playerName,
                 "dtrLoss", dtrLoss,
                 "oldDtr", DTR,
-                "newDtr", newDTR
-        ));
+                "newDtr", newDTR));
 
         for (Player player : Foxtrot.getInstance().getServer().getOnlinePlayers()) {
             if (isMember(player.getUniqueId())) {
@@ -895,7 +984,9 @@ public class Team {
         }
 
         if (!isRaidable() && newDTR <= 0) {
-            final TeamRaidableEvent teamRaidableEvent = new TeamRaidableEvent(Foxtrot.getInstance().getServer().getPlayer(playerName), killer, this, DTR, newDTR, UUIDUtils.uuid(playerName));
+            final TeamRaidableEvent teamRaidableEvent = new TeamRaidableEvent(
+                    Foxtrot.getInstance().getServer().getPlayer(playerName), killer, this, DTR, newDTR,
+                    UUIDUtils.uuid(playerName));
             Foxtrot.getInstance().getServer().getPluginManager().callEvent(teamRaidableEvent);
         }
 
@@ -931,24 +1022,56 @@ public class Team {
         loading = true;
         setUniqueId(obj.getObjectId("_id"));
         setOwner(obj.getString("Owner") == null ? null : UUID.fromString(obj.getString("Owner")));
-        if (obj.containsField("CoLeaders")) for (Object coLeader : (BasicDBList) obj.get("CoLeaders")) addCoLeader(UUID.fromString((String) coLeader));
-        if (obj.containsField("Captains")) for (Object captain : (BasicDBList) obj.get("Captains")) addCaptain(UUID.fromString((String) captain));
-        if (obj.containsField("Members")) for (Object member : (BasicDBList) obj.get("Members")) addMember(UUID.fromString((String) member));
-        if (obj.containsField("Invitations")) for (Object invite : (BasicDBList) obj.get("Invitations")) getInvitations().add(UUID.fromString((String) invite));
-        if (obj.containsField("DTR")) setDTR(obj.getDouble("DTR"));
-        if (obj.containsField("MaxDTR")) setMaxDTR(obj.getDouble("MaxDTR"));
-        if (obj.containsField("DTRCooldown")) setDTRCooldown(obj.getDate("DTRCooldown").getTime());
-        if (obj.containsField("Balance")) setBalance(obj.getDouble("Balance"));
-        if (obj.containsField("MaxOnline")) setMaxOnline(obj.getInt("MaxOnline"));
-        if (obj.containsField("HQ")) setHQ(LocationSerializer.deserialize((BasicDBObject) obj.get("HQ")));
-        if (obj.containsField("Announcement")) setAnnouncement(obj.getString("Announcement"));
-        if (obj.containsField("PowerFaction")) setPowerFaction(obj.getBoolean("PowerFaction"));
-        if (obj.containsField("Lives")) setLives(obj.getInt("Lives"));
-        if (obj.containsField("Claims")) for (Object claim : (BasicDBList) obj.get("Claims")) getClaims().add(Claim.fromJson((BasicDBObject) claim));
-        if (obj.containsField("Subclaims")) for (Object subclaim : (BasicDBList) obj.get("Subclaims")) getSubclaims().add(Subclaim.fromJson((BasicDBObject) subclaim));
-        if (obj.containsKey("SpawnersInClaim")) setSpawnersInClaim(obj.getInt("SpawnersInClaim"));
-        if (obj.containsField("BaseTokens")) setBaseTokens(obj.getInt("BaseTokens"));
-        if (obj.containsField("FallTrapTokens")) setFallTrapTokens(obj.getInt("FallTrapTokens"));
+        if (obj.containsField("CoLeaders"))
+            for (Object coLeader : (BasicDBList) obj.get("CoLeaders"))
+                addCoLeader(UUID.fromString((String) coLeader));
+        if (obj.containsField("Captains"))
+            for (Object captain : (BasicDBList) obj.get("Captains"))
+                addCaptain(UUID.fromString((String) captain));
+        if (obj.containsField("Members"))
+            for (Object member : (BasicDBList) obj.get("Members"))
+                addMember(UUID.fromString((String) member));
+        if (obj.containsField("Invitations"))
+            for (Object invite : (BasicDBList) obj.get("Invitations"))
+                getInvitations().add(UUID.fromString((String) invite));
+        if (obj.containsField("DTR"))
+            setDTR(obj.getDouble("DTR"));
+        if (obj.containsField("MaxDTR"))
+            setMaxDTR(obj.getDouble("MaxDTR"));
+        if (obj.containsField("DTRCooldown"))
+            setDTRCooldown(obj.getDate("DTRCooldown").getTime());
+        if (obj.containsField("Balance"))
+            setBalance(obj.getDouble("Balance"));
+        if (obj.containsField("MaxOnline"))
+            setMaxOnline(obj.getInt("MaxOnline"));
+        if (obj.containsField("HQ"))
+            setHQ(LocationSerializer.deserialize((BasicDBObject) obj.get("HQ")));
+        if (obj.containsField("Announcement"))
+            setAnnouncement(obj.getString("Announcement"));
+        if (obj.containsField("PowerFaction"))
+            setPowerFaction(obj.getBoolean("PowerFaction"));
+        if (obj.containsField("Lives"))
+            setLives(obj.getInt("Lives"));
+        if (obj.containsField("Claims"))
+            for (Object claim : (BasicDBList) obj.get("Claims"))
+                getClaims().add(Claim.fromJson((BasicDBObject) claim));
+        if (obj.containsField("Subclaims"))
+            for (Object subclaim : (BasicDBList) obj.get("Subclaims"))
+                getSubclaims().add(Subclaim.fromJson((BasicDBObject) subclaim));
+        if (obj.containsKey("SpawnersInClaim"))
+            setSpawnersInClaim(obj.getInt("SpawnersInClaim"));
+        if (obj.containsField("BaseTokens"))
+            setBaseTokens(obj.getInt("BaseTokens"));
+        if (obj.containsField("FallTrapTokens"))
+            setFallTrapTokens(obj.getInt("FallTrapTokens"));
+        if (obj.containsField("Strikes"))
+            setStrikes(obj.getInt("Strikes"));
+        if (obj.containsField("Vaults")) {
+            BasicDBList list = (BasicDBList) obj.get("Vaults");
+            for (int i = 0; i < Math.min(5, list.size()); i++) {
+                this.vaults[i] = (String) list.get(i);
+            }
+        }
 
         loading = false;
     }
@@ -982,7 +1105,7 @@ public class Team {
                         addMember(UUID.fromString(name.trim()));
                     }
                 }
-            } else if(identifier.equalsIgnoreCase("CoLeaders")) {
+            } else if (identifier.equalsIgnoreCase("CoLeaders")) {
                 for (String name : lineParts) {
                     if (name.length() >= 2) {
                         addCoLeader(UUID.fromString(name.trim()));
@@ -995,15 +1118,15 @@ public class Team {
                     }
                 }
             }
-//            else if (identifier.equalsIgnoreCase("Rosters")) {
-//                for (String name : lineParts) {
-//                    if (name.length() >= 2) {
-//                        Role role = Role.valueOf(name.split("_")[1]);
-//
-//                        getRoster().put(UUID.fromString(name.trim().replace("_" + role, "")), role);
-//                    }
-//                }
-//            }
+            // else if (identifier.equalsIgnoreCase("Rosters")) {
+            // for (String name : lineParts) {
+            // if (name.length() >= 2) {
+            // Role role = Role.valueOf(name.split("_")[1]);
+            //
+            // getRoster().put(UUID.fromString(name.trim().replace("_" + role, "")), role);
+            // }
+            // }
+            // }
             else if (identifier.equalsIgnoreCase("Invited")) {
                 for (String name : lineParts) {
                     if (name.length() >= 2) {
@@ -1067,7 +1190,8 @@ public class Team {
                     }
                 }
             } else if (identifier.equalsIgnoreCase("Allies")) {
-                // Just cancel loading of allies if they're disabled (for switching # of allowed allies mid-map)
+                // Just cancel loading of allies if they're disabled (for switching # of allowed
+                // allies mid-map)
                 if (Foxtrot.getInstance().getMapHandler().getAllyLimit() == 0) {
                     continue;
                 }
@@ -1080,7 +1204,7 @@ public class Team {
                     }
                 }
             } else if (identifier.equalsIgnoreCase("RequestedAllies")) {
-                // Just cancel loading of allies if they're disabled (for switching # of allowed allies mid-map)
+
                 if (Foxtrot.getInstance().getMapHandler().getAllyLimit() == 0) {
                     continue;
                 }
@@ -1132,9 +1256,9 @@ public class Team {
                 }
             } else if (identifier.equalsIgnoreCase("Announcement")) {
                 setAnnouncement(lineParts[0]);
-            } else if(identifier.equalsIgnoreCase("PowerFaction")) {
+            } else if (identifier.equalsIgnoreCase("PowerFaction")) {
                 setPowerFaction(Boolean.parseBoolean(lineParts[0]));
-            } else if(identifier.equalsIgnoreCase("Lives")) {
+            } else if (identifier.equalsIgnoreCase("Lives")) {
                 setLives(Integer.parseInt(lineParts[0]));
             } else if (identifier.equalsIgnoreCase("Kills")) {
                 setKills(Integer.parseInt(lineParts[0]));
@@ -1184,6 +1308,12 @@ public class Team {
                 setBaseTokens(Integer.parseInt(lineParts[0]));
             } else if (identifier.equalsIgnoreCase("FallTrapTokens")) {
                 setFallTrapTokens(Integer.parseInt(lineParts[0]));
+            } else if (identifier.equalsIgnoreCase("Strikes")) {
+                setStrikes(Integer.parseInt(lineParts[0]));
+            } else if (identifier.equalsIgnoreCase("Vaults")) {
+                for (int i = 0; i < Math.min(5, lineParts.length); i++) {
+                    this.vaults[i] = lineParts[i].trim();
+                }
             }
         }
 
@@ -1240,9 +1370,9 @@ public class Team {
             invites.append(invite.toString()).append(", ");
         }
 
-//        for (Map.Entry<UUID, Role> entry : getRoster().entrySet()) {
-//            rosters.append(entry.getKey().toString()).append("_").append(entry.getValue().name());
-//        }
+        // for (Map.Entry<UUID, Role> entry : getRoster().entrySet()) {
+        // rosters.append(entry.getKey().toString()).append("_").append(entry.getValue().name());
+        // }
 
         for (UUID member : getHistoricalMembers()) {
             historicalMembers.append(member.toString()).append(", ");
@@ -1312,9 +1442,21 @@ public class Team {
         teamString.append("EotwCapped:").append(isEotwCapped()).append("\n");
         teamString.append("FurysCapped:").append(getFurysCaptured()).append("\n");
         teamString.append("DoubleKillPoints:").append(getDoubleKillPoints()).append("\n");
+        teamString.append("Strikes:").append(getStrikes()).append("\n");
+
+        StringBuilder vaultsSb = new StringBuilder();
+        for (String vault : this.vaults) {
+            vaultsSb.append(vault.isEmpty() ? " " : vault).append(",");
+        }
+        if (vaultsSb.length() > 0) {
+            vaultsSb.setLength(vaultsSb.length() - 1);
+        }
+        teamString.append("Vaults:").append(vaultsSb.toString()).append("\n");
 
         if (getHQ() != null) {
-            teamString.append("HQ:").append(getHQ().getWorld().getName()).append(",").append(getHQ().getX()).append(",").append(getHQ().getY()).append(",").append(getHQ().getZ()).append(",").append(getHQ().getYaw()).append(",").append(getHQ().getPitch()).append('\n');
+            teamString.append("HQ:").append(getHQ().getWorld().getName()).append(",").append(getHQ().getX()).append(",")
+                    .append(getHQ().getY()).append(",").append(getHQ().getZ()).append(",").append(getHQ().getYaw())
+                    .append(",").append(getHQ().getPitch()).append('\n');
         }
 
         return (teamString.toString());
@@ -1322,7 +1464,7 @@ public class Team {
 
     public BasicDBObject toJSON() {
         BasicDBObject dbObject = new BasicDBObject();
-        
+
         dbObject.put("Owner", getOwner() == null ? null : getOwner().toString());
         dbObject.put("CoLeaders", UUIDUtils.uuidsToStrings(getColeaders()));
         dbObject.put("Captains", UUIDUtils.uuidsToStrings(getCaptains()));
@@ -1374,6 +1516,13 @@ public class Team {
         dbObject.put("SpawnersInClaim", this.spawnersInClaim);
         dbObject.put("FurysCapped", this.furysCaptured);
         dbObject.put("DoubleKillPoints", this.doubleKillPoints);
+        dbObject.put("Strikes", this.strikes);
+
+        BasicDBList vaultsList = new BasicDBList();
+        for (String vault : this.vaults) {
+            vaultsList.add(vault);
+        }
+        dbObject.put("Vaults", vaultsList);
 
         return (dbObject);
     }
@@ -1404,6 +1553,7 @@ public class Team {
     public void playSound(Sound sound) {
         this.getOnlineMembers().forEach(it -> it.playSound(it.getLocation(), sound, 1, 1));
     }
+
     public void sendTitle(String title, String subtitle) {
         for (Player player : Foxtrot.getInstance().getServer().getOnlinePlayers()) {
             if (isMember(player.getUniqueId())) {
@@ -1411,6 +1561,7 @@ public class Team {
             }
         }
     }
+
     public int recalculatePoints() {
         int basePoints = 0;
 
@@ -1470,12 +1621,15 @@ public class Team {
             basePoints = 0;
         }
 
-        return new String[]{
+        return new String[] {
                 "&a&lKill &6Points: &7(&f" + kills + " kills&7) &6x &a1pts/each &7= &f" + (kills) + " pts",
                 "&4&lDeath &6Points: &7(&f" + deaths + " deaths&7) &6x &c-1pts/each &7= &f-" + (deaths) + " pts",
-                "&9&lKOTH &6Captures Points: &7(&f" + kothCaptures + " caps&7) &6x &a10 " + "pts/each &7= &f" + (kothCaptures * 10) + " pts",
-                "&5&lCitadel &6Captures Points: &7(&f" + citadelsCapped + " caps&7) &6x &a100pts/each &7= &f" + (citadelsCapped * 100) + " pts",
-                "&9&lConquest &6Captures Points: &7(&f" + conquestsCapped + " caps&7) &6x &a125pts/each &7= &f" + (conquestsCapped * 125) + " pts",
+                "&9&lKOTH &6Captures Points: &7(&f" + kothCaptures + " caps&7) &6x &a10 " + "pts/each &7= &f"
+                        + (kothCaptures * 10) + " pts",
+                "&5&lCitadel &6Captures Points: &7(&f" + citadelsCapped + " caps&7) &6x &a100pts/each &7= &f"
+                        + (citadelsCapped * 100) + " pts",
+                "&9&lConquest &6Captures Points: &7(&f" + conquestsCapped + " caps&7) &6x &a125pts/each &7= &f"
+                        + (conquestsCapped * 125) + " pts",
                 "&2&lExtra &6Added Points: &f" + addedPoints + " pts",
                 "&d&lDouble &6Points: &f" + doublePoints + " pts",
                 "&c&lExtra &6Deleted Points: &f-" + removedPoints + " pts",
@@ -1490,20 +1644,28 @@ public class Team {
             player.sendMessage(GRAY_LINE);
             player.sendMessage(getName(player));
 
-            if ( HQ != null && HQ.getWorld().getEnvironment() != World.Environment.NORMAL) {
-                String world = HQ.getWorld().getEnvironment() == World.Environment.NETHER ? "Nether" : "End"; // if it's not the nether, it's the end
+            if (HQ != null && HQ.getWorld().getEnvironment() != World.Environment.NORMAL) {
+                String world = HQ.getWorld().getEnvironment() == World.Environment.NETHER ? "Nether" : "End"; // if it's
+                                                                                                              // not the
+                                                                                                              // nether,
+                                                                                                              // it's
+                                                                                                              // the end
 
                 if (HQ.getWorld().getName().contains("MiniKOTH")) {
                     world = "Mini KOTH";
                 }
 
-                player.sendMessage(ChatColor.YELLOW + "Location: " + ChatColor.WHITE + (HQ == null ? "None" : HQ.getBlockX() + ", " + HQ.getBlockZ() + " (" + world + ")"));
+                player.sendMessage(ChatColor.YELLOW + "Location: " + ChatColor.WHITE
+                        + (HQ == null ? "None" : HQ.getBlockX() + ", " + HQ.getBlockZ() + " (" + world + ")"));
             } else {
-                player.sendMessage(ChatColor.YELLOW + "Location: " + ChatColor.WHITE + (HQ == null ? "None" : HQ.getBlockX() + ", " + HQ.getBlockZ()));
+                player.sendMessage(ChatColor.YELLOW + "Location: " + ChatColor.WHITE
+                        + (HQ == null ? "None" : HQ.getBlockX() + ", " + HQ.getBlockZ()));
             }
 
             if (getName().equalsIgnoreCase("Glowstone")) {
-                player.sendMessage(ChatColor.YELLOW + "Next Reset: " + ChatColor.WHITE + TimeUtils.formatIntoDetailedString((int) (Foxtrot.getInstance().getGlowHandler().getResetTime()/1000)));
+                player.sendMessage(
+                        ChatColor.YELLOW + "Next Reset: " + ChatColor.WHITE + TimeUtils.formatIntoDetailedString(
+                                (int) (Foxtrot.getInstance().getGlowHandler().getResetTime() / 1000)));
             }
 
             player.sendMessage(GRAY_LINE);
@@ -1535,10 +1697,11 @@ public class Team {
             Team ally = Foxtrot.getInstance().getTeamHandler().getTeam(allyId);
 
             if (ally != null) {
-                allies.append(ally.getName(player)).append(ChatColor.YELLOW).append("[").append(ChatColor.GREEN).append(ally.getOnlineMemberAmount()).append("/").append(ally.getSize()).append(ChatColor.YELLOW).append("]").append(ChatColor.GRAY).append(", ");
+                allies.append(ally.getName(player)).append(ChatColor.YELLOW).append("[").append(ChatColor.GREEN)
+                        .append(ally.getOnlineMemberAmount()).append("/").append(ally.getSize())
+                        .append(ChatColor.YELLOW).append("]").append(ChatColor.GRAY).append(", ");
             }
         }
-
 
         for (Player onlineMember : getOnlineMembers()) {
             onlineMembers++;
@@ -1549,9 +1712,9 @@ public class Team {
             }
 
             FancyMessage appendTo = membersJson;
-            if(isCoLeader(onlineMember.getUniqueId())) {
+            if (isCoLeader(onlineMember.getUniqueId())) {
                 appendTo = coleadersJson;
-            } else if(isCaptain(onlineMember.getUniqueId())) {
+            } else if (isCaptain(onlineMember.getUniqueId())) {
                 appendTo = captainsJson;
             }
 
@@ -1570,9 +1733,9 @@ public class Team {
             }
 
             FancyMessage appendTo = membersJson;
-            if(isCoLeader(offlineMember)) {
+            if (isCoLeader(offlineMember)) {
                 appendTo = coleadersJson;
-            } else if(isCaptain(offlineMember)) {
+            } else if (isCaptain(offlineMember)) {
                 appendTo = captainsJson;
             }
 
@@ -1580,8 +1743,10 @@ public class Team {
                 appendTo.then(", ").color(ChatColor.GRAY);
             }
 
-            appendTo.then(Proton.getInstance().getUuidCache().name(offlineMember)).color(deathbanMap.isDeathbanned(offlineMember) ? ChatColor.RED : ChatColor.GRAY);
-            appendTo.then("[").color(ChatColor.YELLOW).then("" + killsMap.getKills(offlineMember)).color(ChatColor.GREEN);
+            appendTo.then(Proton.getInstance().getUuidCache().name(offlineMember))
+                    .color(deathbanMap.isDeathbanned(offlineMember) ? ChatColor.RED : ChatColor.GRAY);
+            appendTo.then("[").color(ChatColor.YELLOW).then("" + killsMap.getKills(offlineMember))
+                    .color(ChatColor.GREEN);
             appendTo.then("]").color(ChatColor.YELLOW);
 
         }
@@ -1591,9 +1756,12 @@ public class Team {
 
         FancyMessage teamLine = new FancyMessage();
 
-        teamLine.text(ChatColor.BLUE + getName()).command("/f focus " + this.getName()).tooltip(ChatColor.GREEN + "Click to focus this team!");
-        teamLine.then().text(ChatColor.GRAY + " [" + onlineMembers + "/" + getSize() + "]" + ChatColor.DARK_AQUA + " - ");
-        teamLine.then().text(ChatColor.YELLOW + "HQ: " + ChatColor.WHITE + (HQ == null ? "None" : HQ.getBlockX() + ", " + HQ.getBlockZ()));
+        teamLine.text(ChatColor.BLUE + getName()).command("/f focus " + this.getName())
+                .tooltip(ChatColor.GREEN + "Click to focus this team!");
+        teamLine.then()
+                .text(ChatColor.GRAY + " [" + onlineMembers + "/" + getSize() + "]" + ChatColor.DARK_AQUA + " - ");
+        teamLine.then().text(ChatColor.YELLOW + "HQ: " + ChatColor.WHITE
+                + (HQ == null ? "None" : HQ.getBlockX() + ", " + HQ.getBlockZ()));
 
         if (HQ != null && player.hasPermission("neutron.staff")) {
             teamLine.command("/tppos " + HQ.getBlockX() + " " + HQ.getBlockY() + " " + HQ.getBlockZ());
@@ -1601,7 +1769,8 @@ public class Team {
         }
 
         if (player.hasPermission("neutron.staff")) {
-            teamLine.then().text("§3 - §e[Manage]").color(ChatColor.YELLOW).command("/manageteam manage " + getName()).tooltip("§bClick to manage team");
+            teamLine.then().text("§3 - §e[Manage]").color(ChatColor.YELLOW).command("/manageteam manage " + getName())
+                    .tooltip("§bClick to manage team");
         }
 
         teamLine.send(player);
@@ -1611,8 +1780,12 @@ public class Team {
             player.sendMessage(ChatColor.YELLOW + "Allies: " + allies);
         }
 
-        FancyMessage leader = new FancyMessage(ChatColor.YELLOW + "Leader: " + (owner == null || ModHandler.INSTANCE.isInVanish(owner.getUniqueId()) ? (deathbanMap.isDeathbanned(getOwner()) ? ChatColor.RED : ChatColor.GRAY) : ChatColor.GREEN) + Proton.getInstance().getUuidCache().name(getOwner()) + ChatColor.YELLOW + "[" + ChatColor.GREEN + killsMap.getKills(getOwner()) + ChatColor.YELLOW + "]");
-
+        FancyMessage leader = new FancyMessage(ChatColor.YELLOW + "Leader: "
+                + (owner == null || ModHandler.INSTANCE.isInVanish(owner.getUniqueId())
+                        ? (deathbanMap.isDeathbanned(getOwner()) ? ChatColor.RED : ChatColor.GRAY)
+                        : ChatColor.GREEN)
+                + Proton.getInstance().getUuidCache().name(getOwner()) + ChatColor.YELLOW + "[" + ChatColor.GREEN
+                + killsMap.getKills(getOwner()) + ChatColor.YELLOW + "]");
 
         if (player.hasPermission("neutron.staff")) {
             leader.command("/manageteam leader " + getName()).tooltip("§bClick to change leader");
@@ -1628,13 +1801,12 @@ public class Team {
             captainsJson.send(player);
         }
 
-
         if (!ChatColor.stripColor(membersJson.toOldMessageFormat()).endsWith("s: ")) {
             membersJson.send(player);
         }
 
-
-        FancyMessage balance = new FancyMessage(ChatColor.YELLOW + "Balance: " + ChatColor.BLUE + "$" + Math.round(getBalance()));
+        FancyMessage balance = new FancyMessage(
+                ChatColor.YELLOW + "Balance: " + ChatColor.BLUE + "$" + Math.round(getBalance()));
 
         if (player.hasPermission("foxtrot.manage")) {
             balance.command("/manageteam balance " + getName()).tooltip("§bClick to modify team balance");
@@ -1642,8 +1814,10 @@ public class Team {
 
         balance.send(player);
 
-        int totalHearts = (int) Math.ceil(getMaxDTR() / Foxtrot.getInstance().getServerHandler().getDTRLoss((org.bukkit.Location) null));
-        int currentHearts = (int) Math.ceil(getDTR() / Foxtrot.getInstance().getServerHandler().getDTRLoss((org.bukkit.Location) null));
+        int totalHearts = (int) Math
+                .ceil(getMaxDTR() / Foxtrot.getInstance().getServerHandler().getDTRLoss((org.bukkit.Location) null));
+        int currentHearts = (int) Math
+                .ceil(getDTR() / Foxtrot.getInstance().getServerHandler().getDTRLoss((org.bukkit.Location) null));
 
         StringBuilder aids = new StringBuilder();
 
@@ -1675,14 +1849,15 @@ public class Team {
                 }
             }
 
-
             aids.append(ChatColor.GREEN + "❤");
         }
 
-        FancyMessage dtrMessage = new FancyMessage(ChatColor.YELLOW + "Deaths Until Raidable: " + getDTRColor() + aids + getDTRSuffix());
+        FancyMessage dtrMessage = new FancyMessage(
+                ChatColor.YELLOW + "Deaths Until Raidable: " + getDTRColor() + aids + getDTRSuffix());
 
         if (!Foxtrot.getInstance().getDTRDisplayMap().isHearts(player.getUniqueId())) {
-            dtrMessage = new FancyMessage(ChatColor.YELLOW + "DTR: " + getDTRColor() + DTR_FORMAT.format(getDTR()) + getDTRSuffix());
+            dtrMessage = new FancyMessage(
+                    ChatColor.YELLOW + "DTR: " + getDTRColor() + DTR_FORMAT.format(getDTR()) + getDTRSuffix());
         }
 
         if (player.hasPermission("foxtrot.manage")) {
@@ -1696,7 +1871,8 @@ public class Team {
                 player.sendMessage(ChatColor.YELLOW + "Gems: " + ChatColor.RED + this.recalculateGems());
             }
             if (this.factionsMadeRaidable > 0) {
-                player.sendMessage(ChatColor.YELLOW + "Factions Made Raidable: " + ChatColor.RED + this.getFactionsMadeRaidable());
+                player.sendMessage(
+                        ChatColor.YELLOW + "Factions Made Raidable: " + ChatColor.RED + this.getFactionsMadeRaidable());
             }
             if (this.trappingPoints > 0) {
                 player.sendMessage(ChatColor.YELLOW + "Trapping Points: " + ChatColor.RED + this.trappingPoints);
@@ -1721,13 +1897,19 @@ public class Team {
 
         if (DTRHandler.isOnCooldown(this)) {
             if (!player.isOp()) {
-                player.sendMessage(ChatColor.YELLOW + "DTR Regen: " + ChatColor.BLUE + TimeUtils.formatIntoDetailedString(((int) (getDTRCooldown() - System.currentTimeMillis())/1000)).trim());
+                player.sendMessage(ChatColor.YELLOW + "DTR Regen: " + ChatColor.BLUE + TimeUtils
+                        .formatIntoDetailedString(((int) (getDTRCooldown() - System.currentTimeMillis()) / 1000))
+                        .trim());
             } else {
                 FancyMessage message = new FancyMessage(ChatColor.YELLOW + "DTR Regen: ")
-                        .tooltip(ChatColor.GREEN + "Click to remove regeneration timer").command("/startdtrregen " + getName());
+                        .tooltip(ChatColor.GREEN + "Click to remove regeneration timer")
+                        .command("/startdtrregen " + getName());
 
-                message.then(TimeUtils.formatIntoDetailedString(((int) (getDTRCooldown() - System.currentTimeMillis()))/1000)).color(ChatColor.BLUE)
-                        .tooltip(ChatColor.GREEN + "Click to remove regeneration timer").command("/startdtrregen " + getName());
+                message.then(TimeUtils
+                        .formatIntoDetailedString(((int) (getDTRCooldown() - System.currentTimeMillis())) / 1000))
+                        .color(ChatColor.BLUE)
+                        .tooltip(ChatColor.GREEN + "Click to remove regeneration timer")
+                        .command("/startdtrregen " + getName());
 
                 message.send(player);
             }
@@ -1746,47 +1928,7 @@ public class Team {
         return getDTRColor().toString() + DTR_FORMAT.format(getDTR()) + getDTRSuffix();
     }
 
-    public List<TrapDoor> findTrapDoors() {
-        if (Bukkit.isPrimaryThread()) {
-            throw new RuntimeException("Cannot call Team#findSpawners on main thread");
-        }
 
-        List<TrapDoor> list = new ArrayList<>();
-
-        // Iterate through chunks' tile entities rather than every block
-        for (Claim claim : getClaims()) {
-            final World world = Bukkit.getWorld(claim.getWorld());
-            final Location minPoint = claim.getMinimumPoint();
-            final Location maxPoint = claim.getMaximumPoint();
-            final int minChunkX = ((int) minPoint.getX()) >> 4;
-            final int minChunkZ = ((int) minPoint.getZ()) >> 4;
-            final int maxChunkX = ((int) maxPoint.getX()) >> 4;
-            final int maxChunkZ = ((int) maxPoint.getZ()) >> 4;
-
-            for (int chunkX = minChunkX; chunkX < maxChunkX + 1; chunkX++) {
-                for (int chunkZ = minChunkZ; chunkZ < maxChunkZ + 1; chunkZ++) {
-                    Chunk chunk = world.getChunkAt(chunkX, chunkZ);
-
-                    for (BlockState blockState : chunk.getTileEntities()) {
-                        // Check if the block is a mob spawner
-                        if (blockState instanceof TrapDoor) {
-                            // Even though we're iterating through chunks' tile entities
-                            // we need to make sure that the block's location is within
-                            // the claim (because claims don't have to align with chunks)
-                            final Location loc = blockState.getLocation();
-
-                            if (loc.getX() >= minPoint.getX() && loc.getZ() >= minPoint.getZ() &&
-                                    loc.getX() <= maxPoint.getX() && loc.getZ() <= maxPoint.getZ()) {
-                                list.add((TrapDoor) blockState);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return list;
-    }
 
     @Override
     public int hashCode() {

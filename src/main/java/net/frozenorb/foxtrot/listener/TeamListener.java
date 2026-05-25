@@ -47,7 +47,8 @@ public class TeamListener implements Listener {
         final Team team = Foxtrot.getInstance().getTeamHandler().getTeam(event.getPlayer());
 
         if (team != null && team.getMaxOnline() > 0 && team.getOnlineMemberAmount() >= team.getMaxOnline()) {
-            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.YELLOW + "Your team currently has too many players logged in. Try again later!");
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER,
+                    ChatColor.YELLOW + "Your team currently has too many players logged in. Try again later!");
         }
     }
 
@@ -91,7 +92,8 @@ public class TeamListener implements Listener {
         }
 
         event.setCancelled(true);
-        player.sendMessage(ChatColor.RED + "You may not enter " + teamTo.getName(player) + ChatColor.RED + " as a " + members + " man faction.");
+        player.sendMessage(ChatColor.RED + "You may not enter " + teamTo.getName(player) + ChatColor.RED + " as a "
+                + members + " man faction.");
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -105,47 +107,48 @@ public class TeamListener implements Listener {
         }
     }
 
-//    @EventHandler(priority = EventPriority.MONITOR)
-//    private void onPlace(BlockPlaceEvent event) {
-//        final Block block = event.getBlockPlaced();
-//
-//        if (event.isCancelled() || block.getType() != Material.TRAP_DOOR) {
-//            return;
-//        }
-//
-//        final Player player = event.getPlayer();
-//
-//        final Team team = LandBoard.getInstance().getTeam(block.getLocation());
-//
-//        if (team == null || team.getOwner() == null) {
-//            return;
-//        }
-//
-//        if (team.getTrapDoors() >= 3) {
-//            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou have reached the trapdoor limit of 3 trapdoors!"));
-//            event.setCancelled(true);
-//            return;
-//        }
-//
-//        team.setTrapDoors(team.getTrapDoors()+1);
-//    }
+    // @EventHandler(priority = EventPriority.MONITOR)
+    // private void onPlace(BlockPlaceEvent event) {
+    // final Block block = event.getBlockPlaced();
+    //
+    // if (event.isCancelled() || block.getType() != Material.TRAP_DOOR) {
+    // return;
+    // }
+    //
+    // final Player player = event.getPlayer();
+    //
+    // final Team team = LandBoard.getInstance().getTeam(block.getLocation());
+    //
+    // if (team == null || team.getOwner() == null) {
+    // return;
+    // }
+    //
+    // if (team.getTrapDoors() >= 3) {
+    // player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou have
+    // reached the trapdoor limit of 3 trapdoors!"));
+    // event.setCancelled(true);
+    // return;
+    // }
+    //
+    // team.setTrapDoors(team.getTrapDoors()+1);
+    // }
 
-//    @EventHandler(priority = EventPriority.MONITOR)
-//    private void onBreak(BlockBreakEvent event) {
-//        final Block block = event.getBlock();
-//
-//        if (event.isCancelled() || block.getType() != Material.TRAP_DOOR) {
-//            return;
-//        }
-//
-//        final Team team = LandBoard.getInstance().getTeam(block.getLocation());
-//
-//        if (team == null || team.getOwner() == null) {
-//            return;
-//        }
-//
-//        team.setTrapDoors(team.getTrapDoors()-1);
-//    }
+    // @EventHandler(priority = EventPriority.MONITOR)
+    // private void onBreak(BlockBreakEvent event) {
+    // final Block block = event.getBlock();
+    //
+    // if (event.isCancelled() || block.getType() != Material.TRAP_DOOR) {
+    // return;
+    // }
+    //
+    // final Team team = LandBoard.getInstance().getTeam(block.getLocation());
+    //
+    // if (team == null || team.getOwner() == null) {
+    // return;
+    // }
+    //
+    // team.setTrapDoors(team.getTrapDoors()-1);
+    // }
 
     @EventHandler
     private void onRaidable(TeamRaidableEvent event) {
@@ -153,12 +156,16 @@ public class TeamListener implements Listener {
         final Player killer = event.getKiller();
 
         team.recalculatePoints();
-        team.setRemovedPoints(team.getRemovedPoints()+team.getPoints()/2);
+        team.setRemovedPoints(team.getRemovedPoints() + team.getPoints() / 2);
         team.recalculatePoints();
 
         if (killer == null) {
             return;
         }
+
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lootbox give " + killer.getName() + " radiable 1");
+        killer.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                "&4&lRaidable Lootboxes &7» &bYou have received a &c&lRaidable Lootbox&b!"));
 
         final Team killerTeam = Foxtrot.getInstance().getTeamHandler().getTeam(killer);
 
@@ -169,11 +176,10 @@ public class TeamListener implements Listener {
         TeamActionTracker.logActionAsync(killerTeam, TeamActionType.MADE_FACTION_RAIDABLE, ImmutableMap.of(
                 "playerId", event.getPlayerUUID().toString(),
                 "killerId", killer.getUniqueId().toString(),
-                "factionRaidable", killerTeam.getUniqueId().toString()
-        ));
+                "factionRaidable", killerTeam.getUniqueId().toString()));
 
-        killerTeam.setAddedPoints(killerTeam.getAddedPoints()+(team.recalculatePoints()/4));
-        killerTeam.setFactionsMadeRaidable(killerTeam.getFactionsMadeRaidable()+1);
+        killerTeam.setAddedPoints(killerTeam.getAddedPoints() + (team.recalculatePoints() / 4));
+        killerTeam.setFactionsMadeRaidable(killerTeam.getFactionsMadeRaidable() + 1);
         killerTeam.sendMessage("");
         killerTeam.sendMessage(ChatColor.GREEN + "Your faction has gained a raidable point.");
         killerTeam.sendMessage("");
@@ -198,7 +204,8 @@ public class TeamListener implements Listener {
 
         team.setRaidStealTeam(killerTeam.getUniqueId());
 
-        Foxtrot.getInstance().getServer().getScheduler().runTaskLater(Foxtrot.getInstance(), () -> team.setRaidStealTeam(null), 20*20);
+        Foxtrot.getInstance().getServer().getScheduler().runTaskLater(Foxtrot.getInstance(),
+                () -> team.setRaidStealTeam(null), 20 * 20);
     }
 
     @EventHandler
@@ -208,16 +215,17 @@ public class TeamListener implements Listener {
         if (team != null) {
             for (Player player : Foxtrot.getInstance().getServer().getOnlinePlayers()) {
                 if (team.isMember(player.getUniqueId())) {
-                    player.sendMessage(ChatColor.GREEN + "Member Online: " + ChatColor.WHITE + event.getPlayer().getName());
+                    player.sendMessage(
+                            ChatColor.GREEN + "Member Online: " + ChatColor.WHITE + event.getPlayer().getName());
                 } else if (team.getAllies().size() != 0 && team.isAlly(player.getUniqueId())) {
-                    player.sendMessage(Team.ALLY_COLOR + "Ally Online: " + ChatColor.WHITE + event.getPlayer().getName());
+                    player.sendMessage(
+                            Team.ALLY_COLOR + "Ally Online: " + ChatColor.WHITE + event.getPlayer().getName());
                 }
             }
 
             TeamActionTracker.logActionAsync(team, TeamActionType.MEMBER_CONNECTED, ImmutableMap.of(
                     "playerId", event.getPlayer().getUniqueId(),
-                    "playerName", event.getPlayer().getName()
-            ));
+                    "playerName", event.getPlayer().getName()));
 
             new BukkitRunnable() {
 
@@ -242,20 +250,21 @@ public class TeamListener implements Listener {
                 }
 
                 if (team.isMember(player.getUniqueId())) {
-                    player.sendMessage(ChatColor.RED + "Member Offline: " + ChatColor.WHITE + event.getPlayer().getName());
+                    player.sendMessage(
+                            ChatColor.RED + "Member Offline: " + ChatColor.WHITE + event.getPlayer().getName());
                 } else if (team.isAlly(player.getUniqueId())) {
-                    player.sendMessage(Team.ALLY_COLOR + "Ally Offline: " + ChatColor.WHITE + event.getPlayer().getName());
+                    player.sendMessage(
+                            Team.ALLY_COLOR + "Ally Offline: " + ChatColor.WHITE + event.getPlayer().getName());
                 }
             }
 
             TeamActionTracker.logActionAsync(team, TeamActionType.MEMBER_DISCONNECTED, ImmutableMap.of(
                     "playerId", event.getPlayer().getUniqueId(),
-                    "playerName", event.getPlayer().getName()
-            ));
+                    "playerName", event.getPlayer().getName()));
         }
     }
 
-    @EventHandler(priority=EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onBlockIgnite(BlockIgniteEvent event) {
         if (event.getPlayer() != null) {
             if (Foxtrot.getInstance().getServerHandler().isAdminOverride(event.getPlayer())) {
@@ -263,14 +272,16 @@ public class TeamListener implements Listener {
             }
         }
 
-        if (Foxtrot.getInstance().getServerHandler().isUnclaimedOrRaidable(event.getPlayer(), event.getBlock().getLocation())) {
+        if (Foxtrot.getInstance().getServerHandler().isUnclaimedOrRaidable(event.getPlayer(),
+                event.getBlock().getLocation())) {
             return;
         }
 
         if (LandBoard.getInstance().getTeam(event.getBlock().getLocation()) != null) {
             Team owner = LandBoard.getInstance().getTeam(event.getBlock().getLocation());
 
-            if (event.getCause() == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL && owner.isMember(event.getPlayer().getUniqueId())) {
+            if (event.getCause() == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL
+                    && owner.isMember(event.getPlayer().getUniqueId())) {
                 return;
             }
 
@@ -278,9 +289,10 @@ public class TeamListener implements Listener {
         }
     }
 
-    @EventHandler(priority=EventPriority.HIGH, ignoreCancelled=true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (Foxtrot.getInstance().getServerHandler().isAdminOverride(event.getPlayer()) || Foxtrot.getInstance().getServerHandler().isUnclaimedOrRaidable(event.getPlayer(), event.getBlock().getLocation())) {
+        if (Foxtrot.getInstance().getServerHandler().isAdminOverride(event.getPlayer()) || Foxtrot.getInstance()
+                .getServerHandler().isUnclaimedOrRaidable(event.getPlayer(), event.getBlock().getLocation())) {
             return;
         }
 
@@ -292,14 +304,16 @@ public class TeamListener implements Listener {
 
         if (team == null) {
             if (Foxtrot.getInstance().getServerHandler().isWarzone(event.getBlock().getLocation())) {
-                event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot build in " + ChatColor.DARK_RED + "WarZone" + ChatColor.YELLOW + "'s territory!");
+                event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot build in " + ChatColor.DARK_RED + "WarZone"
+                        + ChatColor.YELLOW + "'s territory!");
                 event.setCancelled(true);
             }
             return;
         }
 
         if (!team.isMember(event.getPlayer().getUniqueId())) {
-            if (!DTRBitmask.SAFE_ZONE.appliesAt(event.getBlock().getLocation()) && event.getItemInHand() != null && event.getItemInHand().getType() == Material.WEB) {
+            if (!DTRBitmask.SAFE_ZONE.appliesAt(event.getBlock().getLocation()) && event.getItemInHand() != null
+                    && event.getItemInHand().getType() == Material.WEB) {
                 for (Event playableEvent : Foxtrot.getInstance().getEventHandler().getEvents()) {
                     if (!playableEvent.isActive() || !(playableEvent instanceof KOTH)) {
                         continue;
@@ -342,25 +356,29 @@ public class TeamListener implements Listener {
 
                 }.runTaskLater(Foxtrot.getInstance(), 10 * 20L);
             } else {
-                event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot build in " + team.getName(event.getPlayer()) + ChatColor.YELLOW + "'s territory!");
+                event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot build in "
+                        + team.getName(event.getPlayer()) + ChatColor.YELLOW + "'s territory!");
                 event.setCancelled(true);
             }
             return;
         }
 
-        if (!team.isCoLeader(event.getPlayer().getUniqueId()) && !team.isCaptain(event.getPlayer().getUniqueId()) && !team.isOwner(event.getPlayer().getUniqueId())) {
+        if (!team.isCoLeader(event.getPlayer().getUniqueId()) && !team.isCaptain(event.getPlayer().getUniqueId())
+                && !team.isOwner(event.getPlayer().getUniqueId())) {
             Subclaim subclaim = team.getSubclaim(event.getBlock().getLocation());
 
             if (subclaim != null && !subclaim.isMember(event.getPlayer().getUniqueId())) {
                 event.setCancelled(true);
-                event.getPlayer().sendMessage(ChatColor.YELLOW + "You do not have access to the subclaim " + ChatColor.GREEN + subclaim.getName() + ChatColor.YELLOW  + "!");
+                event.getPlayer().sendMessage(ChatColor.YELLOW + "You do not have access to the subclaim "
+                        + ChatColor.GREEN + subclaim.getName() + ChatColor.YELLOW + "!");
             }
         }
     }
 
-    @EventHandler(ignoreCancelled=true) // normal priority
+    @EventHandler(ignoreCancelled = true) // normal priority
     public void onBlockBreak(BlockBreakEvent event) {
-        if (Foxtrot.getInstance().getServerHandler().isAdminOverride(event.getPlayer()) || Foxtrot.getInstance().getServerHandler().isUnclaimedOrRaidable(event.getPlayer(), event.getBlock().getLocation())) {
+        if (Foxtrot.getInstance().getServerHandler().isAdminOverride(event.getPlayer()) || Foxtrot.getInstance()
+                .getServerHandler().isUnclaimedOrRaidable(event.getPlayer(), event.getBlock().getLocation())) {
             return;
         }
 
@@ -368,18 +386,21 @@ public class TeamListener implements Listener {
 
         if (team == null) {
             if (Foxtrot.getInstance().getServerHandler().isWarzone(event.getBlock().getLocation())) {
-                event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot build in " + ChatColor.DARK_RED + "WarZone" + ChatColor.YELLOW + "'s territory!");
+                event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot build in " + ChatColor.DARK_RED + "WarZone"
+                        + ChatColor.YELLOW + "'s territory!");
                 event.setCancelled(true);
             }
             return;
         }
 
-        if (event.getBlock().getType() == Material.GLOWSTONE && Foxtrot.getInstance().getGlowHandler().hasGlowMountain() && team.getName().equals(GlowHandler.getGlowTeamName())) {
+        if (event.getBlock().getType() == Material.GLOWSTONE && Foxtrot.getInstance().getGlowHandler().hasGlowMountain()
+                && team.getName().equals(GlowHandler.getGlowTeamName())) {
             return; // don't concern ourselves with glowstone breaks in glowstone mountains
         }
 
         if (!team.isMember(event.getPlayer().getUniqueId())) {
-            PlayerBuildInOthersClaimEvent buildEvent = new PlayerBuildInOthersClaimEvent(event.getPlayer(), event.getBlock(), team);
+            PlayerBuildInOthersClaimEvent buildEvent = new PlayerBuildInOthersClaimEvent(event.getPlayer(),
+                    event.getBlock(), team);
             Bukkit.getPluginManager().callEvent(buildEvent);
 
             if (buildEvent.isWillIgnore()) {
@@ -387,13 +408,15 @@ public class TeamListener implements Listener {
             }
 
             if (!team.getName().equals(CavernHandler.getCavernTeamName())) {
-                event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot build in " + team.getName(event.getPlayer()) + ChatColor.YELLOW + "'s territory!");
+                event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot build in "
+                        + team.getName(event.getPlayer()) + ChatColor.YELLOW + "'s territory!");
             }
 
             event.setCancelled(true);
 
             if (!FoxListener.ATTACK_DISABLING_BLOCKS.contains(event.getBlock().getType())) {
-                if (event.getBlock().isEmpty() || event.getBlock().getType().isTransparent() || !event.getBlock().getType().isSolid()) {
+                if (event.getBlock().isEmpty() || event.getBlock().getType().isTransparent()
+                        || !event.getBlock().getType().isSolid()) {
                     return;
                 }
             }
@@ -403,17 +426,19 @@ public class TeamListener implements Listener {
             return;
         }
 
-        if (!team.isCoLeader(event.getPlayer().getUniqueId()) && !team.isCaptain(event.getPlayer().getUniqueId()) && !team.isOwner(event.getPlayer().getUniqueId())) {
+        if (!team.isCoLeader(event.getPlayer().getUniqueId()) && !team.isCaptain(event.getPlayer().getUniqueId())
+                && !team.isOwner(event.getPlayer().getUniqueId())) {
             Subclaim subclaim = team.getSubclaim(event.getBlock().getLocation());
 
             if (subclaim != null && !subclaim.isMember(event.getPlayer().getUniqueId())) {
                 event.setCancelled(true);
-                event.getPlayer().sendMessage(ChatColor.YELLOW + "You do not have access to the subclaim " + ChatColor.GREEN + subclaim.getName() + ChatColor.YELLOW  + "!");
+                event.getPlayer().sendMessage(ChatColor.YELLOW + "You do not have access to the subclaim "
+                        + ChatColor.GREEN + subclaim.getName() + ChatColor.YELLOW + "!");
             }
         }
     }
 
-    @EventHandler(priority=EventPriority.HIGH, ignoreCancelled=true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockPistonRetract(BlockPistonRetractEvent event) {
         if (!event.isSticky()) {
             return;
@@ -435,7 +460,7 @@ public class TeamListener implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler(priority=EventPriority.HIGH, ignoreCancelled=true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockPistonExtend(BlockPistonExtendEvent event) {
         Team pistonTeam = LandBoard.getInstance().getTeam(event.getBlock().getLocation());
         int i = 0;
@@ -456,9 +481,10 @@ public class TeamListener implements Listener {
         }
     }
 
-    @EventHandler(priority=EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onHangingPlace(HangingPlaceEvent event) {
-        if (Foxtrot.getInstance().getServerHandler().isAdminOverride(event.getPlayer()) || Foxtrot.getInstance().getServerHandler().isUnclaimedOrRaidable(event.getPlayer(), event.getEntity().getLocation())) {
+        if (Foxtrot.getInstance().getServerHandler().isAdminOverride(event.getPlayer()) || Foxtrot.getInstance()
+                .getServerHandler().isUnclaimedOrRaidable(event.getPlayer(), event.getEntity().getLocation())) {
             return;
         }
 
@@ -469,13 +495,15 @@ public class TeamListener implements Listener {
         }
     }
 
-    @EventHandler(priority=EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
-        if (!(event.getRemover() instanceof Player) || Foxtrot.getInstance().getServerHandler().isAdminOverride((Player) event.getRemover())) {
+        if (!(event.getRemover() instanceof Player)
+                || Foxtrot.getInstance().getServerHandler().isAdminOverride((Player) event.getRemover())) {
             return;
         }
 
-        if (Foxtrot.getInstance().getServerHandler().isUnclaimedOrRaidable((Player) event.getRemover(), event.getEntity().getLocation())) {
+        if (Foxtrot.getInstance().getServerHandler().isUnclaimedOrRaidable((Player) event.getRemover(),
+                event.getEntity().getLocation())) {
             return;
         }
 
@@ -486,13 +514,15 @@ public class TeamListener implements Listener {
         }
     }
 
-    @EventHandler(priority=EventPriority.HIGH, ignoreCancelled=true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
-        if (event.getRightClicked().getType() != EntityType.ITEM_FRAME || Foxtrot.getInstance().getServerHandler().isAdminOverride(event.getPlayer())) {
+        if (event.getRightClicked().getType() != EntityType.ITEM_FRAME
+                || Foxtrot.getInstance().getServerHandler().isAdminOverride(event.getPlayer())) {
             return;
         }
 
-        if (Foxtrot.getInstance().getServerHandler().isUnclaimedOrRaidable(event.getPlayer(), event.getRightClicked().getLocation())) {
+        if (Foxtrot.getInstance().getServerHandler().isUnclaimedOrRaidable(event.getPlayer(),
+                event.getRightClicked().getLocation())) {
             return;
         }
 
@@ -504,7 +534,7 @@ public class TeamListener implements Listener {
     }
 
     // Used for item frames
-    @EventHandler(priority=EventPriority.HIGH, ignoreCancelled=true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (event.getEntity().getType() != EntityType.ITEM_FRAME) {
             return;
@@ -522,7 +552,8 @@ public class TeamListener implements Listener {
             }
         }
 
-        if (damager == null || Foxtrot.getInstance().getServerHandler().isAdminOverride(damager) || Foxtrot.getInstance().getServerHandler().isUnclaimedOrRaidable(damager, event.getEntity().getLocation())) {
+        if (damager == null || Foxtrot.getInstance().getServerHandler().isAdminOverride(damager) || Foxtrot
+                .getInstance().getServerHandler().isUnclaimedOrRaidable(damager, event.getEntity().getLocation())) {
             return;
         }
 
@@ -533,7 +564,7 @@ public class TeamListener implements Listener {
         }
     }
 
-    @EventHandler(priority=EventPriority.HIGH, ignoreCancelled=true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEntityDamageByEntity2(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player)) {
             return;
@@ -541,7 +572,8 @@ public class TeamListener implements Listener {
 
         if (Foxtrot.getInstance().getMapHandler().getGameHandler() != null
                 && Foxtrot.getInstance().getMapHandler().getGameHandler().isOngoingGame()
-                && Foxtrot.getInstance().getMapHandler().getGameHandler().getOngoingGame().isPlayingOrSpectating(event.getEntity().getUniqueId())) {
+                && Foxtrot.getInstance().getMapHandler().getGameHandler().getOngoingGame()
+                        .isPlayingOrSpectating(event.getEntity().getUniqueId())) {
             return;
         }
 
@@ -553,32 +585,36 @@ public class TeamListener implements Listener {
 
             if (team != null && event.getCause() != EntityDamageEvent.DamageCause.FALL) {
                 if (team.isMember(victim.getUniqueId())) {
-                    damager.sendMessage(ChatColor.YELLOW + "You cannot hurt " + ChatColor.DARK_GREEN + victim.getName() + ChatColor.YELLOW + ".");
+                    damager.sendMessage(ChatColor.YELLOW + "You cannot hurt " + ChatColor.DARK_GREEN + victim.getName()
+                            + ChatColor.YELLOW + ".");
                     event.setCancelled(true);
                 } else if (team.isAlly(victim.getUniqueId())) {
-                    damager.sendMessage(ChatColor.YELLOW + "You cannot hurt " + Team.ALLY_COLOR + victim.getName() + ChatColor.YELLOW + ".");
+                    damager.sendMessage(ChatColor.YELLOW + "You cannot hurt " + Team.ALLY_COLOR + victim.getName()
+                            + ChatColor.YELLOW + ".");
                     event.setCancelled(true);
                 }
             }
         }
     }
-//
-//    @EventHandler(priority = EventPriority.LOW)
-//    private void onDrag(InventoryClickEvent event) {
-//        if (event.getInventory().getType() != InventoryType.CRAFTING) {
-//            return;
-//        }
-//
-//        final ItemStack itemStack = event.getCurrentItem().clone();
-//
-//        if (itemStack == null) {
-//            return;
-//        }
-//
-//        if (itemStack.getType() == Material.POTION || Foxtrot.getInstance().getMapHandler().getAbilityHandler().getAbilities().values().stream().anyMatch(it -> it.isSimilar(itemStack))) {
-//            event.setCancelled(true);
-//        }
-//    }
+    //
+    // @EventHandler(priority = EventPriority.LOW)
+    // private void onDrag(InventoryClickEvent event) {
+    // if (event.getInventory().getType() != InventoryType.CRAFTING) {
+    // return;
+    // }
+    //
+    // final ItemStack itemStack = event.getCurrentItem().clone();
+    //
+    // if (itemStack == null) {
+    // return;
+    // }
+    //
+    // if (itemStack.getType() == Material.POTION ||
+    // Foxtrot.getInstance().getMapHandler().getAbilityHandler().getAbilities().values().stream().anyMatch(it
+    // -> it.isSimilar(itemStack))) {
+    // event.setCancelled(true);
+    // }
+    // }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEntityHorseDamage(EntityDamageByEntityEvent event) {
@@ -593,9 +629,11 @@ public class TeamListener implements Listener {
             Team damagerTeam = Foxtrot.getInstance().getTeamHandler().getTeam(damager);
             UUID horseOwner = victim.getOwner().getUniqueId();
 
-            if(!damager.getUniqueId().equals(horseOwner) && damagerTeam != null && damagerTeam.isMember(horseOwner)) {
+            if (!damager.getUniqueId().equals(horseOwner) && damagerTeam != null && damagerTeam.isMember(horseOwner)) {
                 event.setCancelled(true);
-                damager.sendMessage(ChatColor.YELLOW + "This horse belongs to " + ChatColor.DARK_GREEN + Proton.getInstance().getUuidCache().name(horseOwner) + ChatColor.YELLOW + " who is in your faction.");
+                damager.sendMessage(ChatColor.YELLOW + "This horse belongs to " + ChatColor.DARK_GREEN
+                        + Proton.getInstance().getUuidCache().name(horseOwner) + ChatColor.YELLOW
+                        + " who is in your faction.");
             }
         }
     }
@@ -606,11 +644,13 @@ public class TeamListener implements Listener {
 
         if (Foxtrot.getInstance().getServerHandler().isWarzone(checkLocation) && !event.getPlayer().isOp()) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot build in " + ChatColor.DARK_RED + "WarZone" + ChatColor.YELLOW + "'s territory!");
+            event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot build in " + ChatColor.DARK_RED + "WarZone"
+                    + ChatColor.YELLOW + "'s territory!");
             return;
         }
 
-        if (Foxtrot.getInstance().getServerHandler().isAdminOverride(event.getPlayer()) || Foxtrot.getInstance().getServerHandler().isUnclaimedOrRaidable(event.getPlayer(), checkLocation)) {
+        if (Foxtrot.getInstance().getServerHandler().isAdminOverride(event.getPlayer())
+                || Foxtrot.getInstance().getServerHandler().isUnclaimedOrRaidable(event.getPlayer(), checkLocation)) {
             return;
         }
 
@@ -620,21 +660,27 @@ public class TeamListener implements Listener {
 
         Team owner = LandBoard.getInstance().getTeam(checkLocation);
 
-        boolean canPlace = owner.hasDTRBitmask(DTRBitmask.KOTH) && Foxtrot.getInstance().getServerHandler().isWaterPlacementInClaimsAllowed();
+        boolean canPlace = owner.hasDTRBitmask(DTRBitmask.KOTH)
+                && Foxtrot.getInstance().getServerHandler().isWaterPlacementInClaimsAllowed();
 
         if (!owner.isMember(event.getPlayer().getUniqueId())) {
             if (!canPlace) {
                 event.setCancelled(true);
-                event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot build in " + owner.getName(event.getPlayer()) + ChatColor.YELLOW + "'s territory!");
+                event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot build in "
+                        + owner.getName(event.getPlayer()) + ChatColor.YELLOW + "'s territory!");
             } else {
                 final Block waterBlock = event.getBlockClicked().getRelative(event.getBlockFace());
 
-                if (waterBlock.getRelative(BlockFace.NORTH).isLiquid() || waterBlock.getRelative(BlockFace.SOUTH).isLiquid() || waterBlock.getRelative(BlockFace.EAST).isLiquid() || waterBlock.getRelative(BlockFace.WEST).isLiquid()) {
+                if (waterBlock.getRelative(BlockFace.NORTH).isLiquid()
+                        || waterBlock.getRelative(BlockFace.SOUTH).isLiquid()
+                        || waterBlock.getRelative(BlockFace.EAST).isLiquid()
+                        || waterBlock.getRelative(BlockFace.WEST).isLiquid()) {
                     event.setCancelled(true);
                     return;
                 }
 
-                RegenUtils.schedule(waterBlock, 30, TimeUnit.SECONDS, (block) -> InventoryUtils.fillBucket(event.getPlayer()), (block) -> true);
+                RegenUtils.schedule(waterBlock, 30, TimeUnit.SECONDS,
+                        (block) -> InventoryUtils.fillBucket(event.getPlayer()), (block) -> true);
             }
         }
     }
@@ -643,7 +689,8 @@ public class TeamListener implements Listener {
     public void onBucketFill(PlayerBucketFillEvent event) {
         Location checkLocation = event.getBlockClicked().getRelative(event.getBlockFace()).getLocation();
 
-        if (Foxtrot.getInstance().getServerHandler().isAdminOverride(event.getPlayer()) || Foxtrot.getInstance().getServerHandler().isUnclaimedOrRaidable(event.getPlayer(), checkLocation)) {
+        if (Foxtrot.getInstance().getServerHandler().isAdminOverride(event.getPlayer())
+                || Foxtrot.getInstance().getServerHandler().isUnclaimedOrRaidable(event.getPlayer(), checkLocation)) {
             return;
         }
 
@@ -655,7 +702,8 @@ public class TeamListener implements Listener {
 
         if (!owner.isMember(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot build in " + owner.getName(event.getPlayer()) + ChatColor.YELLOW + "'s territory!");
+            event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot build in " + owner.getName(event.getPlayer())
+                    + ChatColor.YELLOW + "'s territory!");
         }
     }
 }

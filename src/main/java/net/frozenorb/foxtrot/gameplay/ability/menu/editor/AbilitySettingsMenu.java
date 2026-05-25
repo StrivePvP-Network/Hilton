@@ -124,7 +124,8 @@ public class AbilitySettingsMenu extends Menu {
                     if (cat.getName().equalsIgnoreCase("ALL"))
                         continue;
 
-                    boolean current = ability.getCategory() != null && ability.getCategory().getName().equalsIgnoreCase(cat.getName());
+                    boolean current = ability.getCategory() != null
+                            && ability.getCategory().getName().equalsIgnoreCase(cat.getName());
                     lore.add((current ? ChatColor.GREEN + " ▶ " : ChatColor.GRAY + "   ") + cat.name());
                 }
                 lore.add("");
@@ -157,7 +158,7 @@ public class AbilitySettingsMenu extends Menu {
                         }
                     }
                 }
-                
+
                 if (currentIdx == -1) {
                     currentIdx = 0;
                 }
@@ -241,6 +242,84 @@ public class AbilitySettingsMenu extends Menu {
                 player.sendMessage(ChatColor.GREEN + "You received " + amount + "x " + ability.getDisplayName()
                         + ChatColor.GREEN + ".");
                 player.playSound(player.getLocation(), Sound.LEVEL_UP, 1f, 1f);
+            }
+        });
+
+        buttons.put(31, new Button() {
+            @Override
+            public String getName(Player player) {
+                boolean hasTag = ability.hasMetadata("META");
+                return (hasTag ? ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "★ META Ability"
+                        : ChatColor.GRAY + "☆ Set META Ability");
+            }
+
+            @Override
+            public List<String> getDescription(Player player) {
+                List<String> lore = new ArrayList<>();
+                lore.add("");
+                lore.add(ChatColor.GRAY + "Toggle the META tag on this ability.");
+                lore.add(ChatColor.GRAY + "Meta-tagged abilities can be traded at the");
+                lore.add(ChatColor.GRAY + "Ability Trader NPC in Warzone.");
+                lore.add("");
+                boolean hasTag = ability.hasMetadata("META");
+                lore.add(ChatColor.GRAY + "Status: " + (hasTag ? ChatColor.GREEN + "ON" : ChatColor.RED + "OFF"));
+                return lore;
+            }
+
+            @Override
+            public Material getMaterial(Player player) {
+                return ability.hasMetadata("META") ? Material.EYE_OF_ENDER : Material.ENDER_PORTAL_FRAME;
+            }
+
+            @Override
+            public void clicked(Player player, int slot, ClickType clickType) {
+                if (ability.hasMetadata("META")) {
+                    ability.removeMetadata("META");
+                    player.sendMessage(ChatColor.RED + "Removed META tag from " + ability.getName() + ".");
+                } else {
+                    ability.addMetadata("META");
+                    player.sendMessage(ChatColor.GREEN + "Added META tag to " + ability.getName() + ".");
+                }
+                Foxtrot.getInstance().getMapHandler().getAbilityHandler().saveStatistics();
+                player.playSound(player.getLocation(), Sound.NOTE_PLING, 1f, 1.5f);
+            }
+        });
+
+        buttons.put(33, new Button() {
+            @Override
+            public String getName(Player player) {
+                boolean hasTag = ability.hasMetadata("OP");
+                return (hasTag ? ChatColor.RED + ChatColor.BOLD.toString() + "⚡ OP Ability"
+                        : ChatColor.GRAY + "⚡ Set OP Ability");
+            }
+
+            @Override
+            public List<String> getDescription(Player player) {
+                List<String> lore = new ArrayList<>();
+                lore.add("");
+                lore.add(ChatColor.GRAY + "Toggle the OP tag on this ability.");
+                lore.add("");
+                boolean hasTag = ability.hasMetadata("OP");
+                lore.add(ChatColor.GRAY + "Status: " + (hasTag ? ChatColor.GREEN + "ON" : ChatColor.RED + "OFF"));
+                return lore;
+            }
+
+            @Override
+            public Material getMaterial(Player player) {
+                return ability.hasMetadata("OP") ? Material.DIAMOND_SWORD : Material.WOOD_SWORD;
+            }
+
+            @Override
+            public void clicked(Player player, int slot, ClickType clickType) {
+                if (ability.hasMetadata("OP")) {
+                    ability.removeMetadata("OP");
+                    player.sendMessage(ChatColor.RED + "Removed OP tag from " + ability.getName() + ".");
+                } else {
+                    ability.addMetadata("OP");
+                    player.sendMessage(ChatColor.GREEN + "Added OP tag to " + ability.getName() + ".");
+                }
+                Foxtrot.getInstance().getMapHandler().getAbilityHandler().saveStatistics();
+                player.playSound(player.getLocation(), Sound.NOTE_PLING, 1f, 1.5f);
             }
         });
 

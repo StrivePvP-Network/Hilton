@@ -51,7 +51,7 @@ public class LettingInCommand {
         }
 
         if (baseHeight > 256) {
-            player.sendMessage(ChatColor.RED + "Nice lie!");
+            player.sendMessage(ChatColor.RED + "._. no lie bro.");
             return;
         }
 
@@ -66,12 +66,11 @@ public class LettingInCommand {
         final List<String> lore = new ArrayList<>();
 
         lore.add(ChatColor.translateAlternateColorCodes('&', "&4&l" + team.getName() + ":"));
-        lore.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fHQ: " + ChatColor.RED + team.getHQ().getBlockX() + ", " + team.getHQ().getBlockZ()));
-        lore.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fBase Height: " + ChatColor.RED + baseHeight + " blocks"));
-        lore.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fMembers Online: " + ChatColor.RED + team.getOnlineMembers().size() + "/" + team.getMembers().size()));
-        lore.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fDeaths Until Raidable: " + team.formatDTR()));
+        lore.add(ChatColor.translateAlternateColorCodes('&', "&6&l┃ &fHQ: " + ChatColor.RED + team.getHQ().getBlockX() + ", " + team.getHQ().getBlockZ()));
+        lore.add(ChatColor.translateAlternateColorCodes('&', "&6&l┃ &fBase Height: " + ChatColor.RED + baseHeight + " blocks"));
+        lore.add(ChatColor.translateAlternateColorCodes('&', "&6&l┃ &fMembers Online: " + ChatColor.RED + team.getOnlineMembers().size() + "/" + team.getMembers().size()));
         if (DTRHandler.isOnCooldown(team)) {
-            lore.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fRegen: &c" + TimeUtils.formatIntoDetailedString(((int) (team.getDTRCooldown() - System.currentTimeMillis()) / 1000))));
+            lore.add(ChatColor.translateAlternateColorCodes('&', "&6&l┃ &fRegen: &c" + TimeUtils.formatIntoDetailedString(((int) (team.getDTRCooldown() - System.currentTimeMillis()) / 1000))));
         }
         lore.add("");
         lore.add(ChatColor.RED + "Click to focus this faction");
