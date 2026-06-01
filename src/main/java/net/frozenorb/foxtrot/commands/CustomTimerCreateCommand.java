@@ -36,6 +36,28 @@ public class CustomTimerCreateCommand {
 
     }
 
+    @Command(
+            names = {"customtimer delete", "customtimer remove"},
+            permission = "foxtrot.command.customtimer",
+            hidden = true
+    )
+    public static void customTimerDelete(CommandSender sender, @Parameter(name="title", wildcard=true) String title) {
+        String foundKey = null;
+        for (String timerKey : customTimers.keySet()) {
+            if (ChatColor.stripColor(timerKey).equalsIgnoreCase(ChatColor.stripColor(title)) || timerKey.equalsIgnoreCase(title)) {
+                foundKey = timerKey;
+                break;
+            }
+        }
+
+        if (foundKey != null) {
+            customTimers.remove(foundKey);
+            sender.sendMessage(ChatColor.GREEN + "Removed custom timer " + ChatColor.translateAlternateColorCodes('&', foundKey) + ChatColor.GREEN + ".");
+        } else {
+            sender.sendMessage(ChatColor.RED + "Custom timer '" + title + "' not found.");
+        }
+    }
+
     @Command(names = {"sotw enable"}, permission = "")
     public static void sotwEnable(Player sender) {
         if (!isSOTWTimer()) {

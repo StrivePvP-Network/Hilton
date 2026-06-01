@@ -377,14 +377,7 @@ public class Foxtrot extends JavaPlugin {
 
         instance = this;
 
-        for (String worldName : new String[] { "Spawn", "Deathban", "sg", "kits_events", "MiniKOTH", "MiniKOTH2",
-                "MiniKOTH3" }) {
-            World unwantedWorld = Bukkit.getWorld(worldName);
-            if (unwantedWorld != null) {
-                Bukkit.unloadWorld(unwantedWorld, false);
-                this.getLogger().info("[WorldBlocker] Unloaded unwanted world: " + worldName);
-            }
-        }
+
 
         saveDefaultConfig();
 
@@ -433,6 +426,18 @@ public class Foxtrot extends JavaPlugin {
         }
 
         setupHandlers();
+
+        List<String> unwantedWorlds = new ArrayList<>(Arrays.asList("Spawn", "sg", "kits_events", "MiniKOTH", "MiniKOTH2", "MiniKOTH3"));
+        if (this.getMapHandler().isKitMap()) {
+            unwantedWorlds.add("Deathban");
+        }
+        for (String worldName : unwantedWorlds) {
+            World unwantedWorld = Bukkit.getWorld(worldName);
+            if (unwantedWorld != null) {
+                Bukkit.unloadWorld(unwantedWorld, false);
+                this.getLogger().info("[WorldBlocker] Unloaded unwanted world: " + worldName);
+            }
+        }
         setupPersistence();
         new ListenerHandler(this);
         setupTasks();
@@ -559,14 +564,10 @@ public class Foxtrot extends JavaPlugin {
         this.mapHandler = new MapHandler();
 
         if (this.getMapHandler().isKitMap()) {
-            // new
-            // WorldCreator("kits_events").environment(World.Environment.NORMAL).createWorld();
         } else {
-            // new
-            // WorldCreator("Spawn").environment(World.Environment.NORMAL).createWorld();
-            // new
-            // WorldCreator("Deathban").environment(World.Environment.NORMAL).createWorld();
-            // new WorldCreator("sg").environment(World.Environment.NORMAL).createWorld();
+            if (Bukkit.getWorld("Deathban") == null) {
+                new WorldCreator("Deathban").environment(World.Environment.NORMAL).createWorld();
+            }
         }
 
         this.eventHandler = new EventHandler();

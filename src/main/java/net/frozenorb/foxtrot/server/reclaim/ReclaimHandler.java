@@ -25,6 +25,11 @@ import java.util.List;
 import java.util.Optional;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 
 /**
  * @author Hxmilton (JavaProject)
@@ -49,70 +54,80 @@ public class ReclaimHandler implements Listener {
 
     public void loadData() {
         this.reclaims.clear();
-        this.folder = new File(this.instance.getDataFolder(), "data/reclaims");
-
-        if (!this.folder.exists()) {
-            this.folder.mkdirs();
-        }
-
-        File[] files = this.folder.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.getName().endsWith(".yml")) {
-                    this.loadFile(file);
+        
+        DBCollection collection = Foxtrot.getInstance().getMongoPool().getDB(Foxtrot.MONGO_DB_NAME).getCollection("Reclaims");
+        try (DBCursor cursor = collection.find()) {
+            while (cursor.hasNext()) {
+                DBObject object = cursor.next();
+                if (object instanceof BasicDBObject) {
+                    BasicDBObject dbObject = (BasicDBObject) object;
+                    String name = dbObject.getString("name");
+                    int priority = dbObject.getInt("priority", 99);
+                    
+                    List<String> commands = new ArrayList<>();
+                    if (dbObject.containsField("commands")) {
+                        BasicDBList commandList = (BasicDBList) dbObject.get("commands");
+                        for (Object cmd : commandList) {
+                            commands.add((String) cmd);
+                        }
+                    }
+                    
+                    List<ItemStack> items = new ArrayList<>();
+                    if (dbObject.containsField("items")) {
+                        BasicDBList itemList = (BasicDBList) dbObject.get("items");
+                        for (Object obj : itemList) {
+                            try {
+                                ItemStack item = itemFromBase64((String) obj);
+                                if (item != null) {
+                                    items.add(item);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    
+                    Reclaim reclaim = new Reclaim(name, priority, commands, items);
+                    this.reclaims.add(reclaim);
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    private void loadFile(File file) {
-        FileConfiguration data = YamlConfiguration.loadConfiguration(file);
-
-        String name = data.getString("name", file.getName().replace(".yml", ""));
-        int priority = data.getInt("priority", 99);
-        List<String> commands = data.getStringList("commands");
-
-        List<ItemStack> items = new ArrayList<>();
-        if (data.contains("items")) {
-            List<?> rawList = data.getList("items");
-            if (rawList != null) {
-                for (Object obj : rawList) {
-                    if (obj instanceof ItemStack) {
-                        items.add((ItemStack) obj);
-                    } else if (obj instanceof String) {
-                        try {
-                            ItemStack item = itemFromBase64((String) obj);
-                            if (item != null) {
-                                items.add(item);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+    public void saveReclaim(Reclaim reclaim) {
+        DBCollection collection = Foxtrot.getInstance().getMongoPool().getDB(Foxtrot.MONGO_DB_NAME).getCollection("Reclaims");
+        
+        BasicDBObject document = new BasicDBObject("name", reclaim.getName());
+        document.put("priority", reclaim.getPriority());
+        
+        BasicDBList commandList = new BasicDBList();
+        commandList.addAll(reclaim.getCommands());
+        document.put("commands", commandList);
+        
+        BasicDBList itemList = new BasicDBList();
+        if (reclaim.getItems() != null) {
+            for (ItemStack item : reclaim.getItems()) {
+                if (item != null && item.getType() != Material.AIR) {
+                    try {
+                        itemList.add(itemToBase64(item));
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
         }
-
-        Reclaim reclaim = new Reclaim(name, priority, commands, items);
-        this.reclaims.add(reclaim);
-    }
-
-    public void saveReclaim(Reclaim reclaim) {
-        if (!this.folder.exists()) {
-            this.folder.mkdirs();
-        }
-
-        File file = new File(this.folder, reclaim.getName() + ".yml");
-        FileConfiguration dataConfig = YamlConfiguration.loadConfiguration(file);
-        reclaim.save(file, dataConfig);
+        document.put("items", itemList);
+        
+        BasicDBObject query = new BasicDBObject("name", reclaim.getName());
+        collection.update(query, document, true, false);
     }
 
     public void deleteReclaim(Reclaim reclaim) {
         this.reclaims.remove(reclaim);
-        File file = new File(this.folder, reclaim.getName() + ".yml");
-        if (file.exists()) {
-            file.delete();
-        }
+        DBCollection collection = Foxtrot.getInstance().getMongoPool().getDB(Foxtrot.MONGO_DB_NAME).getCollection("Reclaims");
+        collection.remove(new BasicDBObject("name", reclaim.getName()));
     }
 
     public Optional<Reclaim> getReclaim(String name) {

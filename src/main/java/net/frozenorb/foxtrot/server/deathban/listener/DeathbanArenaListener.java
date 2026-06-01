@@ -57,12 +57,19 @@ public class DeathbanArenaListener implements Listener {
         }
 
         final Sign sign = (Sign) block.getState();
+        String line0 = ChatColor.stripColor(sign.getLine(0));
+        String line1 = ChatColor.stripColor(sign.getLine(1));
 
-        if (sign.getLine(1) == null || !sign.getLine(1).startsWith(ChatColor.BLUE + "- Respawn -")) {
+        boolean isReviveSign = (line0.equalsIgnoreCase("[DeathRevive]") || line0.equalsIgnoreCase("[DeathLives]"))
+                || (line0.equalsIgnoreCase("Have a life?") && line1.equalsIgnoreCase("Click Here"))
+                || (sign.getLine(1) != null && sign.getLine(1).startsWith(ChatColor.BLUE + "- Respawn -"));
+
+        if (!isReviveSign) {
             return;
         }
 
         if (!this.instance.getDeathbanMap().isDeathbanned(player.getUniqueId())) {
+            player.sendMessage(ChatColor.YELLOW + "You are not deathbanned, so you were revived for free (no lives consumed).");
             this.instance.getDeathbanArenaHandler().revive(player.getUniqueId());
             return;
         }
@@ -82,8 +89,8 @@ public class DeathbanArenaListener implements Listener {
         int lives = this.instance.getFriendLivesMap().getLives(player.getUniqueId());
 
         if (lives > 0) {
-            this.instance.getFriendLivesMap().setLives(player.getUniqueId(),
-                    this.instance.getFriendLivesMap().getLives(player.getUniqueId()) - 1);
+            this.instance.getFriendLivesMap().setLives(player.getUniqueId(), lives - 1);
+            player.sendMessage(ChatColor.GREEN + "You have used 1 life to revive yourself! You now have " + (lives - 1) + " lives remaining.");
             this.instance.getDeathbanArenaHandler().revive(player.getUniqueId());
             return;
         }
@@ -223,17 +230,14 @@ public class DeathbanArenaListener implements Listener {
     }
 
     @EventHandler
-    private void onSignPlace(BlockPlaceEvent event) {
+    private void onSignChange(org.bukkit.event.block.SignChangeEvent event) {
         if (!event.getBlock().getWorld().getName().equalsIgnoreCase("Deathban")) {
             return;
         }
 
-        if (event.getBlock().getState() instanceof Sign) {
-            Sign sign = (Sign) event.getBlock().getState();
-            if (sign.getLine(0).startsWith("[Death")) {
-                this.instance.getDeathbanArenaHandler().getDeathSigns().add(event.getBlock().getLocation());
-                event.getPlayer().sendMessage(ChatColor.GREEN + "Dynamic death sign registered!");
-            }
+        if (event.getLine(0) != null && event.getLine(0).startsWith("[Death")) {
+            this.instance.getDeathbanArenaHandler().getDeathSigns().add(event.getBlock().getLocation());
+            event.getPlayer().sendMessage(ChatColor.GREEN + "Dynamic death sign registered!");
         }
     }
 
@@ -248,7 +252,7 @@ public class DeathbanArenaListener implements Listener {
 
     private void updateSigns(Player player) {
         for (Location location : this.instance.getDeathbanArenaHandler().getDeathSigns()) {
-            if (location.distanceSquared(player.getLocation()) > 100) {
+            if (location.distanceSquared(player.getLocation()) > 400) {
                 continue;
             }
 
@@ -264,38 +268,58 @@ public class DeathbanArenaListener implements Listener {
                 String killer = instance.getDeathbanArenaHandler().getDeathbanKiller()
                         .getOrDefault(player.getUniqueId(), "None");
                 player.sendSignChange(sign.getLocation(), new String[] {
-                        ChatColor.RED + "Killed by:",
-                        ChatColor.WHITE + killer,
                         "",
+                        "Killed by",
+                        ChatColor.RED + killer,
                         ""
                 });
             } else if (line0.equalsIgnoreCase("[DeathTime]")) {
                 long seconds = (instance.getDeathbanMap().getDeathban(player.getUniqueId())
                         - System.currentTimeMillis()) / 1000;
                 player.sendSignChange(sign.getLocation(), new String[] {
-                        ChatColor.RED + "Time Left:",
-                        ChatColor.WHITE + TimeUtils.formatIntoDetailedString((int) Math.max(0, seconds)),
                         "",
+                        "Time Left",
+                        ChatColor.GOLD + formatShortTime(Math.max(0, seconds)),
                         ""
                 });
             } else if (line0.equalsIgnoreCase("[DeathLoc]")) {
                 String locationStr = instance.getDeathbanArenaHandler().getDeathbanLocation()
                         .getOrDefault(player.getUniqueId(), "Unknown");
                 player.sendSignChange(sign.getLocation(), new String[] {
-                        ChatColor.RED + "Death Location:",
-                        ChatColor.WHITE + locationStr,
                         "",
+                        "Death Location",
+                        ChatColor.LIGHT_PURPLE + locationStr.replace(",", ""),
                         ""
                 });
-            } else if (line0.equalsIgnoreCase("[DeathLives]")) {
-                int lives = instance.getFriendLivesMap().getLives(player.getUniqueId());
+            } else if (line0.equalsIgnoreCase("[DeathRevive]") || line0.equalsIgnoreCase("[DeathLives]")) {
                 player.sendSignChange(sign.getLocation(), new String[] {
-                        ChatColor.RED + "Lives:",
-                        ChatColor.WHITE + String.valueOf(lives),
                         "",
+                        "Have a life?",
+                        ChatColor.GREEN + "Click Here",
                         ""
                 });
             }
+        }
+    }
+
+    public static String formatShortTime(long seconds) {
+        if (seconds <= 0) {
+            return "0 Seconds";
+        }
+        long hours = seconds / 3600;
+        long minutes = (seconds % 3600) / 60;
+        long secs = seconds % 60;
+
+        if (hours > 0) {
+            String hourStr = hours + " Hour" + (hours > 1 ? "s" : "");
+            if (hourStr.length() > 15 && minutes > 0) {
+                return hours + "h " + minutes + "m";
+            }
+            return hourStr;
+        } else if (minutes > 0) {
+            return minutes + " Minute" + (minutes > 1 ? "s" : "");
+        } else {
+            return secs + " Second" + (secs > 1 ? "s" : "");
         }
     }
 }
