@@ -15,10 +15,16 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
 
 /**
  * @author Hxmilton (JavaProject)
@@ -73,6 +79,15 @@ public class ReclaimHandler implements Listener {
                 for (Object obj : rawList) {
                     if (obj instanceof ItemStack) {
                         items.add((ItemStack) obj);
+                    } else if (obj instanceof String) {
+                        try {
+                            ItemStack item = itemFromBase64((String) obj);
+                            if (item != null) {
+                                items.add(item);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -130,6 +145,36 @@ public class ReclaimHandler implements Listener {
             Bukkit.getScheduler().runTaskLater(instance, () -> {
                 new ReclaimItemEditMenu(reclaim).openMenu(player);
             }, 1L);
+        }
+    }
+
+    public static String itemToBase64(ItemStack item) throws IllegalStateException {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
+
+            dataOutput.writeObject(item);
+
+            dataOutput.close();
+            return Base64.getEncoder().encodeToString(outputStream.toByteArray());
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to save item stack.", e);
+        }
+    }
+
+    public static ItemStack itemFromBase64(String data) throws IOException {
+        try {
+            if (data == null || data.trim().isEmpty() || data.trim().equalsIgnoreCase("null")) {
+                return null;
+            }
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64.getDecoder().decode(data));
+            BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
+            ItemStack item = (ItemStack) dataInput.readObject();
+
+            dataInput.close();
+            return item;
+        } catch (Exception e) {
+            throw new IOException("Unable to load item stack.", e);
         }
     }
 }

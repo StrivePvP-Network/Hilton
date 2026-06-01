@@ -50,7 +50,13 @@ public class Reclaim {
 
         dataConfig.set("items", null);
         if (this.items != null && !this.items.isEmpty()) {
-            dataConfig.set("items", this.items);
+            List<String> serializedItems = new ArrayList<>();
+            for (ItemStack item : this.items) {
+                if (item != null) {
+                    serializedItems.add(ReclaimHandler.itemToBase64(item));
+                }
+            }
+            dataConfig.set("items", serializedItems);
         }
 
         try {
