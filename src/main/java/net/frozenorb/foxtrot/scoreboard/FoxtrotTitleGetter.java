@@ -18,6 +18,6 @@ public class FoxtrotTitleGetter extends TitleGetter {
 
     @Override
     public String getTitle(Player player) {
-        return ChatColor.translateAlternateColorCodes('&', "&4&lStrive &7┃ &bSouls");
+        return ChatColor.translateAlternateColorCodes('&', "&4&lStrivePvP &7┃ &bSouls");
     }
 }

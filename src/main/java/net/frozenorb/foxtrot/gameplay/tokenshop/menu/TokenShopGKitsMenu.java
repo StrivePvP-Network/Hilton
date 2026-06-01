@@ -2,6 +2,7 @@ package net.frozenorb.foxtrot.gameplay.tokenshop.menu;
 
 import cc.fyre.proton.menu.Button;
 import cc.fyre.proton.menu.Menu;
+import net.frozenorb.foxtrot.Foxtrot;
 import org.cavepvp.suge.Suge;
 import org.cavepvp.suge.kit.data.Kit;
 import net.frozenorb.foxtrot.team.menu.TokenShopMenu;
@@ -44,8 +45,21 @@ public class TokenShopGKitsMenu extends Menu {
 
         int slot = 20;
         for (Kit kit : Suge.getInstance().getKitHandler().getKits().values()) {
+            if (!kit.isTokenShopSellable()) continue;
+
             if (slot > 24 && slot < 29)
                 slot = 29;
+
+            if (slot >= 36) break;
+
+            final int price = kit.getTokenShopPrice();
+            final int discount = Foxtrot.getInstance().getTokenShopHandler().getGlobalPromoDiscount();
+            final int finalPrice;
+            if (discount > 0) {
+                finalPrice = Math.max(1, price - (price * discount / 100));
+            } else {
+                finalPrice = price;
+            }
 
             buttons.put(slot++, new Button() {
                 @Override
@@ -59,7 +73,11 @@ public class TokenShopGKitsMenu extends Menu {
                     lore.add(ChatColor.GRAY + "Purchase the " + ChatColor.WHITE
                             + ChatColor.translateAlternateColorCodes('&', kit.getDisplayName()) + ChatColor.GRAY + " GKit.");
                     lore.add("");
-                    lore.add(ChatColor.GOLD + "Cost: " + ChatColor.YELLOW + "5 Tokens");
+                    if (discount > 0) {
+                        lore.add(ChatColor.GOLD + "Cost: " + ChatColor.GRAY + ChatColor.STRIKETHROUGH + price + ChatColor.YELLOW + " " + finalPrice + " Tokens " + ChatColor.RED + "(" + discount + "% OFF!)");
+                    } else {
+                        lore.add(ChatColor.GOLD + "Cost: " + ChatColor.YELLOW + price + " Tokens");
+                    }
                     lore.add("");
                     lore.add(ChatColor.YELLOW + "Left-Click to purchase!");
                     lore.add(ChatColor.AQUA + "Right-Click to preview!");
@@ -84,12 +102,12 @@ public class TokenShopGKitsMenu extends Menu {
                     }
 
                     int tokens = net.frozenorb.foxtrot.Foxtrot.getInstance().getKitmapTokensMap().getTokens(player.getUniqueId());
-                    if (tokens >= 5) {
-                        net.frozenorb.foxtrot.Foxtrot.getInstance().getKitmapTokensMap().setTokens(player.getUniqueId(), tokens - 5);
-                        player.sendMessage(ChatColor.GREEN + "You have purchased the " + kit.getDisplayName() + ChatColor.GREEN + " kit for 5 tokens!");
+                    if (tokens >= finalPrice) {
+                        net.frozenorb.foxtrot.Foxtrot.getInstance().getKitmapTokensMap().setTokens(player.getUniqueId(), tokens - finalPrice);
+                        player.sendMessage(ChatColor.GREEN + "You have purchased the " + kit.getDisplayName() + ChatColor.GREEN + " kit for " + finalPrice + " tokens!");
                         kit.apply(player);
                     } else {
-                        player.sendMessage(ChatColor.RED + "You do not have enough tokens! You need 5 tokens.");
+                        player.sendMessage(ChatColor.RED + "You do not have enough tokens! You need " + finalPrice + " tokens.");
                     }
                 }
             });

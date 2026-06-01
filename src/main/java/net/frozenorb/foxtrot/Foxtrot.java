@@ -181,6 +181,8 @@ public class Foxtrot extends JavaPlugin {
     @Getter
     private TokensHandler tokensHandler;
     @Getter
+    private net.frozenorb.foxtrot.gameplay.tokenshop.TokenShopHandler tokenShopHandler;
+    @Getter
     private ConquestHandler conquestHandler;
     @Getter
     private DeathbanArenaHandler deathbanArenaHandler;
@@ -541,6 +543,7 @@ public class Foxtrot extends JavaPlugin {
         this.treasureChestHandler.saveData();
         this.outpostHandler.saveData();
         this.keyAllHandler.saveData();
+        this.tokenShopHandler.save();
 
         if (this.npcHandler != null) {
             this.npcHandler.saveNPCs();
@@ -593,6 +596,7 @@ public class Foxtrot extends JavaPlugin {
         }
 
         this.tokensHandler = new TokensHandler();
+        this.tokenShopHandler = new net.frozenorb.foxtrot.gameplay.tokenshop.TokenShopHandler();
 
         if (getConfig().getBoolean("glowstoneMountain", false)) {
             this.glowHandler = new GlowHandler();

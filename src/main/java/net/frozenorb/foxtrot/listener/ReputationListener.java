@@ -25,8 +25,8 @@ public class ReputationListener implements Listener {
     public static List<UUID> hasSaid = new ArrayList<>();
     public static List<String> currentTargets = new ArrayList<>();
 
-    @Command(names = {"purchase_reputation"}, permission = "op")
-    public static void execute(CommandSender sender, @Parameter(name = "target")String target) {
+    @Command(names = { "purchase_reputation" }, permission = "op")
+    public static void execute(CommandSender sender, @Parameter(name = "target") String target) {
         sender.sendMessage("Dispatching Reputation");
 
         if (currentTargets.contains(target)) {
@@ -36,9 +36,11 @@ public class ReputationListener implements Listener {
 
         for (Player onlinePlayer : Foxtrot.getInstance().getServer().getOnlinePlayers()) {
             onlinePlayer.sendMessage("");
-            onlinePlayer.sendMessage(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Reputation");
-            onlinePlayer.sendMessage(target + ChatColor.translateAlternateColorCodes('&', " &7has just made a purchase!"));
-            onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cType &f'gg' &cin chat to gain reputation! You have 5 seconds!"));
+            onlinePlayer.sendMessage(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Aura Gained!");
+            onlinePlayer
+                    .sendMessage(target + ChatColor.translateAlternateColorCodes('&', " &7has just made a purchase!"));
+            onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                    "&cType &f'gg' &cin chat to gain aura! You have 5 seconds!"));
             onlinePlayer.sendMessage("");
         }
 
@@ -53,7 +55,7 @@ public class ReputationListener implements Listener {
         tasks.add(Foxtrot.getInstance().getServer().getScheduler().runTaskLater(Foxtrot.getInstance(), () -> {
             ggMode = false;
             currentTargets.clear();
-        }, 20*10));
+        }, 20 * 10));
 
         Piston.getInstance().getChatHandler().getSlowCache().clear();
         currentTargets.add(target);
@@ -78,7 +80,8 @@ public class ReputationListener implements Listener {
             return;
         }
 
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou have gained &f0.05 reputation &afor saying GG in chat when a player purchased an item! Thank you!"));
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                "&aYou have gained &f0.05 reputation &afor saying GG in chat when a player purchased an item! Thank you!"));
 
         Profiles.getInstance().getReputationHandler().addReputation(player.getUniqueId(), player.getName(), 0.05);
 

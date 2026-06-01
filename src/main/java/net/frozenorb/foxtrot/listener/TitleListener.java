@@ -21,34 +21,37 @@ public class TitleListener implements Listener {
         final Player player = event.getPlayer();
 
         if (!player.hasPlayedBefore()) {
-            PlayerUtil.sendTitle(player, "&4&l" + UniverseAPI.getServerName(), "&fWelcome to " + UniverseAPI.getServerName() + "!");
+            PlayerUtil.sendTitle(player, "&4&l" + UniverseAPI.getServerName(),
+                    "&fWelcome to " + UniverseAPI.getServerName() + "!");
             Foxtrot.getInstance().getServer().getScheduler().runTaskLater(Foxtrot.getInstance(), () -> {
                 PlayerUtil.sendTitle(player, "&4&lGet Started", "&fCreating a faction by typing /f create [name]");
 
                 player.playSound(player.getLocation(), Sound.NOTE_PLING, 1, 1);
                 player.sendMessage("");
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&4&lWelcome"));
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&fWelcome to StrivePvP " + UniverseAPI.getServerName() + "!"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                        "&fWelcome to StrivePvP " + UniverseAPI.getServerName() + "!"));
                 player.sendMessage("");
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&4&lGet Started"));
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&fType &c/f create [name] &fto create a faction!"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                        "&fType &c/f create [name] &fto create a faction!"));
                 player.sendMessage("");
-            }, 20*8);
+            }, 20 * 8);
             return;
         }
 
         final Profile profile = Neutron.getInstance().getProfileHandler().fromUuid(player.getUniqueId());
         final Team team = Foxtrot.getInstance().getTeamHandler().getTeam(player);
 
-        PlayerUtil.sendTitle(player, "&4&l" + UniverseAPI.getServerName(), "&fWelcome back to " + UniverseAPI.getServerName() + "!");
+        PlayerUtil.sendTitle(player, "&4&l" + UniverseAPI.getServerName(),
+                "&fWelcome back to " + UniverseAPI.getServerName() + "!");
 
         Foxtrot.getInstance().getServer().getScheduler().runTaskLater(Foxtrot.getInstance(), () -> {
             if (team != null && !team.getClaims().isEmpty()) {
-                if (profile.getGrants().stream().noneMatch(it -> it.getRank().getName().equalsIgnoreCase("Iron"))) {
-                    PlayerUtil.sendTitle(player, "&4&lFree Rank", "&fClaim your free &7&lIron Rank &fby typing &c/freerank");
+                if (profile.getGrants().stream().noneMatch(it -> it.getRank().getName().equalsIgnoreCase("Ruby"))) {
+                    PlayerUtil.sendTitle(player, "&4&lFree Rank",
+                            "&fClaim your free &c&lRuby Rank &fby typing &c/freerank");
                     return;
-                } else {
-                    PlayerUtil.sendTitle(player, "&4&lVote", "&fGet free items by typing &c/vote&f!");
                 }
                 return;
             }
@@ -64,9 +67,10 @@ public class TitleListener implements Listener {
                     return;
                 }
 
-                PlayerUtil.sendTitle(player, "&4&lGet Started", "&fFind an open &7Wilderness &farea and type &c/f claim&f!");
+                PlayerUtil.sendTitle(player, "&4&lGet Started",
+                        "&fFind an open &7Wilderness &farea and type &c/f claim&f!");
             }
-        }, 20*8);
+        }, 20 * 8);
     }
 
 }

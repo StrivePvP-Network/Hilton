@@ -10,12 +10,12 @@ import org.bukkit.entity.Player;
 
 public class PollCommand {
 
-    @Command(names = {"poll editor", "polls editor"}, permission = "op")
+    @Command(names = { "poll editor", "polls editor" }, permission = "op")
     public static void execute(Player player) {
         new PollListMenu().openMenu(player);
     }
 
-    @Command(names = {"poll vote", "polls vote", "polls", "poll"}, permission = "")
+    @Command(names = { "poll vote", "polls vote", "polls", "poll" }, permission = "")
     public static void vote(Player player) {
 
         if (Foxtrot.getInstance().getPollHandler().getActivePolls().size() == 1) {
@@ -23,7 +23,7 @@ public class PollCommand {
         } else if (Foxtrot.getInstance().getPollHandler().getActivePolls().size() > 1) {
             new MultiplePollsMenu().openMenu(player);
         } else {
-            player.sendMessage(ChatColor.RED + "There are no active polls!");
+            player.sendMessage(ChatColor.RED + "Not running any polls.");
         }
     }
 

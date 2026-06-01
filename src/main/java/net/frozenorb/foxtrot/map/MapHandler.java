@@ -109,7 +109,7 @@ public class MapHandler {
     private float dtrIncrementMultiplier;
     @Getter
     private StatsHandler statsHandler;
-    
+
     // Kit-Map only stuff:
     @Getter
     private KillstreakHandler killstreakHandler;
@@ -404,13 +404,13 @@ public class MapHandler {
 
                 FileUtils.write(mapInfo, Foxtrot.GSON.toJson(new JsonParser().parse(dbObject.toString()))); // save it
                                                                                                             // exactly
-                                                                                                            // like it
-                                                                                                            // was
-                                                                                                            // except
-                                                                                                            // for the
-                                                                                                            // nether
-                                                                                                            // that was
-                                                                                                            // changed.
+                // like it
+                // was
+                // except
+                // for the
+                // nether
+                // that was
+                // changed.
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -427,14 +427,14 @@ public class MapHandler {
                                                                                                      // buffer
 
                 FileUtils.write(mapInfo, Foxtrot.GSON.toJson(new JsonParser().parse(dbObject.toString()))); // save it
-                                                                                                            // exactly
-                                                                                                            // like it
-                                                                                                            // was
-                                                                                                            // except
-                                                                                                            // for the
-                                                                                                            // nether
-                                                                                                            // that was
-                                                                                                            // changed.
+                // exactly
+                // like it
+                // was
+                // except
+                // for the
+                // nether
+                // that was
+                // changed.
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -43,12 +43,13 @@ public class DepthStriderListener implements Listener {
 
         final List<String> applyToLore = applyToMeta.hasLore() ? applyToMeta.getLore() : new ArrayList<>();
 
-//        if (applyToLore.stream().anyMatch(it -> it.contains())) {
-//            player.sendMessage(ChatColor.RED + "You already have that custom enchant on that piece!");
-//            return;
-//        }
-//
-//        applyToLore.add(ChatColor.RED + fullEnchantLore);
+        // if (applyToLore.stream().anyMatch(it -> it.contains())) {
+        // player.sendMessage(ChatColor.RED + "You already have that custom enchant on
+        // that piece!");
+        // return;
+        // }
+        //
+        // applyToLore.add(ChatColor.RED + fullEnchantLore);
         applyToMeta.setLore(applyToLore);
         applyToItem.setItemMeta(applyToMeta);
         event.setCurrentItem(applyToItem.clone());
@@ -61,7 +62,8 @@ public class DepthStriderListener implements Listener {
     }
 
     public boolean isSimilar(ItemStack itemStack) {
-        if (itemStack == null || itemStack.getItemMeta() == null || itemStack.getItemMeta().getLore() == null || itemStack.getItemMeta().getDisplayName() == null) {
+        if (itemStack == null || itemStack.getItemMeta() == null || itemStack.getItemMeta().getLore() == null
+                || itemStack.getItemMeta().getDisplayName() == null) {
             return false;
         }
 
@@ -69,12 +71,13 @@ public class DepthStriderListener implements Listener {
             return false;
         }
 
-        if (!itemStack.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_PURPLE + ChatColor.BOLD.toString() + "Depth Strider Book")) {
+        if (!itemStack.getItemMeta().getDisplayName()
+                .equalsIgnoreCase(ChatColor.DARK_PURPLE + ChatColor.BOLD.toString() + "Depth Strider Book")) {
             return false;
         }
 
         final List<String> lore = itemStack.getItemMeta().getLore();
 
-        return lore.contains(CC.translate("&cDouble Click this book on the boots you want to put it on!"));
+        return lore.contains(CC.translate("&cDrag to apply depth strider book on boots."));
     }
 }
