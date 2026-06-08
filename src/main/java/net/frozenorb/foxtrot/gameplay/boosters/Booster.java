@@ -66,7 +66,7 @@ public abstract class Booster implements Listener {
             onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7█" + "&4████" + "&7██ &cActivated By: " + ChatColor.WHITE + UUIDUtils.name(target)));
             onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7███████"));
             onlinePlayer.sendMessage("");
-            onlinePlayer.sendMessage(ChatColor.GREEN + "You can purchase a booster at " + ChatColor.WHITE +  "https://store.cavepvp.org/boosters" + ChatColor.GREEN + "!");
+            onlinePlayer.sendMessage(ChatColor.GRAY + "Get this perk and more at " + ChatColor.WHITE +  "https://store.strivepvp.top/boosters" + ChatColor.GREEN + "!");
         }
     }
 
@@ -95,7 +95,7 @@ public abstract class Booster implements Listener {
 
         if (player != null) {
             player.playSound(player.getLocation(), Sound.LEVEL_UP, 1, 1);
-            player.sendMessage(ChatColor.GREEN + "Your booster has been deactivated! Thank you for activating this booster!");
+            player.sendMessage(ChatColor.GREEN + "Your booster has been successfully consumed. Thanks you for activate it.");
         }
     }
 }

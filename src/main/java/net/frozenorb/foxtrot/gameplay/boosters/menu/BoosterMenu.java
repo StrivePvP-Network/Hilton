@@ -90,7 +90,7 @@ public class BoosterMenu extends Menu {
                 @Override
                 public void clicked(Player player, int slot, ClickType clickType) {
                     if (boosters <= 0) {
-                        player.sendMessage(ChatColor.RED + "You do not have this booster! You can purchase boosters at https://store.cavepvp.org/boosters");
+                        player.sendMessage(ChatColor.RED + "You do not have this booster! You can purchase boosters at https://store.strivepvp.top/boosters");
                         return;
                     }
 

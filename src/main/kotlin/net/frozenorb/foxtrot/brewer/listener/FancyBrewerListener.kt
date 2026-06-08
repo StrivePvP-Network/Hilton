@@ -61,7 +61,7 @@ object FancyBrewerListener : Listener {
         val brewer = FancyBrewer(UUID.randomUUID(),event.player.uniqueId,block)
 
         event.player.sendMessage(ChatColor.translate("&bYou have placed a brewer."))
-        event.player.sendMessage(ChatColor.translate("&7Check our wiki to learn use them at: https://strive.top/wiki/fancybrewers"))
+        event.player.sendMessage(ChatColor.translate("&7Check our wiki to learn use them at: https://strivepvp.top/wiki/how-to-use-brewers"))
 
         FancyBrewerHandler.addBrewer(brewer.also{it.flagForSave()})
     }

@@ -134,16 +134,16 @@ public class TreasureChestListener implements Listener {
             holograms.stream().filter(it -> it.getLines().contains(ChatColor.translateAlternateColorCodes('&', "&4&lReward"))).forEach(Hologram::delete);
 
             String color = "&c";
-            String link = "store.cavepvp.org/category/omega-chests";
+            String link = "store.strivepvp.top/category/omega-chests";
 
             if (currentlyOpening.getId().equalsIgnoreCase("Illuminated")) {
                 color = "&b";
-                link = "store.cavepvp.org/category/illuminated-chests";
+                link = "store.strivepvp.top/category/illuminated-chests";
             }
 
             if (currentlyOpening.getId().equalsIgnoreCase("Treasure")) {
                 color = "&c";
-                link = "store.cavepvp.org/category/illuminated-chests";
+                link = "store.strivepvp.top/category/illuminated-chests";
             }
 
             for (Player onlinePlayer : Foxtrot.getInstance().getServer().getOnlinePlayers()) {
@@ -171,7 +171,7 @@ public class TreasureChestListener implements Listener {
 
             final Location centralLocation = currentlyOpening.getCentralLocation().clone();
 
-            final Hologram hologram = Proton.getInstance().getHologramHandler().createHologram().addLines(ChatColor.translateAlternateColorCodes('&', "&f&ki&4&l TREASURE CHESTS &f&ki"), ChatColor.translateAlternateColorCodes('&', "&f&ostore.cavepvp.org")).at(centralLocation.getBlock().getLocation().add(0.5, 0.4, 0.5)).build();
+            final Hologram hologram = Proton.getInstance().getHologramHandler().createHologram().addLines(ChatColor.translateAlternateColorCodes('&', "&f&ki&4&l TREASURE CHESTS &f&ki"), ChatColor.translateAlternateColorCodes('&', "&f&ostore.strivepvp.top")).at(centralLocation.getBlock().getLocation().add(0.5, 0.4, 0.5)).build();
             hologram.send();
 
             centralLocation.getBlock().setType(Material.ENDER_CHEST);

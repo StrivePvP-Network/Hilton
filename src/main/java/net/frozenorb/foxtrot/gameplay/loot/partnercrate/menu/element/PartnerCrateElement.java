@@ -45,7 +45,7 @@ public class PartnerCrateElement extends Button {
         ItemStack itemStack = Arrays.stream(player.getInventory().getContents()).filter(it -> PartnerCrateCommand.isSimilar(partnerType, it)).findFirst().orElse(null);
 
         if (itemStack == null) {
-            player.sendMessage(ChatColor.RED + "You do not have a " + partnerType.getCrateName() + " key in your inventory, purchase one at https://store.cavepvp.org");
+            player.sendMessage(ChatColor.RED + "You do not have a " + partnerType.getCrateName() + " key in your inventory, purchase one at https://store.strivepvp.top");
             return;
         }
 

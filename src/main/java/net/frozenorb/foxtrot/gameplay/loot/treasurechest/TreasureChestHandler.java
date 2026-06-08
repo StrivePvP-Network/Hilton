@@ -9,7 +9,7 @@ import net.frozenorb.foxtrot.gameplay.loot.crate.command.parameterType.CratePara
 import net.frozenorb.foxtrot.gameplay.loot.treasurechest.command.parameterType.TreasureChestParameterProvider;
 import net.frozenorb.foxtrot.gameplay.loot.treasurechest.listener.TreasureChestListener;
 import net.frozenorb.foxtrot.gameplay.loot.treasurechest.reward.TreasureChestReward;
-import net.frozenorb.foxtrot.server.voucher.VoucherCommand;
+import net.frozenorb.foxtrot.server.voucher.command.VoucherCommand;
 import net.frozenorb.foxtrot.util.PersistableLocation;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;

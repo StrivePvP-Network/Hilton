@@ -62,8 +62,7 @@ public class TriviaHandler implements Listener {
         questions.put("What's the name of the Minecraft convention?", "Minecon");
         questions.put("What's the name of the Twitch convention?", "Twitchcon");
         questions.put("What's the final boss in Minecraft?", "Enderdragon");
-        questions.put("What version is Minecraft currently on?", "1.17");
-        questions.put("What is the IP to Strive?", "strive.top");
+        questions.put("What is the IP to Strive?", "strivepvp.top");
         questions.put("chatreaction:Strive", "Strive");
         questions.put("chatreaction:Strive On Top", "Strive On Top");
         questions.put("chatreaction:Kraken", "Kraken");

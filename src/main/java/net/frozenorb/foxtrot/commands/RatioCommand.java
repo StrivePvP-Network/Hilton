@@ -27,7 +27,7 @@ public class RatioCommand implements Listener {
 
         if (!player.hasPermission("command.ratio")) {
             player.sendMessage(ChatColor.RED + "You need VIP status in order to ratio someone!");
-            player.sendMessage(ChatColor.RED + "Purchase VIP status at https://store.cavepvp.org/category/vip-status");
+            player.sendMessage(ChatColor.RED + "Purchase VIP status at https://store.strivepvp.top/category/vip-status");
             return;
         }
 

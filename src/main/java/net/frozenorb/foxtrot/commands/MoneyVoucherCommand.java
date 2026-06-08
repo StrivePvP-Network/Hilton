@@ -2,7 +2,9 @@ package net.frozenorb.foxtrot.commands;
 
 import cc.fyre.proton.command.Command;
 import cc.fyre.proton.command.param.Parameter;
-import net.frozenorb.foxtrot.server.voucher.VoucherItem;
+import net.frozenorb.foxtrot.Foxtrot;
+import net.frozenorb.foxtrot.server.voucher.VoucherTemplate;
+import net.frozenorb.foxtrot.server.voucher.command.VoucherCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -25,8 +27,18 @@ public class MoneyVoucherCommand {
         String formattedAmount = NumberFormat.getNumberInstance(Locale.US).format(amount);
         String displayName = "&2$&a" + formattedAmount + " &6&lMoney Voucher";
 
-        ItemStack item = VoucherItem.create(VoucherItem.VoucherType.MONEY, String.valueOf((int) amount), "none",
-                displayName);
+        String templateId = "money_" + (int) amount;
+        VoucherTemplate template = Foxtrot.getInstance().getVoucherHandler().fromName(templateId).orElseGet(() -> {
+            VoucherTemplate t = new VoucherTemplate(templateId);
+            t.setCategory("MONEY");
+            t.setValue(String.valueOf((int) amount));
+            t.setDisplayName(displayName);
+            t.save();
+            Foxtrot.getInstance().getVoucherHandler().getTemplates().add(t);
+            return t;
+        });
+
+        ItemStack item = VoucherCommand.createPhysicalVoucher(template);
 
         if (target.getInventory().firstEmpty() == -1) {
             target.getWorld().dropItem(target.getLocation(), item);

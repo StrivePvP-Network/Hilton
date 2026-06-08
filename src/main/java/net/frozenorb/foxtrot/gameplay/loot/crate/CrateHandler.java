@@ -9,7 +9,7 @@ import net.frozenorb.foxtrot.gameplay.loot.crate.command.parameterType.CratePara
 import net.frozenorb.foxtrot.gameplay.loot.crate.data.ArmorType;
 import net.frozenorb.foxtrot.gameplay.loot.crate.item.CrateItem;
 import net.frozenorb.foxtrot.gameplay.loot.crate.listener.CrateListener;
-import net.frozenorb.foxtrot.server.voucher.VoucherCommand;
+import net.frozenorb.foxtrot.server.voucher.command.VoucherCommand;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -178,7 +178,7 @@ public class CrateHandler {
         player.sendMessage(
                 ChatColor.translateAlternateColorCodes('&', "&aYou have opened a " + crate.getDisplayName() + "&a."));
         player.playSound(player.getLocation(), Sound.BAT_LOOP, 1, 1);
-        VoucherCommand.spawnFireworks(player.getLocation(), 1, 2, crate.getFireworkColor(), FireworkEffect.Type.BURST);
+        spawnFireworks(player.getLocation(), 1, 2, crate.getFireworkColor(), FireworkEffect.Type.BURST);
 
         if (crate.getId().equalsIgnoreCase("Reinforce")) {
             final List<ArmorType> types = Arrays.stream(ArmorType.values()).collect(Collectors.toList());
@@ -282,6 +282,19 @@ public class CrateHandler {
         if (itemStack.getAmount() == 0 || itemStack.getAmount() <= 0) {
             itemStack.setAmount(1);
         }
+
         return itemStack;
+    }
+
+    public static void spawnFireworks(Location location, int amount, int power, Color color, FireworkEffect.Type fireworkEffect) {
+        org.bukkit.entity.Firework firework = (org.bukkit.entity.Firework) location.getWorld().spawnEntity(location, org.bukkit.entity.EntityType.FIREWORK);
+        org.bukkit.inventory.meta.FireworkMeta fireworkMeta = firework.getFireworkMeta();
+        fireworkMeta.setPower(power);
+        fireworkMeta.addEffect(FireworkEffect.builder().with(fireworkEffect).with(FireworkEffect.Type.BURST).withColor(color).flicker(true).build());
+        firework.setFireworkMeta(fireworkMeta);
+        for (int i = 0; i < amount; i++) {
+            org.bukkit.entity.Firework entityFirework = (org.bukkit.entity.Firework) location.getWorld().spawnEntity(location, org.bukkit.entity.EntityType.FIREWORK);
+            entityFirework.setFireworkMeta(fireworkMeta);
+        }
     }
 }

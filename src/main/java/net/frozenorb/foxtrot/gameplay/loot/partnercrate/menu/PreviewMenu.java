@@ -50,7 +50,7 @@ public class PreviewMenu extends Menu {
         toReturn.put(11, Button.fromItem(new ItemStack(Material.GOLDEN_APPLE, 1, (byte)1)));
         toReturn.put(12, Button.fromItem(new ItemStack(Material.ENDER_PORTAL_FRAME, 3)));
         toReturn.put(13, Button.fromItem(new ItemStack(ItemBuilder.of(Material.TRIPWIRE_HOOK).amount(3).name(ChatColor.translateAlternateColorCodes('&', "&5&lItems &7Key")).addToLore("", ChatColor.GRAY + "Right click the " + ChatColor.DARK_PURPLE + "Items Crate" + ChatColor.GRAY + " to obtain rewards!").build())));
-        toReturn.put(14, Button.fromItem(new ItemStack(ItemBuilder.of(Material.ENDER_CHEST).name(ChatColor.translateAlternateColorCodes('&', "&d&lEaster Lootbox")).addToLore(ChatColor.GRAY + "Unlocked at " + ChatColor.WHITE + "store.cavepvp.org").build())));
+        toReturn.put(14, Button.fromItem(new ItemStack(ItemBuilder.of(Material.ENDER_CHEST).name(ChatColor.translateAlternateColorCodes('&', "&d&lEaster Lootbox")).addToLore(ChatColor.GRAY + "Unlocked at " + ChatColor.WHITE + "store.strivepvp.top").build())));
         toReturn.put(15, Button.fromItem(new ItemStack(ItemBuilder.copyOf(partnerType.getAbility().hassanStack.clone()).amount(3).build())));
         toReturn.put(16, Button.fromItem(new ItemStack(ItemBuilder.copyOf(partnerType.getAbility().hassanStack.clone()).amount(6).build())));
         toReturn.put(17, Button.placeholder(Material.STAINED_GLASS_PANE, (byte) 0, ""));

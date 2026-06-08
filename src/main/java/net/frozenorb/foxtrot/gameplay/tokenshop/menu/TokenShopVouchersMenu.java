@@ -3,7 +3,8 @@ package net.frozenorb.foxtrot.gameplay.tokenshop.menu;
 import cc.fyre.proton.menu.Button;
 import cc.fyre.proton.menu.Menu;
 import net.frozenorb.foxtrot.Foxtrot;
-import net.frozenorb.foxtrot.server.voucher.VoucherItem;
+import net.frozenorb.foxtrot.server.voucher.command.VoucherCommand;
+import net.frozenorb.foxtrot.server.voucher.VoucherTemplate;
 import net.frozenorb.foxtrot.team.menu.TokenShopMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -75,11 +76,16 @@ public class TokenShopVouchersMenu extends Menu {
                 }
 
                 Foxtrot.getInstance().getKitmapTokensMap().setTokens(player.getUniqueId(), tokens - 2);
-                ItemStack voucher = VoucherItem.create(
-                        VoucherItem.VoucherType.LIVES,
-                        "1",
-                        "perm",
-                        "&4&l1 Life &7┃ &bVoucher");
+                VoucherTemplate template = Foxtrot.getInstance().getVoucherHandler().fromName("1_life_voucher").orElseGet(() -> {
+                    VoucherTemplate t = new VoucherTemplate("1_life_voucher");
+                    t.setCategory("LIVES");
+                    t.setValue("1");
+                    t.setDisplayName("&4&l1 Life &7┃ &bVoucher");
+                    t.save();
+                    Foxtrot.getInstance().getVoucherHandler().getTemplates().add(t);
+                    return t;
+                });
+                ItemStack voucher = VoucherCommand.createPhysicalVoucher(template);
                 player.getInventory().addItem(voucher);
                 player.sendMessage(ChatColor.GREEN + "You purchased a " + ChatColor.WHITE + "1 Life Voucher"
                         + ChatColor.GREEN + " for 2 tokens!");
@@ -119,11 +125,16 @@ public class TokenShopVouchersMenu extends Menu {
                 }
 
                 Foxtrot.getInstance().getKitmapTokensMap().setTokens(player.getUniqueId(), tokens - 5);
-                ItemStack voucher = VoucherItem.create(
-                        VoucherItem.VoucherType.LIVES,
-                        "5",
-                        "perm",
-                        "&4&l5 Lives &7┃ &bVoucher");
+                VoucherTemplate template = Foxtrot.getInstance().getVoucherHandler().fromName("5_lives_voucher").orElseGet(() -> {
+                    VoucherTemplate t = new VoucherTemplate("5_lives_voucher");
+                    t.setCategory("LIVES");
+                    t.setValue("5");
+                    t.setDisplayName("&4&l5 Lives &7┃ &bVoucher");
+                    t.save();
+                    Foxtrot.getInstance().getVoucherHandler().getTemplates().add(t);
+                    return t;
+                });
+                ItemStack voucher = VoucherCommand.createPhysicalVoucher(template);
                 player.getInventory().addItem(voucher);
                 player.sendMessage(ChatColor.GREEN + "You purchased a " + ChatColor.WHITE + "5 Lives Voucher"
                         + ChatColor.GREEN + " for 5 tokens!");
@@ -163,11 +174,16 @@ public class TokenShopVouchersMenu extends Menu {
                 }
 
                 Foxtrot.getInstance().getKitmapTokensMap().setTokens(player.getUniqueId(), tokens - 8);
-                ItemStack voucher = VoucherItem.create(
-                        VoucherItem.VoucherType.LIVES,
-                        "10",
-                        "perm",
-                        "&4&l10 Lives &7┃ &bVoucher");
+                VoucherTemplate template = Foxtrot.getInstance().getVoucherHandler().fromName("10_lives_voucher").orElseGet(() -> {
+                    VoucherTemplate t = new VoucherTemplate("10_lives_voucher");
+                    t.setCategory("LIVES");
+                    t.setValue("10");
+                    t.setDisplayName("&4&l10 Lives &7┃ &bVoucher");
+                    t.save();
+                    Foxtrot.getInstance().getVoucherHandler().getTemplates().add(t);
+                    return t;
+                });
+                ItemStack voucher = VoucherCommand.createPhysicalVoucher(template);
                 player.getInventory().addItem(voucher);
                 player.sendMessage(ChatColor.GREEN + "You purchased a " + ChatColor.WHITE + "10 Lives Voucher"
                         + ChatColor.GREEN + " for 8 tokens!");

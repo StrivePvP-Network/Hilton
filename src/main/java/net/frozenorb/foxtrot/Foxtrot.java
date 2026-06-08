@@ -544,7 +544,6 @@ public class Foxtrot extends JavaPlugin {
         this.customTimerHandler.saveData();
         this.mapHandler.getAbilityHandler().saveStatistics();
         this.tipsHandler.saveTips();
-        this.voucherHandler.saveData();
         this.treasureChestHandler.saveData();
         this.outpostHandler.saveData();
         this.keyAllHandler.saveData();
@@ -605,7 +604,9 @@ public class Foxtrot extends JavaPlugin {
 
         this.customTimerHandler = new CustomTimerHandler();
         this.voucherHandler = new VoucherHandler(this);
-        this.getServer().getPluginManager().registerEvents(new net.frozenorb.foxtrot.server.voucher.VoucherListener(),
+        this.getServer().getPluginManager().registerEvents(new net.frozenorb.foxtrot.server.voucher.listener.VoucherListener(),
+                this);
+        this.getServer().getPluginManager().registerEvents(new net.frozenorb.foxtrot.server.voucher.listener.VoucherEditListener(),
                 this);
         this.pollHandler = new PollHandler();
         this.tipsHandler = new TipsHandler(this);
@@ -647,6 +648,7 @@ public class Foxtrot extends JavaPlugin {
             cavernHandler = new CavernHandler();
         }
 
+        Proton.getInstance().getCommandHandler().registerParameterType(net.frozenorb.foxtrot.server.voucher.VoucherTemplate.class, new net.frozenorb.foxtrot.server.voucher.command.VoucherTemplateParameter());
         Proton.getInstance().getCommandHandler().registerAll(this);
 
         DeathMessageHandler.init();

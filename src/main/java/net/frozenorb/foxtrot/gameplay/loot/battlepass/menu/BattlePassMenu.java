@@ -130,7 +130,7 @@ public class BattlePassMenu extends Menu {
         @Override
         public List<String> getDescription(Player player) {
             if (!daily && !progress.isPremium()) {
-                return Formats.renderLines(CC.RED, "You don't have access to the Premium BattlePass challenges! Purchase on our store at store.cavepvp.org.");
+                return Formats.renderLines(CC.RED, "You don't have access to the Premium BattlePass challenges! Purchase on our store at store.strivepvp.top.");
             } else {
                 return Collections.emptyList();
             }
@@ -148,7 +148,7 @@ public class BattlePassMenu extends Menu {
         @Override
         public void clicked(Player player, int slot, ClickType clickType) {
             if (!daily && !progress.isPremium()) {
-                player.sendMessage(CC.RED + "You don't have access to the Premium BattlePass challenges! Purchase on our store at store.cavepvp.org.");
+                player.sendMessage(CC.RED + "You don't have access to the Premium BattlePass challenges! Purchase on our store at store.strivepvp.top.");
                 return;
             }
 
@@ -219,7 +219,7 @@ public class BattlePassMenu extends Menu {
 
             if (!reward.isFreeReward() && !progress.isPremium()) {
                 description.add("");
-                description.addAll(Formats.renderLines(CC.RED, "You don't have access to the Premium BattlePass rewards! Purchase on our store at store.cavepvp.org."));
+                description.addAll(Formats.renderLines(CC.RED, "You don't have access to the Premium BattlePass rewards! Purchase on our store at store.strivepvp.top."));
             }
 
             return description;

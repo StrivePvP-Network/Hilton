@@ -19,7 +19,7 @@ public class PerkCommand {
     public static void execute(Player player) {
         if (!player.hasPermission("perk.warp.end")) {
             player.sendMessage(ChatColor.RED + "You do not have this perk!");
-            player.sendMessage(ChatColor.RED + "Purchase it and more at https://store.strive.top/category/perks");
+            player.sendMessage(ChatColor.RED + "Purchase it and more at https://store.strivepvp.top/category/perks");
             return;
         }
 
@@ -36,7 +36,7 @@ public class PerkCommand {
     public static void nether(Player player) {
         if (!player.hasPermission("perk.warp.nether")) {
             player.sendMessage(ChatColor.RED + "You do not have this perk!");
-            player.sendMessage(ChatColor.RED + "Purchase it and more at https://store.strive.top/category/perks");
+            player.sendMessage(ChatColor.RED + "Purchase it and more at https://store.strivepvp.top/category/perks");
             return;
         }
 
@@ -53,7 +53,7 @@ public class PerkCommand {
     public static void tpa(Player player, @Parameter(name = "target") Player target) {
         if (!player.hasPermission("perk.warp.tpa")) {
             player.sendMessage(ChatColor.RED + "You do not have this perk!");
-            player.sendMessage(ChatColor.RED + "Purchase it and more at https://store.strive.top/category/perks");
+            player.sendMessage(ChatColor.RED + "Purchase it and more at https://store.strivepvp.top/category/perks");
             return;
         }
 

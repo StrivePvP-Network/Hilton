@@ -56,7 +56,7 @@ public enum PartnerType {
                 .name(crateName)
                 .data((byte)3)
                 .setLore(Arrays.asList(
-                        ChatColor.translateAlternateColorCodes('&', "&7Obtain this key from at store.cavepvp.org"),
+                        ChatColor.translateAlternateColorCodes('&', "&7Obtain this key from at store.strivepvp.top"),
                         "",
                         ChatColor.GRAY + " - " + chatColor + ChatColor.BOLD + ChatColor.stripColor(this.getAbility().getDisplayName()),
                         "",

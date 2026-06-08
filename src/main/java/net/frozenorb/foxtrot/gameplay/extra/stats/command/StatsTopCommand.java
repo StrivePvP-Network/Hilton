@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class StatsTopCommand {
 
-    @Command(names = {"statstop", "leaderboards", "lb"}, permission = "")
+    @Command(names = {"statstop", "lb"}, permission = "")
     public static void statstop(CommandSender sender, @Parameter(name = "objective", defaultValue = "kills") StatsObjective objective) {
         sender.sendMessage(Team.DARK_GRAY_LINE);
         sender.sendMessage(ChatColor.DARK_RED.toString() + ChatColor.BOLD + objective.getName() + " Leaderboard");

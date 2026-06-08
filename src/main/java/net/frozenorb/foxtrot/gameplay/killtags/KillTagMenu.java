@@ -92,7 +92,7 @@ public class KillTagMenu extends Menu {
                     if (!player.hasPermission("killtags.access")) {
                         player.closeInventory();
                         player.sendMessage(ChatColor.RED + "You must have VIP status to use this Kill Tag!");
-                        player.sendMessage(ChatColor.GRAY + "Purchase VIP status at " + ChatColor.WHITE + "https://store.cavepvp.org" + ChatColor.GRAY + ".");
+                        player.sendMessage(ChatColor.GRAY + "Purchase VIP status at " + ChatColor.WHITE + "https://store.strivepvp.top" + ChatColor.GRAY + ".");
                         return;
                     }
 

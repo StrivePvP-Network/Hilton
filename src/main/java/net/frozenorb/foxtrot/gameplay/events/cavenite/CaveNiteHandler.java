@@ -9,7 +9,7 @@ import lombok.Setter;
 import mkremins.fanciful.FancyMessage;
 import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.gameplay.events.cavenite.listener.CaveNiteListener;
-import net.frozenorb.foxtrot.server.voucher.VoucherCommand;
+import net.frozenorb.foxtrot.server.voucher.command.VoucherCommand;
 import net.frozenorb.foxtrot.team.Team;
 import net.frozenorb.foxtrot.team.claims.Claim;
 import net.frozenorb.foxtrot.util.CuboidRegion;

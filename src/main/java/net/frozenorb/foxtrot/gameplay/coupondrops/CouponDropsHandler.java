@@ -49,7 +49,7 @@ public class CouponDropsHandler {
                 .minimum(new BigDecimal("0.0"))
                 .expire(new Coupon.Expire("limit", 1, expiration.getTime()))
                 .discountMethod(2)
-                .effective(new Coupon.Effective("cart", Foxtrot.getInstance().getVoucherHandler().getEffectiveHandler().getEffectivePackages(), new ArrayList<>()))
+                .effective(new Coupon.Effective("cart", new ArrayList<Integer>(), new ArrayList<>()))
                 .startDate(new Date(System.currentTimeMillis()))
                 .discount(discount).build();
 

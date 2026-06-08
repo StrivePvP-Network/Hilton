@@ -50,7 +50,7 @@ public class TreasureChestMenu extends Menu {
 
                     toReturn.add(ChatColor.GRAY + "Right Click to view all possible loot");
                     if (chests == 0) {
-                        toReturn.add(ChatColor.RED + "Purchase a " + ChatColor.translateAlternateColorCodes('&', treasureChest.getDisplayName()) + ChatColor.RED + " at store.cavepvp.org!");
+                        toReturn.add(ChatColor.RED + "Purchase a " + ChatColor.translateAlternateColorCodes('&', treasureChest.getDisplayName()) + ChatColor.RED + " at store.strivepvp.top!");
                     } else {
                         toReturn.add(ChatColor.GREEN + "Left Click to open a " + ChatColor.translateAlternateColorCodes('&', treasureChest.getDisplayName()) + ChatColor.GREEN + "!");
                     }
@@ -104,7 +104,7 @@ public class TreasureChestMenu extends Menu {
                     }
 
                     if (!treasureChest.getCache().containsKey(player.getUniqueId()) || treasureChest.getCache().get(player.getUniqueId()) <= 0) {
-                        player.sendMessage(ChatColor.RED + "You don't have any Treasure Chests! You can purchase one at https://store.cavepvp.org");
+                        player.sendMessage(ChatColor.RED + "You don't have any Treasure Chests! You can purchase one at https://store.strivepvp.top");
                         return;
                     }
 
@@ -146,7 +146,7 @@ public class TreasureChestMenu extends Menu {
                         onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', ""));
                         onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', treasureChest.getDisplayName()));
                         onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&f" + player.getName() + " &7is opening a &4&l" + treasureChest.getDisplayName() + "&7!"));
-                        onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', color + "Purchase " + ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', treasureChest.getDisplayName())) + " on our store at &fstore.cavepvp.org" + color + "!"));
+                        onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', color + "Purchase " + ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', treasureChest.getDisplayName())) + " on our store at &fstore.strivepvp.top" + color + "!"));
                         onlinePlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', ""));
                     }
 

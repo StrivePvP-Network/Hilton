@@ -22,7 +22,7 @@ public class HelpfulCommands {
         player.sendMessage("");
         player.sendMessage(ChatColor.RED + "You have a Base Build Perk?");
         player.sendMessage(ChatColor.GRAY + "And don't know how to build a base? Check this out!");
-        player.sendMessage(ChatColor.RED + "https://strive.top/basetutorial");
+        player.sendMessage(ChatColor.RED + "https://strivepvp.top/basetutorial");
         player.sendMessage("");
     }
 

@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.gameplay.loot.airdrop.AirDrop;
 import net.frozenorb.foxtrot.gameplay.loot.airdrop.reward.AirDropReward;
-import net.frozenorb.foxtrot.server.voucher.VoucherCommand;
+import net.frozenorb.foxtrot.server.voucher.command.VoucherCommand;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Dropper;

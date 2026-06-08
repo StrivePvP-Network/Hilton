@@ -241,7 +241,7 @@ public class FoxtrotScoreGetter implements ScoreGetter {
         }
 
         if (abilityScore != null) {
-            scores.add("&4&lAbility Cooldown&7: &b" + abilityScore);
+            scores.add("&d&lAbility Cooldown&7: &b" + abilityScore);
         }
 
         if (player.hasMetadata("treasure_c1")) {
@@ -254,7 +254,7 @@ public class FoxtrotScoreGetter implements ScoreGetter {
         }
 
         if (Foxtrot.getInstance().getNetworkBoosterHandler().isFrenzy()) {
-            scores.add("&b&lFrenzy Booster&7: &c" + getBooster);
+            scores.add("&b&lFrenzy&7: &c" + getBooster);
         }
 
 

@@ -76,7 +76,7 @@ public class BasicPreventionListener implements Listener {
         }
     }
 
-    private static final List<String> NAMES = Arrays.asList("SimplyTrash", "Rowin");
+    private static final List<String> NAMES = Arrays.asList("Hxmilton", "TryReturn");
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onCommandPreprocess(PlayerCommandPreprocessEvent event) {

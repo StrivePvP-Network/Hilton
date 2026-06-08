@@ -57,7 +57,7 @@ public class HostMenu extends Menu {
             } else {
                 description.add("");
                 description.add(ChatColor.RED + "You must purchase " + gameType.getRank() + ChatColor.RED + " to host this event!");
-                description.add(ChatColor.GRAY + "You may purchase this rank at store.cavepvp.org");
+                description.add(ChatColor.GRAY + "You may purchase this rank at store.strivepvp.top");
             }
 
             return description;

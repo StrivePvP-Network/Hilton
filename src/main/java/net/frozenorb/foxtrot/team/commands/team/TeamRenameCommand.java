@@ -33,7 +33,7 @@ public class TeamRenameCommand {
             return;
         }
 
-        if (newName.equalsIgnoreCase("iMakeMcVids")) {
+        if (newName.equalsIgnoreCase("Hxmilton")) {
             sender.sendMessage(ChatColor.RED + "You can not create a faction with that name!");
             return;
         }

@@ -176,7 +176,7 @@ public class ServerHandler {
             Foxtrot.getInstance().getServer().broadcastMessage("  " + (stringBuilder.length() == 0 ? "None" : stringBuilder.toString()));
             Foxtrot.getInstance().getServer().broadcastMessage("");
             Foxtrot.getInstance().getServer().broadcastMessage(ChatColor.GRAY + "  Purchase the Mythic Rank at");
-            Foxtrot.getInstance().getServer().broadcastMessage(ChatColor.WHITE + "  " + "https://store.strive.top/categories/mythic-rank");
+            Foxtrot.getInstance().getServer().broadcastMessage(ChatColor.WHITE + "  " + "https://store.strivepvp.top/categories/mythic-rank");
             Foxtrot.getInstance().getServer().broadcastMessage("");
         }, 350*20,350*20);
 

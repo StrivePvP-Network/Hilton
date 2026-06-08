@@ -10,7 +10,7 @@ import net.frozenorb.foxtrot.gameplay.kitmap.game.Game;
 import net.frozenorb.foxtrot.gameplay.kitmap.game.GameState;
 import net.frozenorb.foxtrot.gameplay.kitmap.game.GameType;
 import net.frozenorb.foxtrot.gameplay.kitmap.game.arena.GameArena;
-import net.frozenorb.foxtrot.server.voucher.VoucherCommand;
+import net.frozenorb.foxtrot.server.voucher.command.VoucherCommand;
 import net.frozenorb.foxtrot.util.InventoryUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
