@@ -71,6 +71,7 @@ public class ListenerHandler {
         instance.getServer().getPluginManager().registerEvents(new TeamSubclaimCommand(), instance);
         instance.getServer().getPluginManager().registerEvents(new TeamClaimCommand(), instance);
         instance.getServer().getPluginManager().registerEvents(new SellAllListener(), instance);
+        instance.getServer().getPluginManager().registerEvents(new net.frozenorb.foxtrot.commands.troll.TrollListeners(), instance);
         instance.getServer().getPluginManager().registerEvents(new FlyListener(), instance);
         instance.getServer().getPluginManager().registerEvents(new AntiCleanListener(), instance);
         instance.getServer().getPluginManager().registerEvents(new SpawnerTrackerListener(), instance);
