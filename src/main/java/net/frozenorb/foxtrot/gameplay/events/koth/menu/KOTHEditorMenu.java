@@ -89,7 +89,17 @@ public class KothEditorMenu extends Menu {
 
             @Override
             public void clicked(Player player, int slot, ClickType clickType) {
-                new KothLootEditorMenu(koth).openMenu(player);
+                player.closeInventory();
+                org.bukkit.inventory.Inventory inv = org.bukkit.Bukkit.createInventory(null, 54, "Editing Loot: " + koth.getName());
+                for (org.bukkit.inventory.ItemStack stack : koth.getLoot()) {
+                    if (stack != null) {
+                        inv.addItem(stack);
+                    }
+                }
+                
+                player.openInventory(inv);
+                player.setMetadata("editing_koth_loot", new org.bukkit.metadata.FixedMetadataValue(net.frozenorb.foxtrot.Foxtrot.getInstance(), koth.getName()));
+                player.sendMessage(net.frozenorb.foxtrot.util.CC.translate("&aOpened loot editor."));
             }
         });
 
@@ -120,8 +130,7 @@ public class KothEditorMenu extends Menu {
 
             @Override
             public void clicked(Player player, int slot, ClickType clickType) {
-                player.sendMessage(CC.translate("&cColor cycle is not fully implemented yet in the new system."));
-                player.closeInventory();
+                new KothColorMenu(koth).openMenu(player);
             }
         });
 

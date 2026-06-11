@@ -166,7 +166,7 @@ public class KothCommand {
                 Location loc = koth.getCaptureZone() != null ? koth.getCaptureZone().getCenter() : null;
                 String locString = loc != null ? (loc.getBlockX() + ", " + loc.getBlockZ()) : "Not set";
                 sender.sendMessage(CC.translate("&7* &b" + koth.getName() + " &7- &f" +
-                        net.frozenorb.foxtrot.util.TimeUtils.formatIntoMMSS((int) (koth.getRemaining() / 1000L)) +
+                        cc.fyre.proton.util.TimeUtils.formatIntoMMSS((int) (koth.getRemaining() / 1000L)) +
                         " &7- &f" + locString));
             }
             sender.sendMessage(CC.translate("&7&m------------------------"));

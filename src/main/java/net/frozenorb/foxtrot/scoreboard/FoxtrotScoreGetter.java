@@ -585,7 +585,7 @@ public class FoxtrotScoreGetter implements ScoreGetter {
             int onlinePlayers = Foxtrot.getInstance().getServer().getOnlinePlayers().size();
             scores.add("&7\u00bb &ePlayers: &f" + onlinePlayers);
 
-            final Integer[] array = cc.fyre.proton.util.ThreadingManager.getTickCounter().getTicksPerSecond();
+            final Integer[] array = net.valorhcf.ThreadingManager.getTickCounter().getTicksPerSecond();
             final Integer last = array[array.length - 1];
             scores.add("&7\u00bb &eTPS: " + this.formatTPS(last));
         }

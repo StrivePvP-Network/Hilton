@@ -711,7 +711,7 @@ public class FoxListener implements Listener {
         if (player.hasPermission("opasofjsdigasduighasuitguasrtg")) {
             canPlace = true;
         } else if (displayName.contains("spider") || displayName.contains("skeleton")
-                || displayName.contains("zombie")) {
+                || displayName.contains("zombie") || displayName.contains("enderman") || displayName.contains("cow") || displayName.contains("creeper") || displayName.contains("blaze")) {
             canPlace = true;
         }
 
