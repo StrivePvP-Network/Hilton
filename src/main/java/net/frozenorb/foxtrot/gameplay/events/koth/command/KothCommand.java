@@ -116,6 +116,25 @@ public class KothCommand {
         sender.sendMessage(CC.translate("&aKoth capture zone set around you."));
     }
 
+    @Command(names = { "koth setpoints" }, permission = "hilton.koth.setpoints")
+    public static void setPoints(Player sender, @Parameter(name = "name") String name, @Parameter(name = "points") int points) {
+        KothManager manager = Foxtrot.getInstance().getKothManager();
+        Koth koth = manager.getKoth(name);
+        if (koth == null) {
+            sender.sendMessage(CC.translate("&cKoth not found."));
+            return;
+        }
+
+        if (points < 0) {
+            sender.sendMessage(CC.translate("&cPoints cannot be negative."));
+            return;
+        }
+
+        koth.setPointsReward(points);
+        koth.save();
+        sender.sendMessage(CC.translate("&aUpdated points reward for &b" + koth.getName() + " &ato &e" + points + " &apoints."));
+    }
+
     @Command(names = { "koth settime" }, permission = "hilton.koth.settime")
     public static void setTime(Player sender, @Parameter(name = "name") String name,
             @Parameter(name = "minutes") int minutes) {
