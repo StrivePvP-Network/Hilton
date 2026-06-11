@@ -11,7 +11,7 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.buycraft.plugin.bukkit.BuycraftPlugin;
+
 import net.frozenorb.foxtrot.brewer.FancyBrewerModule;
 import net.frozenorb.foxtrot.chat.tips.TipsHandler;
 import net.frozenorb.foxtrot.chat.trivia.TriviaHandler;
@@ -25,17 +25,16 @@ import net.frozenorb.foxtrot.gameplay.bosses.BossHandler;
 import net.frozenorb.foxtrot.gameplay.cavesays.CaveSaysHandler;
 import net.frozenorb.foxtrot.gameplay.clickitem.ClickItemHandler;
 import net.frozenorb.foxtrot.gameplay.content.ContentHandler;
-import net.frozenorb.foxtrot.gameplay.coupondrops.CouponDropsHandler;
 import net.frozenorb.foxtrot.gameplay.events.EventHandler;
-import net.frozenorb.foxtrot.gameplay.events.cavenite.CaveNiteHandler;
 import net.frozenorb.foxtrot.gameplay.events.citadel.CitadelHandler;
 import net.frozenorb.foxtrot.gameplay.events.conquest.ConquestHandler;
+import net.frozenorb.foxtrot.gameplay.events.koth.KothManager;
+import net.frozenorb.foxtrot.gameplay.events.king.KingManager;
+import net.frozenorb.foxtrot.gameplay.events.motw.MOTWManager;
 import net.frozenorb.foxtrot.gameplay.events.fury.FuryHandler;
 import net.frozenorb.foxtrot.gameplay.events.mini.MiniEventsHandler;
-import net.frozenorb.foxtrot.gameplay.events.outposts.OutpostHandler;
 import net.frozenorb.foxtrot.gameplay.events.region.cavern.CavernHandler;
 import net.frozenorb.foxtrot.gameplay.events.region.glowmtn.GlowHandler;
-import net.frozenorb.foxtrot.gameplay.grounds.SpawnerGroundsHandler;
 import net.frozenorb.foxtrot.gameplay.kitmap.bounty.BountyManager;
 import net.frozenorb.foxtrot.gameplay.kitmap.daily.DailyKitHandler;
 import net.frozenorb.foxtrot.gameplay.kitmap.game.Game;
@@ -56,7 +55,6 @@ import net.frozenorb.foxtrot.gameplay.loot.treasurechest.TreasureChestHandler;
 
 import net.frozenorb.foxtrot.gameplay.loot.redeem.RedeemCreatorHandler;
 import net.frozenorb.foxtrot.gameplay.loot.shop.ShopHandler;
-import net.frozenorb.foxtrot.gameplay.loot.treasurecove.TreasureCoveHandler;
 import net.frozenorb.foxtrot.gameplay.loot.voteparty.VotePartyHandler;
 import net.frozenorb.foxtrot.gameplay.pvpclasses.PvPClassHandler;
 import net.frozenorb.foxtrot.gameplay.pvpclasses.mastery.MasteryUpgradeHandler;
@@ -128,8 +126,7 @@ public class Foxtrot extends JavaPlugin {
     public static Foxtrot instance;
     @Getter
     public MongoClient mongoPool;
-    @Getter
-    private BuycraftPlugin buycraftPlugin;
+
     @Getter
     private EconomyHandler economyHandler;
     @Getter
@@ -138,8 +135,7 @@ public class Foxtrot extends JavaPlugin {
     private ContentHandler contentHandler;
     @Getter
     private LettingInHandler lettingInHandler;
-    @Getter
-    private OutpostHandler outpostHandler;
+
     @Getter
     private PvPClassHandler pvpClassHandler;
     @Getter
@@ -157,8 +153,6 @@ public class Foxtrot extends JavaPlugin {
     @Getter
     private KeyAllHandler keyAllHandler;
     @Getter
-    private CouponDropsHandler couponDropsHandler;
-    @Getter
     private TeamHandler teamHandler;
     @Getter
     public ServerHandler serverHandler;
@@ -174,6 +168,12 @@ public class Foxtrot extends JavaPlugin {
     private CitadelHandler citadelHandler;
     @Getter
     private EventHandler eventHandler;
+    @Getter
+    private KothManager kothManager;
+    @Getter
+    private KingManager kingManager;
+    @Getter
+    private MOTWManager motwManager;
     @Getter
     private GemFlipHandler gemFlipHandler;
     @Getter
@@ -195,13 +195,9 @@ public class Foxtrot extends JavaPlugin {
     @Getter
     private MiniEventsHandler miniEventsHandler;
     @Getter
-    private SpawnerGroundsHandler spawnerGroundsHandler;
-    @Getter
     private MasteryUpgradeHandler masteryUpgradeHandler;
     @Getter
     private CavernHandler cavernHandler;
-    @Getter
-    private CaveNiteHandler caveNiteHandler;
     @Getter
     private LootboxHandler lootboxHandler;
     @Getter
@@ -298,8 +294,6 @@ public class Foxtrot extends JavaPlugin {
     private AbilityCooldownsScoreboardMap abilityCooldownsScoreboardMap;
     @Getter
     private WrappedBalanceMap wrappedBalanceMap;
-    @Getter
-    private TreasureCoveHandler treasureCoveHandler;
     @Getter
     private ToggleFoundDiamondsMap toggleFoundDiamondsMap;
     @Getter
@@ -419,11 +413,10 @@ public class Foxtrot extends JavaPlugin {
         (new RedisSaveTask()).runTaskTimerAsynchronously(this, 1200L, 1200L);
         (new PacketBorderThread()).start();
 
-        final Plugin plugin = this.getServer().getPluginManager().getPlugin("BuycraftX");
-
-        if (plugin != null && plugin.isEnabled() && plugin instanceof BuycraftPlugin) {
-            this.buycraftPlugin = (BuycraftPlugin) plugin;
-        }
+        // Plugin plugin = this.getServer().getPluginManager().getPlugin("Tebex");
+        // if (plugin == null) {
+        //     plugin = this.getServer().getPluginManager().getPlugin("BuycraftX");
+        // }
 
         setupHandlers();
 
@@ -453,11 +446,16 @@ public class Foxtrot extends JavaPlugin {
         this.getLogger().info("[LunarFix] Registered Lunar Client plugin channels.");
         com.comphenix.protocol.ProtocolLibrary.getProtocolManager()
                 .addPacketListener(new net.frozenorb.foxtrot.protocol.CustomPayloadPacketAdapter());
+        
+        this.kothManager = new KothManager();
+        this.kingManager = new KingManager();
+        this.motwManager = new MOTWManager();
     }
 
     @Override
     public void onDisable() {
         getEventHandler().saveEvents();
+        getKothManager().disable();
 
         for (Player player : Foxtrot.getInstance().getServer().getOnlinePlayers()) {
             getPlaytimeMap().playerQuit(player.getUniqueId(), false);
@@ -527,9 +525,7 @@ public class Foxtrot extends JavaPlugin {
 
         if (!getConfig().getBoolean("kits", false) && !getConfig().getBoolean("teams", false)) {
             this.crateHandler.saveData();
-            this.treasureCoveHandler.saveTreasureInfo();
             this.networkBoosterHandler.saveBoosters();
-            this.caveNiteHandler.saveLocations();
         }
 
         // This shouldn't be here but whatever
@@ -545,7 +541,7 @@ public class Foxtrot extends JavaPlugin {
         this.mapHandler.getAbilityHandler().saveStatistics();
         this.tipsHandler.saveTips();
         this.treasureChestHandler.saveData();
-        this.outpostHandler.saveData();
+
         this.keyAllHandler.saveData();
         this.tokenShopHandler.save();
 
@@ -579,7 +575,7 @@ public class Foxtrot extends JavaPlugin {
         this.citadelHandler = new CitadelHandler();
         this.pvpClassHandler = new PvPClassHandler();
         this.conquestHandler = new ConquestHandler();
-        this.outpostHandler = new OutpostHandler(this);
+
         this.shopHandler = new ShopHandler(this);
         this.contentHandler = new ContentHandler(this);
         this.totemHandler = new TotemHandler(this);
@@ -627,18 +623,14 @@ public class Foxtrot extends JavaPlugin {
             this.clickItemHandler = new ClickItemHandler(this);
             this.furyHandler = new FuryHandler(this);
             this.battlePassHandler = new BattlePassHandler();
-            this.treasureCoveHandler = new TreasureCoveHandler();
             this.lettingInHandler = new LettingInHandler(this);
             this.votePartyHandler = new VotePartyHandler(this);
-            this.caveNiteHandler = new CaveNiteHandler(this);
-            this.spawnerGroundsHandler = new SpawnerGroundsHandler(this);
         }
 
         this.bossHandler = new BossHandler(this);
         this.miniEventsHandler = new MiniEventsHandler(this);
         this.caveSaysHandler = new CaveSaysHandler(this);
         this.networkBoosterHandler = new NetworkBoosterHandler(this);
-        this.couponDropsHandler = new CouponDropsHandler(this);
         this.triviaHandler = new TriviaHandler(this);
         this.airDropHandler = new AirDropHandler(this);
         this.keyAllHandler = new KeyAllHandler(this);

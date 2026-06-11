@@ -2,7 +2,6 @@ package net.frozenorb.foxtrot.listener;
 
 import cc.fyre.universe.util.BungeeUtil;
 import net.frozenorb.foxtrot.Foxtrot;
-import net.frozenorb.foxtrot.gameplay.events.koth.KOTH;
 import net.frozenorb.foxtrot.team.Team;
 import net.frozenorb.foxtrot.team.dtr.DTRBitmask;
 import org.bukkit.*;

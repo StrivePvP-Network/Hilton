@@ -18,13 +18,16 @@ public class VoucherListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        if (!event.getAction().name().contains("RIGHT")) return;
+        if (!event.getAction().name().contains("RIGHT"))
+            return;
 
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
 
-        if (item == null || item.getType() != Material.PAPER) return;
-        if (!item.hasItemMeta() || !item.getItemMeta().hasLore()) return;
+        if (item == null)
+            return;
+        if (!item.hasItemMeta() || !item.getItemMeta().hasLore())
+            return;
 
         String templateId = null;
         for (String line : item.getItemMeta().getLore()) {
@@ -35,7 +38,8 @@ public class VoucherListener implements Listener {
             }
         }
 
-        if (templateId == null) return;
+        if (templateId == null)
+            return;
 
         VoucherTemplate template = Foxtrot.getInstance().getVoucherHandler().fromName(templateId).orElse(null);
 
@@ -55,7 +59,20 @@ public class VoucherListener implements Listener {
         String duration = template.getDuration();
         String category = template.getCategory().toUpperCase();
 
-        player.sendMessage(ChatColor.GREEN + "You have redeemed a " + ChatColor.translateAlternateColorCodes('&', template.getDisplayName()) + ChatColor.GREEN + "!");
+        String rewardName = value;
+        if (category.equals("COMMAND")) rewardName = "a mystery reward";
+        if (category.equals("MONEY") || category.equals("STORE")) rewardName = "$" + value;
+        if (category.equals("LIVES")) rewardName = value + " lives";
+
+        for (String msg : new String[]{
+                "",
+                "&4&lVoucher Redeemed",
+                "&b" + player.getName() + " &7has redeemed " + template.getDisplayName() + " &7and won &b" + rewardName + "&7!",
+                "&7Get these perks and more at &bstore.strivepvp.top",
+                ""
+        }) {
+            Foxtrot.getInstance().getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
+        }
 
         if (category.equals("RANK")) {
             Profile profile = Neutron.getInstance().getProfileHandler().fromUuid(player.getUniqueId());
@@ -69,14 +86,17 @@ public class VoucherListener implements Listener {
                     profile.getGrants().add(grant);
                     profile.recalculateGrants();
                     profile.save();
-                    player.sendMessage(ChatColor.GREEN + "The rank " + rank.getColor() + rank.getName() + ChatColor.GREEN + " has been applied to your account.");
+                    player.sendMessage(ChatColor.GREEN + "The rank " + rank.getColor() + rank.getName()
+                            + ChatColor.GREEN + " has been applied to your account.");
                 } else {
-                    player.sendMessage(ChatColor.RED + "Error: The rank associated with this voucher no longer exists.");
+                    player.sendMessage(
+                            ChatColor.RED + "Error: The rank associated with this voucher no longer exists.");
                 }
             }
         } else if (category.equals("COMMAND")) {
             String cmd = value.replace("_", " ").replace("{player}", player.getName());
-            Foxtrot.getInstance().getServer().dispatchCommand(Foxtrot.getInstance().getServer().getConsoleSender(), cmd);
+            Foxtrot.getInstance().getServer().dispatchCommand(Foxtrot.getInstance().getServer().getConsoleSender(),
+                    cmd);
         } else if (category.equals("MONEY")) {
             try {
                 double amount = Double.parseDouble(value);
@@ -93,6 +113,24 @@ public class VoucherListener implements Listener {
                 player.sendMessage(ChatColor.GREEN + "" + livesAmount + " lives have been added to your account!");
             } catch (NumberFormatException e) {
                 player.sendMessage(ChatColor.RED + "Error: Invalid lives amount in voucher template.");
+            }
+        } else if (category.equals("STORE")) {
+            try {
+                double amount = Double.parseDouble(value);
+                Foxtrot.getInstance().getServer().getScheduler().runTaskAsynchronously(Foxtrot.getInstance(), () -> {
+                    String code = net.frozenorb.foxtrot.util.TebexAPI.createGiftCard(amount, "Voucher Redeemed by " + player.getName());
+
+                    if (code != null) {
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a&lStore Voucher Redeemed!"));
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aValue: &f$" + amount));
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aCode: &f" + code));
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7(This code can be used at checkout on our store)"));
+                    } else {
+                        player.sendMessage(ChatColor.RED + "There was an error generating your giftcard. Please check if the Tebex Secret is set in config.yml or contact an admin.");
+                    }
+                });
+            } catch (NumberFormatException e) {
+                player.sendMessage(ChatColor.RED + "Error: Invalid money amount in voucher template.");
             }
         } else {
             player.sendMessage(ChatColor.RED + "Error: Unhandled voucher category '" + category + "'.");

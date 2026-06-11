@@ -9,8 +9,6 @@ import net.frozenorb.foxtrot.gameplay.events.conquest.enums.ConquestCapzone;
 import net.frozenorb.foxtrot.gameplay.events.events.EventCapturedEvent;
 import net.frozenorb.foxtrot.gameplay.events.fury.FuryCapZone;
 import net.frozenorb.foxtrot.gameplay.events.fury.FuryHandler;
-import net.frozenorb.foxtrot.gameplay.events.koth.events.EventControlTickEvent;
-import net.frozenorb.foxtrot.gameplay.events.koth.events.KOTHControlLostEvent;
 import net.frozenorb.foxtrot.team.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -66,6 +64,7 @@ public class FuryListener implements Listener {
     }
 
 
+/*
     @EventHandler
     public void onKOTHControlLost(KOTHControlLostEvent event) {
         if (!event.getKOTH().getName().startsWith("Fury_")) {
@@ -95,6 +94,7 @@ public class FuryListener implements Listener {
             capper.sendMessage(FuryHandler.PREFIX + " " + ChatColor.GOLD + "Attempting to capture " + furyCapZone.getChatColor() + furyCapZone.getDisplayName() + ChatColor.GOLD + "!" + ChatColor.RED + " (" + event.getKOTH().getRemainingCapTime() + "s)");
         }
     }
+*/
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {

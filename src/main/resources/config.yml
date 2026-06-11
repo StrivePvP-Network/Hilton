@@ -8,6 +8,7 @@ Mongo:
 serverName: Souls
 networkWebsite: strivepvp.top
 statsRoot: strivepvp.top/stats
+tebexSecret: "YOUR_SECRET_KEY_HERE"
 tab:
   serverName: '&4&lSOULS'
   sectionColor: '&7'

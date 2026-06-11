@@ -11,7 +11,7 @@ import net.frozenorb.foxtrot.gameplay.events.EventType;
 import net.frozenorb.foxtrot.gameplay.kitmap.duel.DuelHandler;
 import net.frozenorb.foxtrot.gameplay.events.Event;
 import net.frozenorb.foxtrot.gameplay.events.EventHandler;
-import net.frozenorb.foxtrot.gameplay.events.koth.KOTH;
+
 import net.frozenorb.foxtrot.gameplay.kitmap.game.GameHandler;
 import net.frozenorb.foxtrot.gameplay.kitmap.killstreaks.KillstreakHandler;
 import net.frozenorb.foxtrot.gameplay.kitmap.kits.KitManager;
@@ -207,42 +207,7 @@ public class MapHandler {
             duelHandler = new DuelHandler();
             kitUpgradesHandler = new KitUpgradesHandler();
 
-            Bukkit.getScheduler().runTaskTimer(Foxtrot.getInstance(), () -> {
-                net.frozenorb.foxtrot.gameplay.events.EventHandler eventHandler = Foxtrot.getInstance()
-                        .getEventHandler();
-                List<Event> localEvents = new ArrayList<>(eventHandler.getEvents());
 
-                if (localEvents.isEmpty()) {
-                    return;
-                }
-
-                if (Foxtrot.getInstance().getServer().getOnlinePlayers().size() < 10) {
-                    System.out.println();
-                    System.out.println(
-                            "[StrivePvP] Couldn't start a valid event as there was less than 10 players online!");
-                    System.out.println();
-                    return;
-                }
-
-                List<KOTH> koths = new ArrayList<>();
-
-                for (Event otherKoth : Foxtrot.getInstance().getEventHandler().getEvents()) {
-                    if (otherKoth.isActive()) {
-                        return;
-                    }
-
-                    if (otherKoth.getName().contains("Citadel") || otherKoth.getName().contains("Outpost")) {
-                        continue;
-                    }
-
-                    if (otherKoth.getType() == EventType.KOTH) {
-                        koths.add((KOTH) otherKoth);
-                    }
-                }
-
-                KOTH selected = koths.get(ThreadLocalRandom.current().nextInt(koths.size()));
-                selected.activate();
-            }, 15 * 60 * 20, 15 * 60 * 20);
 
             TeamActionTracker.setDatabaseLogEnabled(false);
         }

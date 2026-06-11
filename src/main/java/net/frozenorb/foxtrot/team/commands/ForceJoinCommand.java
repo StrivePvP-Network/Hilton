@@ -14,12 +14,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import cc.fyre.piston.Piston;
+import cc.fyre.piston.packet.StaffBroadcastPacket;
+import cc.fyre.neutron.NeutronConstants;
+import cc.fyre.universe.UniverseAPI;
+
 import java.awt.*;
 import java.util.Optional;
 
 public class ForceJoinCommand {
 
-    @Command(names={ "ForceJoin" }, permission="foxtrot.forcejoin")
+    @Command(names={ "f forcejoin", "t forcejoin", "team forcejoin", "faction forcejoin", "forcejoin" }, permission="foxtrot.forcejoin")
     public static void forceJoin(Player sender, @Parameter(name="team") Team team, @Parameter(name="player", defaultValue="self") Player player) {
         if (Foxtrot.getInstance().getTeamHandler().getTeam(player) != null) {
             if (player == sender) {
@@ -64,6 +69,13 @@ public class ForceJoinCommand {
         if (player != sender) {
             sender.sendMessage(ChatColor.LIGHT_PURPLE + player.getName() + ChatColor.YELLOW + " added to " + ChatColor.LIGHT_PURPLE + team.getName() + ChatColor.YELLOW + "!");
         }
+
+        Piston.getInstance().sendPacketAsync(new StaffBroadcastPacket(
+                NeutronConstants.MANAGER_PERMISSION,
+                ChatColor.LIGHT_PURPLE + "[MC]" + ChatColor.LIGHT_PURPLE + "[" + UniverseAPI.getServerName() + "] "
+                        + ChatColor.WHITE + sender.getName() + ChatColor.GRAY + " has forcefully joined "
+                        + ChatColor.WHITE + player.getName() + ChatColor.GRAY + " into " + ChatColor.WHITE + team.getName() + ChatColor.GRAY + "."
+        ));
     }
 
     private static Waypoint buildWaypoint(String name, Location loc, Color color) {

@@ -32,20 +32,10 @@ public class CustomTimerTask extends BukkitRunnable {
             queue.add(timer);
         }
 
-        for (String timer : queue) {
-            if (!CustomTimerCreateCommand.getCustomTimers().containsKey(timer)) {
-                continue;
-            }
-
-            if (CustomTimerCreateCommand.getCustomTimers().get(timer) > System.currentTimeMillis()) {
-                continue;
-            }
-
-            queue.remove(timer);
-        }
+        queue.removeIf(timer -> CustomTimerCreateCommand.getCustomTimers().containsKey(timer) && CustomTimerCreateCommand.getCustomTimers().get(timer) <= System.currentTimeMillis());
 
         CustomTimerCreateCommand.getCustomTimers().keySet().stream().filter(it -> !queue.contains(it) && !it.equalsIgnoreCase("&a&lSOTW") && !it.equalsIgnoreCase("&d&l2x Points")).forEach(it -> queue.add(it));
-        queue.stream().filter(it -> !CustomTimerCreateCommand.getCustomTimers().containsKey(it)).forEach(it -> queue.remove(it));
+        queue.removeIf(it -> !CustomTimerCreateCommand.getCustomTimers().containsKey(it));
 
         if (queue.isEmpty()) {
             return;

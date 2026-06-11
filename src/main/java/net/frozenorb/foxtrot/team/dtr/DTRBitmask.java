@@ -50,9 +50,7 @@ public enum DTRBitmask {
     // Used in Citadel
     FURY(47, "Fury", "Determines if a region is part of Fury"),
 
-    MOUNTAIN(16384, "Mountain", "Determines if a region is part of Mountain"),
-
-    OUTPOST(32768, "Outpost", "Determines if a region is part of Outpost");
+    MOUNTAIN(16384, "Mountain", "Determines if a region is part of Mountain");
 
     @Getter private int bitmask;
     @Getter private String name;

@@ -7,7 +7,6 @@ import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.gameplay.armorclass.Category;
 import net.frozenorb.foxtrot.gameplay.armorclass.menu.ArmorClassesMenu;
 import net.frozenorb.foxtrot.gameplay.armorclass.menu.ArmorMainMenu;
-import net.frozenorb.foxtrot.gameplay.events.outposts.menu.OutpostMenu;
 import net.frozenorb.foxtrot.scoreboard.FoxtrotScoreGetter;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -111,7 +110,6 @@ public class HelpfulCommands {
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &f4:00 PM EST: &5Overworld Citadel"));
                         toReturn.add("");
                         toReturn.add(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Recurring Events");
-                        toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fDiscount Drops every &c3 hours"));
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fCave Says every &c2 hours"));
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fKOTH &c(/koth schedule)"));
                         toReturn.add("");
@@ -151,7 +149,6 @@ public class HelpfulCommands {
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &f4:00 PM EST: &cRaider Event"));
                         toReturn.add("");
                         toReturn.add(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Recurring Events");
-                        toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fDiscount Drops every &c3 hours"));
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fCave Says every &c2 hours"));
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fKOTH &c(/koth schedule)"));
                         toReturn.add("");
@@ -191,7 +188,6 @@ public class HelpfulCommands {
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &f5:00 PM EST: &4Nether Citadel"));
                         toReturn.add("");
                         toReturn.add(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Recurring Events");
-                        toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fDiscount Drops every &c3 hours"));
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fCave Says every &c2 hours"));
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fKOTH &c(/koth schedule)"));
                         toReturn.add("");
@@ -231,7 +227,6 @@ public class HelpfulCommands {
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &f4:00 PM EST: &cFaction Tournament (Practice)"));
                         toReturn.add("");
                         toReturn.add(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Recurring Events");
-                        toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fDiscount Drops every &c3 hours"));
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fCave Says every &c2 hours"));
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fKOTH &c(/koth schedule)"));
                         toReturn.add("");
@@ -273,7 +268,6 @@ public class HelpfulCommands {
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &f11:59 PM EST: &d2x Points Ends"));
                         toReturn.add("");
                         toReturn.add(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Recurring Events");
-                        toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fDiscount Drops every &c3 hours"));
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fCave Says every &c2 hours"));
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fKOTH &c(/koth schedule)"));
                         toReturn.add("");
@@ -310,10 +304,8 @@ public class HelpfulCommands {
                         toReturn.add(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Scheduled Events");
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &f4:00 PM EST: &6Treasure Cove Voucher"));
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &f5:00 PM EST: &4&lEOTW starts (Map End)"));
-                        toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fWhen EOTW KOTH is over: &4&lCave Nite"));
                         toReturn.add("");
                         toReturn.add(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Recurring Events");
-                        toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fDiscount Drops every &c3 hours"));
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fCave Says every &c2 hours"));
                         toReturn.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fKOTH &c(/koth schedule)"));
                         toReturn.add("");
@@ -341,29 +333,6 @@ public class HelpfulCommands {
 
     }
 
-    @Command(names = { "discountdrop" }, permission = "")
-    public static void discount(Player player) {
-
-        final long difference = Foxtrot.getInstance().getCouponDropsHandler().getDropsIn() - System.currentTimeMillis();
-
-        if (Foxtrot.getInstance().getCouponDropsHandler().getDropsIn() != 0 && difference > 0) {
-            final Location location = Foxtrot.getInstance().getCouponDropsHandler().getLocation().clone();
-            player.sendMessage("");
-            player.sendMessage(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Discount Drop");
-            player.sendMessage(ChatColor.GRAY + "A random store discount drops in " + ChatColor.WHITE
-                    + FoxtrotScoreGetter.getTimerScore(Foxtrot.getInstance().getCouponDropsHandler().getDropsIn()));
-            player.sendMessage(ChatColor.RED + "Location: " + ChatColor.WHITE + location.getBlockX() + ", "
-                    + location.getBlockZ());
-            player.sendMessage("");
-            return;
-        }
-
-        player.sendMessage("");
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&4&lDiscount Drop"));
-        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cA random store discount drops every 3 hours!"));
-        player.sendMessage("");
-    }
-
     @Command(names = { "classes", "class", "armorclasses", "armorclass" }, permission = "")
     public static void execute(Player player) {
         if (Foxtrot.getInstance().getMapHandler().isKitMap()) {
@@ -381,6 +350,5 @@ public class HelpfulCommands {
             return;
         }
 
-        new OutpostMenu().openMenu(player);
     }
 }

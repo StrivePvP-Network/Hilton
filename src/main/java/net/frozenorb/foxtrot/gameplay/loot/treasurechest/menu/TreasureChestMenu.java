@@ -8,7 +8,6 @@ import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.gameplay.loot.treasurechest.TreasureChest;
 import net.frozenorb.foxtrot.gameplay.loot.treasurechest.TreasureChestHandler;
 import net.frozenorb.foxtrot.gameplay.loot.treasurechest.listener.TreasureChestListener;
-import net.frozenorb.foxtrot.gameplay.loot.treasurecove.TreasureCoveHandler;
 import net.frozenorb.foxtrot.team.dtr.DTRBitmask;
 import org.bukkit.*;
 import org.bukkit.entity.Player;

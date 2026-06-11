@@ -43,7 +43,7 @@ public class EnergyService extends BukkitRunnable {
 
                 final Team team = Foxtrot.getInstance().getTeamHandler().getTeam(player);
 
-                float max = team != null && (team.hasNetherOutpost() && team.hasEndOutpost() || team.getPurchasedUpgrades().contains(UpgradeType.INCREASED_MAX_BARD)) ? 120 : 100;
+                float max = team != null && team.getPurchasedUpgrades().contains(UpgradeType.INCREASED_MAX_BARD) ? 120 : 100;
 
                 if (this.cache.get(player.getUniqueId()) == max) {
                     continue;

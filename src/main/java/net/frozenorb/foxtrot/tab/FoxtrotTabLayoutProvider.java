@@ -25,7 +25,7 @@ import net.minecraft.util.com.google.common.collect.Maps;
 import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.gameplay.events.Event;
 import net.frozenorb.foxtrot.gameplay.events.EventScheduledTime;
-import net.frozenorb.foxtrot.gameplay.events.koth.KOTH;
+import net.frozenorb.foxtrot.gameplay.events.koth.Koth;
 import net.frozenorb.foxtrot.listener.BorderListener;
 import net.frozenorb.foxtrot.team.Team;
 import net.frozenorb.foxtrot.team.claims.LandBoard;
@@ -258,16 +258,7 @@ public class FoxtrotTabLayoutProvider implements LayoutProvider {
         layout.set(2, ++y, titleColor + "Players:");
         layout.set(2, ++y, infoColor + (Bukkit.getOnlinePlayers().size() + Universe.fakePlayers));
 
-        KOTH activeKOTH = null;
-        for (Event event : Foxtrot.getInstance().getEventHandler().getEvents()) {
-            if (!(event instanceof KOTH))
-                continue;
-            KOTH koth = (KOTH) event;
-            if (koth.isActive() && !koth.isHidden()) {
-                activeKOTH = koth;
-                break;
-            }
-        }
+        net.frozenorb.foxtrot.gameplay.events.koth.Koth activeKOTH = Foxtrot.getInstance().getKothManager().getActiveKoths().isEmpty() ? null : Foxtrot.getInstance().getKothManager().getActiveKoths().get(0);
 
         if (activeKOTH == null) {
             Date now = new Date();
@@ -291,12 +282,11 @@ public class FoxtrotTabLayoutProvider implements LayoutProvider {
                 layout.set(2, ++y, titleColor + "Next KOTH:");
                 layout.set(2, ++y, nextKothName);
 
-                Event event = Foxtrot.getInstance().getEventHandler().getEvent(nextKothName);
+                Koth koth = Foxtrot.getInstance().getKothManager().getKoth(nextKothName);
 
-                if (event instanceof KOTH) {
-                    KOTH koth = (KOTH) event;
-                    layout.set(2, ++y, infoColor + koth.getCapLocation().getBlockX() + ", "
-                            + koth.getCapLocation().getBlockY() + ", " + koth.getCapLocation().getBlockZ());
+                if (koth != null && koth.getCaptureZone() != null) {
+                    layout.set(2, ++y, infoColor + koth.getCaptureZone().getCenter().getBlockX() + ", "
+                            + koth.getCaptureZone().getCenter().getBlockY() + ", " + koth.getCaptureZone().getCenter().getBlockZ());
 
                     int seconds = (int) ((nextKothDate.getTime() - System.currentTimeMillis()) / 1000);
                     layout.set(2, ++y, titleColor + "Goes active in:");
@@ -311,9 +301,11 @@ public class FoxtrotTabLayoutProvider implements LayoutProvider {
         } else {
             ++y;
             layout.set(2, ++y, titleColor + activeKOTH.getName());
-            layout.set(2, ++y, ChatColor.WHITE + TimeUtils.formatIntoHHMMSS(activeKOTH.getRemainingCapTime()));
-            layout.set(2, ++y, infoColor + activeKOTH.getCapLocation().getBlockX() + ", "
-                    + activeKOTH.getCapLocation().getBlockY() + ", " + activeKOTH.getCapLocation().getBlockZ());
+            layout.set(2, ++y, ChatColor.WHITE + TimeUtils.formatIntoHHMMSS((int) (activeKOTH.getRemaining() / 1000L)));
+            if (activeKOTH.getCaptureZone() != null) {
+                layout.set(2, ++y, infoColor + activeKOTH.getCaptureZone().getCenter().getBlockX() + ", "
+                        + activeKOTH.getCaptureZone().getCenter().getBlockY() + ", " + activeKOTH.getCaptureZone().getCenter().getBlockZ());
+            }
         }
 
         boolean shouldReloadCache = cachedTeamList == null || (System.currentTimeMillis() - cacheLastUpdated > 2000);

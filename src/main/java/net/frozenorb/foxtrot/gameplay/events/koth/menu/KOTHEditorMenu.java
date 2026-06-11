@@ -2,12 +2,9 @@ package net.frozenorb.foxtrot.gameplay.events.koth.menu;
 
 import cc.fyre.proton.menu.Button;
 import cc.fyre.proton.menu.Menu;
-import cc.fyre.proton.util.ItemBuilder;
 import net.frozenorb.foxtrot.Foxtrot;
-import net.frozenorb.foxtrot.gameplay.events.Event;
-import net.frozenorb.foxtrot.gameplay.events.EventType;
-import net.frozenorb.foxtrot.gameplay.events.koth.KOTH;
-import org.bukkit.ChatColor;
+import net.frozenorb.foxtrot.gameplay.events.koth.Koth;
+import net.frozenorb.foxtrot.util.CC;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -17,71 +14,142 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class KOTHEditorMenu extends Menu {
+public class KothEditorMenu extends Menu {
+
+    private final Koth koth;
+
+    public KothEditorMenu(Koth koth) {
+        this.koth = koth;
+        setUpdateAfterClick(true);
+    }
 
     @Override
     public String getTitle(Player player) {
-        return ChatColor.GOLD + ChatColor.BOLD.toString() + "KOTH Editor";
+        return "Editing: " + koth.getName();
     }
 
     @Override
     public Map<Integer, Button> getButtons(Player player) {
         Map<Integer, Button> buttons = new HashMap<>();
 
-        int slot = 0;
-        for (Event event : Foxtrot.getInstance().getEventHandler().getEvents()) {
-            if (event instanceof KOTH) {
-                buttons.put(slot++, new KOTHButton((KOTH) event));
+        buttons.put(10, new Button() {
+            @Override
+            public String getName(Player player) {
+                return CC.translate("&aEdit Time");
             }
-        }
+
+            @Override
+            public List<String> getDescription(Player player) {
+                List<String> desc = new ArrayList<>();
+                desc.add(CC.translate("&7Current: &f" + (koth.getMinutes() / 60000) + " minutes"));
+                desc.add("");
+                desc.add(CC.translate("&eLeft click to add 5 minutes"));
+                desc.add(CC.translate("&cRight click to remove 5 minutes"));
+                return desc;
+            }
+
+            @Override
+            public Material getMaterial(Player player) {
+                return Material.WATCH;
+            }
+
+            @Override
+            public void clicked(Player player, int slot, ClickType clickType) {
+                long current = koth.getMinutes() / 60000;
+                if (clickType.isLeftClick()) {
+                    current += 5;
+                } else if (clickType.isRightClick()) {
+                    current = Math.max(1, current - 5);
+                }
+                koth.setMinutes(current * 60000);
+                koth.setRemaining(koth.getMinutes());
+                koth.save();
+                player.sendMessage(CC.translate("&aTime updated to " + current + " minutes."));
+            }
+        });
+
+        buttons.put(12, new Button() {
+            @Override
+            public String getName(Player player) {
+                return CC.translate("&eEdit Rewards (Loot)");
+            }
+
+            @Override
+            public List<String> getDescription(Player player) {
+                List<String> desc = new ArrayList<>();
+                desc.add(CC.translate("&7Click to open the loot editor"));
+                desc.add(CC.translate("&7for this KOTH."));
+                return desc;
+            }
+
+            @Override
+            public Material getMaterial(Player player) {
+                return Material.CHEST;
+            }
+
+            @Override
+            public void clicked(Player player, int slot, ClickType clickType) {
+                new KothLootEditorMenu(koth).openMenu(player);
+            }
+        });
+
+        buttons.put(14, new Button() {
+            @Override
+            public String getName(Player player) {
+                return CC.translate("&bEdit Color");
+            }
+
+            @Override
+            public List<String> getDescription(Player player) {
+                List<String> desc = new ArrayList<>();
+                desc.add(CC.translate("&7Current: " + koth.getColor() + "Color Example"));
+                desc.add("");
+                desc.add(CC.translate("&eClick to cycle colors."));
+                return desc;
+            }
+
+            @Override
+            public Material getMaterial(Player player) {
+                return Material.INK_SACK;
+            }
+
+            @Override
+            public byte getDamageValue(Player player) {
+                return 4;
+            }
+
+            @Override
+            public void clicked(Player player, int slot, ClickType clickType) {
+                player.sendMessage(CC.translate("&cColor cycle is not fully implemented yet in the new system."));
+                player.closeInventory();
+            }
+        });
+
+        buttons.put(16, new Button() {
+            @Override
+            public String getName(Player player) {
+                return CC.translate("&dSet Schedule");
+            }
+
+            @Override
+            public List<String> getDescription(Player player) {
+                List<String> desc = new ArrayList<>();
+                desc.add(CC.translate("&7Click to open the schedule editor."));
+                return desc;
+            }
+
+            @Override
+            public Material getMaterial(Player player) {
+                return Material.PAPER;
+            }
+
+            @Override
+            public void clicked(Player player, int slot, ClickType clickType) {
+                player.sendMessage(CC.translate("&cSchedule system is currently pending migration for KothManager."));
+                player.closeInventory();
+            }
+        });
 
         return buttons;
-    }
-
-    @Override
-    public int size(Player player) {
-        return 54;
-    }
-
-    private static class KOTHButton extends Button {
-        private final KOTH koth;
-
-        public KOTHButton(KOTH koth) {
-            this.koth = koth;
-        }
-
-        @Override
-        public String getName(Player player) {
-            String color = koth.getKothColor() == null ? "&9" : koth.getKothColor();
-            return ChatColor.translateAlternateColorCodes('&', color + koth.getName());
-        }
-
-        @Override
-        public List<String> getDescription(Player player) {
-            List<String> description = new ArrayList<>();
-            description.add(ChatColor.GRAY + "World: " + ChatColor.WHITE + koth.getWorld());
-            description.add(ChatColor.GRAY + "Cap Time: " + ChatColor.WHITE + (koth.getCapTime() / 60) + "m");
-            description.add(ChatColor.GRAY + "Points: " + ChatColor.WHITE + koth.getPointsReward());
-            description.add("");
-            description.add(ChatColor.YELLOW + "Click to manage settings.");
-            description.add(ChatColor.YELLOW + "Right-Click to teleport.");
-            return description;
-        }
-
-        @Override
-        public Material getMaterial(Player player) {
-            return Material.BEACON;
-        }
-
-        @Override
-        public void clicked(Player player, int slot, ClickType clickType) {
-            if (clickType.isRightClick()) {
-                player.teleport(koth.getCapLocation().toLocation(Foxtrot.getInstance().getServer().getWorld(koth.getWorld())));
-                player.sendMessage(ChatColor.GREEN + "Teleported to " + koth.getName() + ".");
-                return;
-            }
-
-            new KOTHAjustesMenu(koth).openMenu(player);
-        }
     }
 }

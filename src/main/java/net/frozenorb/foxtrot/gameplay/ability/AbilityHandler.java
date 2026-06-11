@@ -251,9 +251,7 @@ public class AbilityHandler {
             cooldownTime *= 0.75;
         }
 
-        if (team != null && team.hasRoadOutpost()) {
-            cooldownTime *= 0.75;
-        }
+
 
         if (player.hasMetadata("NO_COOLDOWN")) {
             cooldownTime = 0;

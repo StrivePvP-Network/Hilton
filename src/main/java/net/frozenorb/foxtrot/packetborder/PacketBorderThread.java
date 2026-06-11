@@ -85,7 +85,7 @@ public class PacketBorderThread extends Thread {
                     if (team.hasDTRBitmask(DTRBitmask.SAFE_ZONE) && tagged) {
                         // If the team is a SAFE_ZONE (IE spawn), they're not inside of it, and they're spawn tagged
                         claims.add(claim);
-                    } else if ((team.hasDTRBitmask(DTRBitmask.KOTH) || team.hasDTRBitmask(DTRBitmask.CITADEL) || team.hasDTRBitmask(DTRBitmask.OUTPOST)) && hasPvPTimer) {
+                    } else if ((team.hasDTRBitmask(DTRBitmask.KOTH) || team.hasDTRBitmask(DTRBitmask.CITADEL)) && hasPvPTimer) {
                         // If it's an event zone (KOTH or Citadel) and they have a PvP Timer
                         claims.add(claim);
                     } else if (!Foxtrot.getInstance().getMapHandler().isKitMap() && (team.hasDTRBitmask(DTRBitmask.CITADEL) || team.hasDTRBitmask(DTRBitmask.FURY))) {

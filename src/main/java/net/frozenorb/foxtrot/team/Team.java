@@ -3,11 +3,7 @@ package net.frozenorb.foxtrot.team;
 import cc.fyre.modsuite.mod.ModHandler;
 import cc.fyre.neutron.util.PlayerUtil;
 import cc.fyre.proton.serialization.LocationSerializer;
-import net.frozenorb.foxtrot.gameplay.events.outposts.data.Outpost;
-import net.frozenorb.foxtrot.gameplay.events.outposts.type.EndOutpost;
-import net.frozenorb.foxtrot.gameplay.events.outposts.type.NetherOutpost;
-import net.frozenorb.foxtrot.gameplay.events.outposts.type.RoadOutpost;
-import net.frozenorb.foxtrot.gameplay.events.outposts.type.kitmap.KitmapOutpost;
+
 import net.minecraft.util.com.google.common.collect.ImmutableMap;
 
 import com.lunarclient.apollo.module.waypoint.Waypoint;
@@ -288,21 +284,7 @@ public class Team {
             if (hasDTRBitmask(DTRBitmask.FIVE_MINUTE_DEATHBAN) && name.equalsIgnoreCase("EndPortal")) {
                 return ChatColor.DARK_PURPLE + "End Portal";
             }
-            if (getName().equalsIgnoreCase("TreasureCove") && hasDTRBitmask(DTRBitmask.MOUNTAIN)) {
-                return ChatColor.GOLD + "Treasure Cove";
-            }
-            if (hasDTRBitmask(DTRBitmask.OUTPOST)) {
-                if (getName().startsWith("Road")) {
-                    return (ChatColor.GOLD + "Road Outpost");
-                }
-                if (getName().startsWith("Nether")) {
-                    return (ChatColor.DARK_RED + "Nether Outpost");
-                }
-                if (getName().startsWith("End")) {
-                    return (ChatColor.DARK_PURPLE + "End Outpost");
-                }
-                return ChatColor.GOLD + "Outpost";
-            }
+
             if (name.startsWith("Fury")) {
                 final FuryCapZone furyCapZone = FuryCapZone.valueOf(this.name.replace("Fury", "").toUpperCase());
 
@@ -573,25 +555,7 @@ public class Team {
         needsSave = false;
     }
 
-    public List<Outpost> findControlledOutposts() {
-        return Foxtrot.getInstance().getOutpostHandler().findControllingOutposts(this);
-    }
 
-    public boolean hasEndOutpost() {
-        return this.findControlledOutposts().stream().anyMatch(it -> it instanceof EndOutpost);
-    }
-
-    public boolean hasNetherOutpost() {
-        return this.findControlledOutposts().stream().anyMatch(it -> it instanceof NetherOutpost);
-    }
-
-    public boolean hasRoadOutpost() {
-        return this.findControlledOutposts().stream().anyMatch(it -> it instanceof RoadOutpost);
-    }
-
-    public boolean hasKitsOutpost() {
-        return this.findControlledOutposts().stream().anyMatch(it -> it instanceof KitmapOutpost);
-    }
 
     public void rename(String newName) {
         final String oldName = name;

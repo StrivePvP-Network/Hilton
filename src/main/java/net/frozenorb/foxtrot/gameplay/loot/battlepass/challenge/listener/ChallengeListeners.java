@@ -134,16 +134,14 @@ public class ChallengeListeners implements Listener {
             }
 
             if (team.hasDTRBitmask(DTRBitmask.KOTH)) {
-                for (Event gameEvent : Foxtrot.getInstance().getEventHandler().getEvents()) {
-                    if (gameEvent.isActive() && gameEvent.getType() == EventType.KOTH && gameEvent.getName().equalsIgnoreCase(team.getName())) {
-                        Foxtrot.getInstance().getBattlePassHandler().useProgress(event.getPlayer().getUniqueId(), progress -> {
-                            progress.setVisitActiveKoth(true);
-                            progress.requiresSave();
+                net.frozenorb.foxtrot.gameplay.events.koth.Koth koth = Foxtrot.getInstance().getKothManager().getKoth(team.getName());
+                if (koth != null && koth.isActive()) {
+                    Foxtrot.getInstance().getBattlePassHandler().useProgress(event.getPlayer().getUniqueId(), progress -> {
+                        progress.setVisitActiveKoth(true);
+                        progress.requiresSave();
 
-                            Foxtrot.getInstance().getBattlePassHandler().checkCompletionsAsync(event.getPlayer());
-                        });
-                        break;
-                    }
+                        Foxtrot.getInstance().getBattlePassHandler().checkCompletionsAsync(event.getPlayer());
+                    });
                 }
             }
         }

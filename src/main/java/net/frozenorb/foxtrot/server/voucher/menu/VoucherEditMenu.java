@@ -23,6 +23,7 @@ public class VoucherEditMenu extends Menu {
     @Getter private VoucherTemplate template;
 
     @Getter private static Map<UUID, VoucherTemplate> modifyingDisplay = new HashMap<>();
+    @Getter private static Map<UUID, VoucherTemplate> modifyingMaterial = new HashMap<>();
     @Getter private static Map<UUID, VoucherTemplate> modifyingCategory = new HashMap<>();
     @Getter private static Map<UUID, VoucherTemplate> modifyingValue = new HashMap<>();
     @Getter private static Map<UUID, VoucherTemplate> modifyingDuration = new HashMap<>();
@@ -65,6 +66,42 @@ public class VoucherEditMenu extends Menu {
             }
         });
 
+        buttons.put(2, new Button() {
+            @Override
+            public String getName(Player player) {
+                return ChatColor.YELLOW + "Edit Material";
+            }
+
+            @Override
+            public List<String> getDescription(Player player) {
+                List<String> lore = new ArrayList<>();
+                lore.add("");
+                lore.add(ChatColor.GRAY + "Current: " + ChatColor.WHITE + template.getMaterial() + ":" + template.getData());
+                lore.add("");
+                lore.add(ChatColor.GREEN + "Click to edit the material.");
+                lore.add(ChatColor.GRAY + "(Format: MATERIAL:DATA, e.g., INK_SACK:1)");
+                return lore;
+            }
+
+            @Override
+            public Material getMaterial(Player player) {
+                Material mat = Material.matchMaterial(template.getMaterial());
+                return mat != null ? mat : Material.PAPER;
+            }
+
+            @Override
+            public byte getDamageValue(Player player) {
+                return (byte) template.getData();
+            }
+
+            @Override
+            public void clicked(Player player, int slot, ClickType clickType) {
+                modifyingMaterial.put(player.getUniqueId(), template);
+                player.closeInventory();
+                player.sendMessage(ChatColor.GREEN + "Provide a new material (e.g., INK_SACK:1):");
+            }
+        });
+
         buttons.put(3, new Button() {
             @Override
             public String getName(Player player) {
@@ -76,7 +113,7 @@ public class VoucherEditMenu extends Menu {
                 List<String> lore = new ArrayList<>();
                 lore.add("");
                 lore.add(ChatColor.GRAY + "Current: " + ChatColor.WHITE + template.getCategory());
-                lore.add(ChatColor.GRAY + "Valid: RANK, MONEY, LIVES, COMMAND");
+                lore.add(ChatColor.GRAY + "Valid: RANK, MONEY, LIVES, COMMAND, STORE");
                 lore.add("");
                 lore.add(ChatColor.GREEN + "Click to edit the category.");
                 return lore;
@@ -91,7 +128,7 @@ public class VoucherEditMenu extends Menu {
             public void clicked(Player player, int slot, ClickType clickType) {
                 modifyingCategory.put(player.getUniqueId(), template);
                 player.closeInventory();
-                player.sendMessage(ChatColor.GREEN + "Provide a new category (RANK, MONEY, LIVES, COMMAND):");
+                player.sendMessage(ChatColor.GREEN + "Provide a new category (RANK, MONEY, LIVES, COMMAND, STORE):");
             }
         });
 
@@ -112,6 +149,8 @@ public class VoucherEditMenu extends Menu {
                     lore.add(ChatColor.GRAY + "(If RANK, enter rank name)");
                 } else if (template.getCategory().equalsIgnoreCase("COMMAND")) {
                     lore.add(ChatColor.GRAY + "(If COMMAND, enter the command without /)");
+                } else if (template.getCategory().equalsIgnoreCase("STORE")) {
+                    lore.add(ChatColor.GRAY + "(If STORE, enter the dollar amount, e.g. 5.0)");
                 }
                 return lore;
             }

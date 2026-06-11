@@ -76,6 +76,7 @@ public class ListenerHandler {
         instance.getServer().getPluginManager().registerEvents(new SpawnerTrackerListener(), instance);
 
         instance.getServer().getPluginManager().registerEvents(new UnrepairableListener(), instance);
+        instance.getServer().getPluginManager().registerEvents(new net.frozenorb.foxtrot.commands.listener.CheatListener(), instance);
 
         if (!Foxtrot.getInstance().getServerHandler().isTeams()) {
             instance.getServer().getPluginManager().registerEvents(new BlockConvenienceListener(), instance);

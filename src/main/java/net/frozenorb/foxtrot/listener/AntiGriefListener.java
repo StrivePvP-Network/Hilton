@@ -2,7 +2,6 @@ package net.frozenorb.foxtrot.listener;
 
 import cc.fyre.piston.Piston;
 import net.frozenorb.foxtrot.Foxtrot;
-import net.frozenorb.foxtrot.commands.KillTheKingCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftLivingEntity;
@@ -95,7 +94,7 @@ public class AntiGriefListener implements Listener {
         final Player player = (Player) event.getDamager();
         final ItemStack itemStack = player.getItemInHand();
 
-        if (itemStack == null || !itemStack.containsEnchantment(Enchantment.DAMAGE_ALL) || Foxtrot.getInstance().getMapHandler().isKitMap() && KillTheKingCommand.king != null && KillTheKingCommand.king.toString().equalsIgnoreCase(player.getUniqueId().toString())) {
+        if (itemStack == null || !itemStack.containsEnchantment(Enchantment.DAMAGE_ALL) || Foxtrot.getInstance().getMapHandler().isKitMap() && Foxtrot.getInstance().getKingManager().getKing() != null && Foxtrot.getInstance().getKingManager().getKing().getUniqueId().equals(player.getUniqueId())) {
             return;
         }
 
@@ -151,7 +150,7 @@ public class AntiGriefListener implements Listener {
 
         final Player player = (Player) event.getEntity();
 
-        if (Foxtrot.getInstance().getMapHandler().isKitMap() && KillTheKingCommand.king != null && KillTheKingCommand.king.toString().equalsIgnoreCase(player.getUniqueId().toString())) {
+        if (Foxtrot.getInstance().getMapHandler().isKitMap() && Foxtrot.getInstance().getKingManager().getKing() != null && Foxtrot.getInstance().getKingManager().getKing().getUniqueId().equals(player.getUniqueId())) {
             return;
         }
 

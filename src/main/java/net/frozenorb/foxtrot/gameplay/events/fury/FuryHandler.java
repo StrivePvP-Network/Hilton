@@ -6,7 +6,6 @@ import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.gameplay.events.EventType;
 import net.frozenorb.foxtrot.gameplay.events.conquest.ConquestHandler;
 import net.frozenorb.foxtrot.gameplay.events.fury.listener.FuryListener;
-import net.frozenorb.foxtrot.gameplay.events.koth.KOTH;
 import net.frozenorb.foxtrot.team.Team;
 import org.bson.types.ObjectId;
 import org.bukkit.ChatColor;
@@ -35,6 +34,7 @@ public class FuryHandler {
     }
 
     public void start() {
+/*
         this.getAllCapZones().forEach(it -> {
             if (!it.isHidden()) {
                 it.setHidden(true);
@@ -49,18 +49,19 @@ public class FuryHandler {
         this.lastSwitchTime = System.currentTimeMillis();
         this.furyCapZone = FuryCapZone.OVERWORLD;
         this.getActiveCapZone().activate();
-
+*/
         this.instance.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', PREFIX + " &eFury &6has started!"));
     }
 
     public void switchCapZone() {
+/*
         this.getActiveCapZone().deactivate();
 
         this.furyCapZone = Arrays.stream(FuryCapZone.values()).filter(it -> it.getOrder() == this.furyCapZone.getOrder()+1).findFirst().orElse(FuryCapZone.OVERWORLD);
         this.lastSwitchTime = System.currentTimeMillis();
 
         this.getActiveCapZone().activate();
-
+*/
         this.instance.getServer().broadcastMessage(ChatColor.translateAlternateColorCodes('&', PREFIX + " &6Switched Capzones to " + this.furyCapZone.getChatColor() + this.furyCapZone.getDisplayName() + "&6."));
     }
 
@@ -83,7 +84,7 @@ public class FuryHandler {
         this.lastSwitchTime = 0;
         this.getTeamPoints().clear();
 
-        this.getAllCapZones().forEach(KOTH::deactivate);
+//        this.getAllCapZones().forEach(KOTH::deactivate);
 
         if (winner == null) {
             Foxtrot.getInstance().getServer().broadcastMessage(PREFIX + " " + ChatColor.GOLD + "Fury has ended.");
@@ -108,6 +109,7 @@ public class FuryHandler {
         return sortedHashMap;
     }
 
+/*
     public KOTH getKoth(FuryCapZone furyCapZone) {
         return (KOTH) this.instance.getEventHandler().getEvent("Fury_" + furyCapZone.name());
     }
@@ -119,4 +121,5 @@ public class FuryHandler {
     public KOTH getActiveCapZone() {
         return this.getKoth(this.furyCapZone);
     }
+*/
 }

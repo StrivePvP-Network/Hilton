@@ -201,11 +201,14 @@ public class BardClass extends PvPClass implements Listener {
         if (!Foxtrot.getInstance().getServerHandler().isTeams()) {
             final ItemStack itemStack = event.getItem();
 
-            if (itemStack != null && (PortableStrength.itemStack.isSimilar(itemStack) || PortableResistance.itemStack.isSimilar(itemStack))) {
+            if (itemStack != null && (
+                (PortableStrength.itemStack != null && PortableStrength.itemStack.isSimilar(itemStack)) || 
+                (PortableResistance.itemStack != null && PortableResistance.itemStack.isSimilar(itemStack))
+            )) {
                 return;
             }
 
-            if (itemStack != null && PortableResistance.itemStack.isSimilar(itemStack)) {
+            if (itemStack != null && PortableResistance.itemStack != null && PortableResistance.itemStack.isSimilar(itemStack)) {
                 return;
             }
         }

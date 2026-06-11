@@ -6,7 +6,7 @@ import cc.fyre.proton.util.PlayerUtils;
 import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.commands.CustomTimerCreateCommand;
 import net.frozenorb.foxtrot.gameplay.events.Event;
-import net.frozenorb.foxtrot.gameplay.events.koth.KOTH;
+import net.frozenorb.foxtrot.gameplay.events.koth.Koth;
 import net.frozenorb.foxtrot.team.Team;
 import net.frozenorb.foxtrot.team.claims.LandBoard;
 import net.frozenorb.foxtrot.team.dtr.DTRBitmask;
@@ -129,14 +129,8 @@ public class SpawnListener implements Listener {
                     return;
                 }
 
-                for (Event playableEvent : Foxtrot.getInstance().getEventHandler().getEvents()) {
-                    if (!playableEvent.isActive() || !(playableEvent instanceof KOTH)) {
-                        continue;
-                    }
-
-                    KOTH koth = (KOTH) playableEvent;
-
-                    if (koth.onCap(event.getBlockPlaced().getLocation())) {
+                for (net.frozenorb.foxtrot.gameplay.events.koth.Koth koth : Foxtrot.getInstance().getKothManager().getActiveKoths()) {
+                    if (koth.getCaptureZone() != null && koth.getCaptureZone().contains(event.getBlockPlaced().getLocation())) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(ChatColor.YELLOW + "You can't place web on cap!");
                         event.getPlayer().setItemInHand(null);

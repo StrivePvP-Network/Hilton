@@ -3,6 +3,7 @@ package net.frozenorb.foxtrot.server.voucher.listener;
 import net.frozenorb.foxtrot.server.voucher.VoucherTemplate;
 import net.frozenorb.foxtrot.server.voucher.menu.VoucherEditMenu;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -21,6 +22,34 @@ public class VoucherEditListener implements Listener {
                 template.setDisplayName(ChatColor.translateAlternateColorCodes('&', event.getMessage()));
                 template.save();
                 event.getPlayer().sendMessage(ChatColor.GREEN + "Successfully updated the display name!");
+            }
+            
+            new VoucherEditMenu(template).openMenu(event.getPlayer());
+            cancel = true;
+        }
+
+        if (VoucherEditMenu.getModifyingMaterial().containsKey(event.getPlayer().getUniqueId())) {
+            VoucherTemplate template = VoucherEditMenu.getModifyingMaterial().remove(event.getPlayer().getUniqueId());
+
+            if (!event.getMessage().equalsIgnoreCase("cancel")) {
+                String[] split = event.getMessage().split(":");
+                String matName = split[0].toUpperCase();
+                short data = 0;
+                if (split.length > 1) {
+                    try {
+                        data = Short.parseShort(split[1]);
+                    } catch (NumberFormatException ignored) {}
+                }
+                
+                Material mat = Material.matchMaterial(matName);
+                if (mat != null) {
+                    template.setMaterial(mat.name());
+                    template.setData(data);
+                    template.save();
+                    event.getPlayer().sendMessage(ChatColor.GREEN + "Successfully updated the material!");
+                } else {
+                    event.getPlayer().sendMessage(ChatColor.RED + "Invalid material name!");
+                }
             }
             
             new VoucherEditMenu(template).openMenu(event.getPlayer());

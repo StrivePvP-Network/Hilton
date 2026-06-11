@@ -19,11 +19,6 @@ public class GemMap extends PersistMap<Long> {
             amount = GemHandler.isDoubleGem() ? amount * 2 : amount;
             amount = Foxtrot.getInstance().getGemBoosterMap().hasGemBooster(uuid) ? amount * 2 : amount;
 
-            final Team team = Foxtrot.getInstance().getTeamHandler().getTeam(uuid);
-
-            if (team != null && team.hasRoadOutpost()) {
-                amount *= 2;
-            }
         }
 
         Long value = getValue(uuid);

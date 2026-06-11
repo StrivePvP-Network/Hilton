@@ -88,8 +88,8 @@ public class FocusCommand {
         }
 
         if (focusTeam == null && focusString.equalsIgnoreCase("koth")
-                && Foxtrot.getInstance().getEventHandler().getActiveKOTH() != null) {
-            player.chat("/f focus " + Foxtrot.getInstance().getEventHandler().getActiveKOTH().getName());
+                && !Foxtrot.getInstance().getKothManager().getActiveKoths().isEmpty()) {
+            player.chat("/f focus " + Foxtrot.getInstance().getKothManager().getActiveKoths().get(0).getName());
             return;
         }
 

@@ -15,27 +15,22 @@ import net.frozenorb.foxtrot.commands.EOTWCommand;
 import net.frozenorb.foxtrot.commands.KillTheKingCommand;
 import net.frozenorb.foxtrot.gameplay.ability.Ability;
 import net.frozenorb.foxtrot.gameplay.ability.type.*;
-import net.frozenorb.foxtrot.gameplay.events.cavenite.CaveNiteHandler;
-import net.frozenorb.foxtrot.gameplay.events.cavenite.CaveNiteState;
 import net.frozenorb.foxtrot.gameplay.events.Event;
 import net.frozenorb.foxtrot.gameplay.events.EventType;
 import net.frozenorb.foxtrot.gameplay.events.conquest.ConquestHandler;
 import net.frozenorb.foxtrot.gameplay.events.conquest.enums.ConquestCapzone;
 import net.frozenorb.foxtrot.gameplay.events.conquest.game.ConquestGame;
 import net.frozenorb.foxtrot.gameplay.events.dtc.DTC;
-import net.frozenorb.foxtrot.gameplay.events.koth.KOTH;
+import net.frozenorb.foxtrot.gameplay.events.koth.Koth;
 import net.frozenorb.foxtrot.gameplay.events.mini.MiniEvent;
 import net.frozenorb.foxtrot.gameplay.events.mini.MiniEventsHandler;
-import net.frozenorb.foxtrot.gameplay.events.outposts.OutpostHandler;
-import net.frozenorb.foxtrot.gameplay.events.outposts.type.EndOutpost;
-import net.frozenorb.foxtrot.gameplay.events.outposts.type.NetherOutpost;
+
 import net.frozenorb.foxtrot.gameplay.kitmap.duel.Duel;
 import net.frozenorb.foxtrot.gameplay.kitmap.game.Game;
 import net.frozenorb.foxtrot.gameplay.pvpclasses.PvPClass;
 import net.frozenorb.foxtrot.gameplay.pvpclasses.PvPClassHandler;
 import net.frozenorb.foxtrot.gameplay.pvpclasses.pvpclasses.ArcherClass;
 import net.frozenorb.foxtrot.gameplay.extra.stats.StatsEntry;
-import net.frozenorb.foxtrot.gameplay.loot.treasurecove.listeners.TreasureCoveListener;
 import net.frozenorb.foxtrot.gameplay.loot.voteparty.VotePartyHandler;
 import net.frozenorb.foxtrot.listener.*;
 import net.frozenorb.foxtrot.listener.event.TimerEndEvent;
@@ -183,19 +178,47 @@ public class FoxtrotScoreGetter implements ScoreGetter {
                     displayName = ChatColor.DARK_RED.toString() + ChatColor.BOLD + "Citadel";
                     break;
                 default:
-                    String kothColor = ((KOTH) event).getKothColor() == null ? "&9" : ((KOTH) event).getKothColor();
-                    displayName = ChatColor.translateAlternateColorCodes('&', kothColor) + ChatColor.BOLD.toString()
-                            + event.getName();
+                    displayName = ChatColor.GOLD + ChatColor.BOLD.toString() + event.getName();
                     break;
             }
 
             if (event.getType() == EventType.DTC) {
-                scores.add(displayName + "&7: &c" + ((DTC) event).getCurrentPoints());
-            } else {
                 scores.add(displayName + "&7: &c"
-                        + ScoreFunction.TIME_SIMPLE.apply((float) ((KOTH) event).getRemainingCapTime()));
+                        + ((net.frozenorb.foxtrot.gameplay.events.dtc.DTC) event).getCurrentPoints());
+            } else {
+                scores.add(displayName + "&7: &cUnknown");
             }
 
+        }
+
+        for (net.frozenorb.foxtrot.gameplay.events.koth.Koth koth : Foxtrot.getInstance().getKothManager()
+                .getActiveKoths()) {
+            String displayName;
+            switch (koth.getName()) {
+                case "End":
+                    displayName = ChatColor.DARK_PURPLE + ChatColor.BOLD.toString() + "End";
+                    break;
+                case "Hell":
+                    displayName = ChatColor.RED + ChatColor.BOLD.toString() + "Hell";
+                    break;
+                case "EOTW":
+                    displayName = ChatColor.DARK_RED.toString() + ChatColor.BOLD + "EOTW";
+                    break;
+                case "Citadel":
+                    displayName = ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Citadel";
+                    break;
+                case "NetherCitadel":
+                    displayName = ChatColor.DARK_RED.toString() + ChatColor.BOLD + "Citadel";
+                    break;
+                default:
+                    String kothColor = koth.getColor() == null ? "&9" : koth.getColor();
+                    displayName = ChatColor.translateAlternateColorCodes('&', kothColor) + ChatColor.BOLD.toString()
+                            + koth.getName();
+                    break;
+            }
+
+            scores.add(displayName + "&7: &c"
+                    + cc.fyre.proton.util.TimeUtils.formatIntoMMSS((int) (koth.getRemaining() / 1000L)));
         }
 
         final PvPClass pvpClass = PvPClassHandler.getPvPClass(player);
@@ -257,8 +280,6 @@ public class FoxtrotScoreGetter implements ScoreGetter {
             scores.add("&b&lFrenzy&7: &c" + getBooster);
         }
 
-
-
         final Iterator<Map.Entry<String, Long>> iterator = CustomTimerCreateCommand.getCustomTimers().entrySet()
                 .iterator();
         while (iterator.hasNext()) {
@@ -295,6 +316,18 @@ public class FoxtrotScoreGetter implements ScoreGetter {
             }
         }
 
+        net.frozenorb.foxtrot.gameplay.events.motw.MOTWManager motwManager = Foxtrot.getInstance().getMotwManager();
+        if (motwManager != null && motwManager.isActive()) {
+            long difference = motwManager.getDurationMs() - (System.currentTimeMillis() - motwManager.getStartTime());
+            if (difference > 0) {
+                scores.add("&d&lMOTW&7: &c" + ScoreFunction.TIME_SIMPLE.apply(difference / 1000F));
+            } else {
+                org.bukkit.Bukkit.getScheduler().runTask(Foxtrot.getInstance(), () -> {
+                    if (motwManager.isActive()) motwManager.stop();
+                });
+            }
+        }
+
         if (archerMarkScore != null) {
             scores.add("&6&lArcher Mark&7: &c" + archerMarkScore);
         }
@@ -316,7 +349,8 @@ public class FoxtrotScoreGetter implements ScoreGetter {
             if (System.currentTimeMillis() > antiCleanTime) {
                 AntiCleanListener.CACHE.remove(team);
                 AntiCleanListener.TIME_CACHE.remove(team);
-                team.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYour &5&lAnti-Clean &ctag is now over!"));
+                team.sendMessage(
+                        ChatColor.translateAlternateColorCodes('&', "&cYour &5&lAnti-Clean &ctag is now over!"));
             }
         }
 
@@ -347,7 +381,10 @@ public class FoxtrotScoreGetter implements ScoreGetter {
                     + (votePartyHandler.getVotePartyRequirement() - votePartyHandler.getCurrentVotes()) + " away"));
         }
 
-        // Individual ability cooldown lines disabled to show only single Global Cooldown timer
+        List<String> abilityCooldowns = getAbilityCooldownsScore(player);
+        if (abilityCooldowns != null) {
+            scores.addAll(abilityCooldowns);
+        }
 
         if (AntiBlockup.cache.containsKey(player.getUniqueId())) {
             if (AntiBlockup.cache.get(player.getUniqueId()) < System.currentTimeMillis()) {
@@ -363,44 +400,10 @@ public class FoxtrotScoreGetter implements ScoreGetter {
                 scores.add("&3&7&m--------------------");
             }
 
-            final OutpostHandler outpostHandler = Foxtrot.getInstance().getOutpostHandler();
-            final EndOutpost endOutpost = (EndOutpost) outpostHandler.findOutpost("End");
-            final NetherOutpost netherOutpost = (NetherOutpost) outpostHandler.findOutpost("Nether");
-
-            if (FoxtrotTitleGetter.domain) {
-                scores.add("&5End: &c" + (endOutpost.getPercentage().get() == 0.0D ? ChatColor.RED : ChatColor.GREEN)
-                        + String.format("%.2f", endOutpost.getPercentage().get()) + "%");
-                scores.add("&4&7• &fStatus: &e" + endOutpost.getStatus().getDisplayName());
-            } else {
-                scores.add(
-                        "&4Nether: &c" + (netherOutpost.getPercentage().get() == 0.0D ? ChatColor.RED : ChatColor.GREEN)
-                                + String.format("%.2f", netherOutpost.getPercentage().get()) + "%");
-                scores.add("&7• &fStatus: &e" + netherOutpost.getStatus().getDisplayName());
-            }
-
             if (team != null && team.getFocusedTeam() != null) {
                 final Team focusedTeam = team.getFocusedTeam();
 
                 scores.add("&7▶ &d" + focusedTeam.getName() + ": &a" + focusedTeam.formatDTR());
-            }
-        }
-
-        if (!Foxtrot.getInstance().getTeamfightModeMap().isTeamfight(player.getUniqueId())
-                && this.showTimer(player, "treasure") && Foxtrot.getInstance().getTreasureCoveHandler() != null
-                && TreasureCoveListener.SPAWN_IN != 0 && TreasureCoveListener.SPAWN_IN > System.currentTimeMillis()) {
-            Location location = Foxtrot.getInstance().getTreasureCoveHandler().getCentralChest();
-
-            if (location != null) {
-                if (!scores.isEmpty()) {
-                    scores.add("&5&7&m--------------------");
-                }
-
-                scores.add("&4&lTreasure Cove");
-                scores.add("&7A gift card");
-                scores.add("&7drops in &f" + getTimerScore(TreasureCoveListener.SPAWN_IN));
-
-                scores.add(ChatColor.RED + "Location: &f" + location.getBlockX() + ", " + location.getBlockZ()
-                        + " &7[Nether]");
             }
         }
 
@@ -419,24 +422,10 @@ public class FoxtrotScoreGetter implements ScoreGetter {
             scores.add("&5┃ &fLocation: &d" + location.getBlockX() + ", " + location.getBlockZ());
         }
 
-        final long difference = Foxtrot.getInstance().getCouponDropsHandler().getDropsIn() - System.currentTimeMillis();
+        if (Foxtrot.getInstance().getMapHandler().isKitMap()
+                && Foxtrot.getInstance().getKingManager().getKing() != null) {
 
-        if (!Foxtrot.getInstance().getTeamfightModeMap().isTeamfight(player.getUniqueId())
-                && Foxtrot.getInstance().getCouponDropsHandler().getDropsIn() != 0 && difference > 0) {
-            final Location location = Foxtrot.getInstance().getCouponDropsHandler().getLocation().clone();
-
-            if (!scores.isEmpty()) {
-                scores.add("&d&7&m--------------------");
-            }
-
-            scores.add("&4&lDiscount Drop");
-            scores.add("&7drops in &f" + getTimerScore(Foxtrot.getInstance().getCouponDropsHandler().getDropsIn()));
-            scores.add(ChatColor.RED + "Location: &f" + location.getBlockX() + ", " + location.getBlockZ());
-        }
-
-        if (Foxtrot.getInstance().getMapHandler().isKitMap() && KillTheKingCommand.king != null) {
-
-            final Player king = Foxtrot.getInstance().getServer().getPlayer(KillTheKingCommand.king);
+            final Player king = Foxtrot.getInstance().getKingManager().getKing();
 
             if (king != null) {
                 if (!scores.isEmpty()) {
@@ -472,16 +461,6 @@ public class FoxtrotScoreGetter implements ScoreGetter {
             scores.add("&a/minievent");
         }
 
-        final CaveNiteHandler caveNiteHandler = Foxtrot.getInstance().getCaveNiteHandler();
-
-        if (caveNiteHandler != null && caveNiteHandler.getGameState() != CaveNiteState.INACTIVE) {
-            if (!scores.isEmpty()) {
-                scores.add("&1&7&m--------------------");
-            }
-
-            scores.addAll(caveNiteHandler.getScoreboardLines());
-        }
-
         if (team != null && team.getFocusedTeam() != null
                 && !Foxtrot.getInstance().getTeamfightModeMap().isTeamfight(player.getUniqueId())) {
             final Team focusedTeam = team.getFocusedTeam();
@@ -501,7 +480,8 @@ public class FoxtrotScoreGetter implements ScoreGetter {
                 String dtrFormat = focusedTeam.formatDTR();
 
                 if (Foxtrot.getInstance().getDTRDisplayMap().isHearts(player.getUniqueId())) {
-                    int currentHearts = (int) Math.ceil(focusedTeam.getDTR() / Foxtrot.getInstance().getServerHandler().getDTRLoss((org.bukkit.Location) null));
+                    int currentHearts = (int) Math.ceil(focusedTeam.getDTR()
+                            / Foxtrot.getInstance().getServerHandler().getDTRLoss((org.bukkit.Location) null));
 
                     dtrFormat = focusedTeam.getDTRColor().toString() + currentHearts + "❤" + focusedTeam.getDTRSuffix();
                 }
@@ -531,26 +511,20 @@ public class FoxtrotScoreGetter implements ScoreGetter {
                 for (int y = 0; y < 2; y++) {
 
                     final ConquestCapzone zone = ConquestCapzone.values()[i];
-                    final Event event = Foxtrot.getInstance().getEventHandler().getEvent("Conquest-" + zone.getName());
+                    final net.frozenorb.foxtrot.gameplay.events.koth.Koth koth = Foxtrot.getInstance().getKothManager()
+                            .getKoth("Conquest-" + zone.getName());
 
-                    if (event == null) {
+                    if (koth == null) {
                         i++;
                         continue;
                     }
-
-                    if (!(event instanceof KOTH)) {
-                        i++;
-                        continue;
-                    }
-
-                    final KOTH koth = (KOTH) event;
 
                     if (!first) {
                         text.append(" ")/* .append(ChatColor.GRAY.toString()).append("┃").append(" ") */;
                     }
 
-                    final long time = koth.getRemainingCapTime() <= 0 ? ConquestHandler.TIME_TO_CAP
-                            : koth.getRemainingCapTime();
+                    final long time = koth.getRemaining() <= 0 ? ConquestHandler.TIME_TO_CAP
+                            : koth.getRemaining() / 1000L;
 
                     text.append(zone.getChatColor().toString()).append("⬛ ").append(ChatColor.RED)
                             .append(TimeUtils.formatIntoMMSS((int) time));
@@ -594,32 +568,26 @@ public class FoxtrotScoreGetter implements ScoreGetter {
             scores.addAll(conquestScores);
         }
 
-        if (player.hasMetadata("STAFF_BOARD")) {
+        if (player.hasMetadata("STAFF_BOARD") || cc.fyre.modsuite.mod.ModHandler.INSTANCE.isInModMode(player.getUniqueId())) {
 
             if (!scores.isEmpty()) {
                 scores.add("&f&7&m--------------------");
             }
 
-            if (player.getName().equalsIgnoreCase("SimplyTrash")) {
-                final Integer[] array = ThreadingManager.getTickCounter().getTicksPerSecond();
-                final Integer last = array[array.length - 1];
+            scores.add("&6&lStaff Mode:");
 
-                scores.add(ChatColor.AQUA + ChatColor.BOLD.toString() + "TPS" + ChatColor.GRAY + ": " + ChatColor.RED
-                        + this.formatTPS(last));
-            }
+            boolean vanished = cc.fyre.modsuite.mod.ModHandler.INSTANCE.isInVanish(player.getUniqueId());
+            scores.add("&7\u00bb &eVisibility: " + (vanished ? "&aInvisible" : "&cVisible"));
 
-            scores.add(ChatColor.YELLOW + ChatColor.BOLD.toString() + "Online" + ChatColor.GRAY + ": " + ChatColor.RED
-                    + Foxtrot.getInstance().getServer().getOnlinePlayers().size() + "/"
-                    + Foxtrot.getInstance().getServer().getMaxPlayers() + " &7("
-                    + Universe.getInstance().getUniverseHandler().getPlayersOnNetwork() + ")");
-            scores.add(ChatColor.DARK_AQUA + ChatColor.BOLD.toString() + "Vanished" + ChatColor.GRAY + ": "
-                    + (ModHandler.INSTANCE.isInVanish(player.getUniqueId()) ? ChatColor.GREEN + "Yes"
-                            : ChatColor.RED + "No"));
+            boolean staffChat = Profiles.getInstance().hasStaffChatEnabled(player);
+            scores.add("&7\u00bb &eStaff Chat: " + (staffChat ? "&aEnabled" : "&cDisabled"));
 
-            if (!player.getName().equalsIgnoreCase("SimplyTrash")) {
-                scores.add(CC.BLUE + CC.BOLD + "Staff Chat" + CC.GRAY + ": "
-                        + (Profiles.getInstance().hasStaffChatEnabled(player) ? CC.GREEN + "Yes" : CC.RED + "No"));
-            }
+            int onlinePlayers = Foxtrot.getInstance().getServer().getOnlinePlayers().size();
+            scores.add("&7\u00bb &ePlayers: &f" + onlinePlayers);
+
+            final Integer[] array = cc.fyre.proton.util.ThreadingManager.getTickCounter().getTicksPerSecond();
+            final Integer last = array[array.length - 1];
+            scores.add("&7\u00bb &eTPS: " + this.formatTPS(last));
         }
         while (scores.size() > 13) {
             scores.remove(scores.getLast());
@@ -629,12 +597,16 @@ public class FoxtrotScoreGetter implements ScoreGetter {
             // 'Top' and bottom.
             scores.addFirst("&a&7&m--------------------");
 
-            net.frozenorb.foxtrot.gameplay.abilitytrader.AbilityTraderHandler traderHandler = Foxtrot.getInstance().getMapHandler().getAbilityTraderHandler();
-            if (traderHandler != null && traderHandler.getActiveNPC() != null && traderHandler.getActiveNPC().isValid()) {
+            net.frozenorb.foxtrot.gameplay.abilitytrader.AbilityTraderHandler traderHandler = Foxtrot.getInstance()
+                    .getMapHandler().getAbilityTraderHandler();
+            if (traderHandler != null && traderHandler.getActiveNPC() != null
+                    && traderHandler.getActiveNPC().isValid()) {
                 scores.add("&b&7&m--------------------");
                 org.bukkit.entity.Villager npc = traderHandler.getActiveNPC();
-                scores.add("&2&lTrader&7: &b" + (int) npc.getHealth() + " &c❤");
-                scores.add("&2&lLocation&7: &b" + npc.getLocation().getBlockX() + ", " + npc.getLocation().getBlockZ());
+                scores.add("&e❙ &2&lTrader&7: &b" + (int) npc.getHealth() + " &c❤");
+                scores.add("&e❙ &2&lLocation&7: &b" + npc.getLocation().getBlockX() + ", "
+                        + npc.getLocation().getBlockZ());
+                scores.add("&e❙ &b/trader info");
             }
             scores.add("&c&7&m--------------------");
         }

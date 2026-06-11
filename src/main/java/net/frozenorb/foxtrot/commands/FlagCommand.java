@@ -94,7 +94,7 @@ public class FlagCommand {
 
         sender.sendMessage(ChatColor.GREEN + "Detected All Roads, added flags.");
 
-        Foxtrot.getInstance().getEventHandler().getEvents().stream().filter(it -> it.getType() == EventType.KOTH && !it.isHidden() && Foxtrot.getInstance().getTeamHandler().getTeam(it.getName()) != null).forEach(it -> {
+        Foxtrot.getInstance().getKothManager().getKoths().values().stream().filter(it -> Foxtrot.getInstance().getTeamHandler().getTeam(it.getName()) != null).forEach(it -> {
             Team faction = Foxtrot.getInstance().getTeamHandler().getTeam(it.getName());
             faction.setDTR(64);
 
@@ -129,13 +129,6 @@ public class FlagCommand {
             sender.sendMessage(ChatColor.GREEN + "Detected Glowstone Mountain Faction, added flags.");
         }
 
-        if (Foxtrot.getInstance().getTeamHandler().getTeam("TreasureCove") != null) {
-            Team treasureCove = Foxtrot.getInstance().getTeamHandler().getTeam("TreasureCove");
-            treasureCove.setDTR(16384);
-
-            sender.sendMessage(ChatColor.GREEN + "Detected Treasure Cove Faction, added flags.");
-        }
-
         if (Foxtrot.getInstance().getTeamHandler().getTeam("EndPortal") != null) {
             Team endPortal = Foxtrot.getInstance().getTeamHandler().getTeam("EndPortal");
             endPortal.setDTR(8);
@@ -150,26 +143,6 @@ public class FlagCommand {
             sender.sendMessage(ChatColor.GREEN + "Detected Buffer Zone Faction, added flags.");
         }
 
-        if (Foxtrot.getInstance().getTeamHandler().getTeam("RoadOutpost") != null) {
-            Team bufferZone = Foxtrot.getInstance().getTeamHandler().getTeam("RoadOutpost");
-            bufferZone.setDTR(DTRBitmask.OUTPOST.getBitmask());
-
-            sender.sendMessage(ChatColor.GREEN + "Detected RoadOutpost Faction, added flags.");
-        }
-
-        if (Foxtrot.getInstance().getTeamHandler().getTeam("EndOutpost") != null) {
-            Team bufferZone = Foxtrot.getInstance().getTeamHandler().getTeam("EndOutpost");
-            bufferZone.setDTR(DTRBitmask.OUTPOST.getBitmask());
-
-            sender.sendMessage(ChatColor.GREEN + "Detected Outpost Faction, added flags.");
-        }
-
-        if (Foxtrot.getInstance().getTeamHandler().getTeam("NetherOutpost") != null) {
-            Team bufferZone = Foxtrot.getInstance().getTeamHandler().getTeam("NetherOutpost");
-            bufferZone.setDTR(DTRBitmask.OUTPOST.getBitmask());
-
-            sender.sendMessage(ChatColor.GREEN + "Detected NetherOutpost Faction, added flags.");
-        }
 
         if (Foxtrot.getInstance().getTeamHandler().getTeam("Zombie") != null) {
             Team bufferZone = Foxtrot.getInstance().getTeamHandler().getTeam("Zombie");

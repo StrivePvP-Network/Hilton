@@ -70,7 +70,9 @@ public class VoucherCommand {
     }
 
     public static ItemStack createPhysicalVoucher(VoucherTemplate template) {
-        ItemBuilder builder = ItemBuilder.of(Material.PAPER);
+        Material mat = Material.matchMaterial(template.getMaterial());
+        if (mat == null) mat = Material.PAPER;
+        ItemBuilder builder = ItemBuilder.of(mat).data(template.getData());
         builder.name(ChatColor.translateAlternateColorCodes('&', template.getDisplayName()));
 
         List<String> lore = new ArrayList<>();

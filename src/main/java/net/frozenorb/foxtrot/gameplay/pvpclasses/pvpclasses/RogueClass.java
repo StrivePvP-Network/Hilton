@@ -39,7 +39,7 @@ public class RogueClass extends PvPClass {
         int limit = Foxtrot.getInstance().getMapHandler().isKitMap() ? 3 : 2;
 
         if (PvPClassHandler.countMembersWithKitOn(player, this) > limit) {
-            player.sendMessage(ChatColor.RED + "Your team has too many rogues!");
+            player.sendMessage(ChatColor.RED + "Your team has the max of rogues per factions!");
             return false;
         }
 

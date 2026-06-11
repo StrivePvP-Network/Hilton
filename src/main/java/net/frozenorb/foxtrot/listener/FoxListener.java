@@ -473,6 +473,15 @@ public class FoxListener implements Listener {
             return;
         }
 
+        if (net.frozenorb.foxtrot.gameplay.events.purge.PurgeManager.isPurgeActive()) {
+            Material type = event.getClickedBlock().getType();
+            if (type.name().contains("DOOR") || type.name().contains("GATE") || type.name().contains("CHEST") 
+                || type == Material.HOPPER || type == Material.BREWING_STAND || type == Material.FURNACE || type == Material.BURNING_FURNACE
+                || type == Material.DROPPER || type == Material.DISPENSER || type.name().contains("BUTTON") || type == Material.LEVER) {
+                return;
+            }
+        }
+
         Team team = LandBoard.getInstance().getTeam(event.getClickedBlock().getLocation());
         Team playerTeam = Foxtrot.getInstance().getTeamHandler().getTeam(event.getPlayer());
 
@@ -497,10 +506,7 @@ public class FoxListener implements Listener {
                     if (isTreasureBeachChest
                             || team.getName().equalsIgnoreCase("TreasureBeach") && team.getOwner() == null
                             || DTRBitmask.CITADEL.appliesAt(event.getClickedBlock().getLocation())
-                                    && citadelHandler.canLootCitadel(event.getPlayer())
-                            || DTRBitmask.OUTPOST.appliesAt(event.getClickedBlock().getLocation())
-                                    && player.getWorld().getEnvironment().equals(World.Environment.NORMAL)
-                                    && (playerTeam != null && playerTeam.hasRoadOutpost())) {
+                                    && citadelHandler.canLootCitadel(event.getPlayer())) {
                         return;
                     }
                 }
@@ -913,8 +919,7 @@ public class FoxListener implements Listener {
 
         if (Foxtrot.getInstance().getMapHandler().isKitMap()) {
 
-            if (KillTheKingCommand.king != null && event.getEntity().getUniqueId().toString()
-                    .equalsIgnoreCase(KillTheKingCommand.king.toString())) {
+            if (Foxtrot.getInstance().getKingManager().getKing() != null && event.getEntity().getUniqueId().equals(Foxtrot.getInstance().getKingManager().getKing().getUniqueId())) {
                 final Player killer = event.getEntity().getKiller();
 
                 if (killer != null) {

@@ -3,9 +3,7 @@ package net.frozenorb.foxtrot.listener;
 import cc.fyre.proton.util.PlayerUtils;
 import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.commands.DisableCommand;
-import net.frozenorb.foxtrot.gameplay.events.Event;
-import net.frozenorb.foxtrot.gameplay.events.EventType;
-import net.frozenorb.foxtrot.gameplay.events.koth.KOTH;
+import net.frozenorb.foxtrot.gameplay.events.koth.Koth;
 import net.frozenorb.foxtrot.team.Team;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -47,17 +45,10 @@ public class AntiCleanListener implements Listener {
         World.Environment env = victim.getWorld().getEnvironment();
 
         if (env == World.Environment.NORMAL) {
-            for (Event e : Foxtrot.getInstance().getEventHandler().getEvents()) {
-                if (e.getType() != EventType.KOTH)
-                    continue;
-                KOTH koth = (KOTH) e;
-                if (!koth.isActive())
-                    continue;
-
-                if (koth.getAntiCleanRadius() > 0) {
-                    double distance = victim.getLocation()
-                            .distance(koth.getCapLocation().toLocation(victim.getWorld()));
-                    if (distance <= koth.getAntiCleanRadius()) {
+            for (net.frozenorb.foxtrot.gameplay.events.koth.Koth koth : Foxtrot.getInstance().getKothManager().getActiveKoths()) {
+                if (koth.getCaptureZone() != null && koth.getCaptureZone().getWorld().getName().equals(victim.getWorld().getName())) {
+                    double distance = victim.getLocation().distance(koth.getCaptureZone().getCenter());
+                    if (distance <= 30) {
                         return;
                     }
                 }
@@ -65,17 +56,12 @@ public class AntiCleanListener implements Listener {
         } else {
             boolean ignore = false;
 
-            for (Event e : Foxtrot.getInstance().getEventHandler().getEvents()) {
-                if (e.getType() != EventType.KOTH)
-                    continue;
-                KOTH koth = (KOTH) e;
-                if (!koth.isActive())
-                    continue;
-
-                if ((env == World.Environment.NETHER && koth.getWorld().equals("world_nether"))
-                        || (env == World.Environment.THE_END && koth.getWorld().equals("world_the_end"))) {
-                    ignore = true;
-                    break;
+            for (net.frozenorb.foxtrot.gameplay.events.koth.Koth koth : Foxtrot.getInstance().getKothManager().getActiveKoths()) {
+                if (koth.getCaptureZone() != null) {
+                    if ((env == World.Environment.NETHER && koth.getCaptureZone().getWorld().getName().equals("world_nether"))
+                            || (env == World.Environment.THE_END && koth.getCaptureZone().getWorld().getName().equals("world_the_end"))) {
+                        ignore = true;
+                    }
                 }
             }
 

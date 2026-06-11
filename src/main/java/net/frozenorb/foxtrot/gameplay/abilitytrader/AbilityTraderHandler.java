@@ -38,8 +38,6 @@ public class AbilityTraderHandler implements Listener {
 
     public AbilityTraderHandler() {
         Bukkit.getPluginManager().registerEvents(this, Foxtrot.getInstance());
-
-        Bukkit.getScheduler().runTaskLater(Foxtrot.getInstance(), this::spawnNPC, 100L);
     }
 
     public void spawnNPC() {
@@ -57,12 +55,14 @@ public class AbilityTraderHandler implements Listener {
 
         villager.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 100, false));
 
+        villager.setMaxHealth(120.0);
+        villager.setHealth(120.0);
         villager.setMetadata("ability_trader", new FixedMetadataValue(Foxtrot.getInstance(), true));
 
         this.activeNPC = villager;
 
         Bukkit.broadcastMessage("");
-        Bukkit.broadcastMessage(ChatColor.translate("4&lAbility Trader "));
+        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&4&lAbility Trader"));
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&',
                 "&7spawned at &b" + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ()
                         + " &7in Warzone."));

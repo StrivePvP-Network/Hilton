@@ -10,7 +10,7 @@ import net.frozenorb.foxtrot.gameplay.events.Event;
 import net.frozenorb.foxtrot.gameplay.events.citadel.events.CitadelCapturedEvent;
 import net.frozenorb.foxtrot.gameplay.events.citadel.listeners.CitadelListener;
 import net.frozenorb.foxtrot.gameplay.events.citadel.tasks.CitadelSaveTask;
-import net.frozenorb.foxtrot.gameplay.events.koth.KOTH;
+import net.frozenorb.foxtrot.gameplay.events.koth.Koth;
 import net.frozenorb.foxtrot.team.Team;
 import net.frozenorb.foxtrot.team.claims.Claim;
 import net.frozenorb.foxtrot.team.claims.LandBoard;
@@ -56,13 +56,8 @@ public class CitadelHandler {
         (new CitadelSaveTask()).runTaskTimerAsynchronously(Foxtrot.getInstance(), 0L, 20 * 60 * 5);
     }
 
-    public KOTH getEvent() {
-        for (Event event : Foxtrot.getInstance().getEventHandler().getEvents()) {
-            if (event instanceof KOTH && event.getName().equalsIgnoreCase("Citadel")) {
-                return (KOTH) event;
-            }
-        }
-        return null;
+    public Koth getEvent() {
+        return Foxtrot.getInstance().getKothManager().getKoth("Citadel");
     }
 
     public boolean isActive() {

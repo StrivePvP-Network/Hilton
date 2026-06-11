@@ -38,9 +38,9 @@ public class King extends MiniEvent {
             return;
         }
 
-        if (!event.getEvent().getType().equals(EventType.KOTH)) {
-            return;
-        }
+//        if (!event.getEvent().getType().equals(EventType.KOTH)) {
+//            return;
+//        }
 
         this.addProgress(event.getPlayer(), true);
     }

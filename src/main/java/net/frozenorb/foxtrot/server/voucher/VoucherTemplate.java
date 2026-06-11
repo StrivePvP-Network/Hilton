@@ -31,6 +31,12 @@ public class VoucherTemplate {
     @Getter
     @Setter
     private String duration;
+    @Getter
+    @Setter
+    private String material;
+    @Getter
+    @Setter
+    private short data;
 
     public VoucherTemplate(String id) {
         this.id = id;
@@ -39,6 +45,8 @@ public class VoucherTemplate {
         this.lore = new ArrayList<>();
         this.value = "none";
         this.duration = "perm";
+        this.material = "PAPER";
+        this.data = 0;
     }
 
     public VoucherTemplate(DBObject document) {
@@ -56,6 +64,14 @@ public class VoucherTemplate {
 
         this.value = (String) document.get("value");
         this.duration = (String) document.get("duration");
+
+        if (document.containsField("material")) {
+            this.material = (String) document.get("material");
+            this.data = ((Number) document.get("data")).shortValue();
+        } else {
+            this.material = "PAPER";
+            this.data = 0;
+        }
     }
 
     public DBObject toDocument() {
@@ -66,6 +82,8 @@ public class VoucherTemplate {
         document.put("lore", lore);
         document.put("value", value);
         document.put("duration", duration);
+        document.put("material", material);
+        document.put("data", data);
         return document;
     }
 

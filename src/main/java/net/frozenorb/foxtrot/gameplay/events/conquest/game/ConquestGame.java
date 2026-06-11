@@ -7,9 +7,6 @@ import net.frozenorb.foxtrot.gameplay.events.EventType;
 import net.frozenorb.foxtrot.gameplay.events.conquest.ConquestHandler;
 import net.frozenorb.foxtrot.gameplay.events.conquest.enums.ConquestCapzone;
 import net.frozenorb.foxtrot.gameplay.events.events.EventCapturedEvent;
-import net.frozenorb.foxtrot.gameplay.events.koth.KOTH;
-import net.frozenorb.foxtrot.gameplay.events.koth.events.EventControlTickEvent;
-import net.frozenorb.foxtrot.gameplay.events.koth.events.KOTHControlLostEvent;
 import net.frozenorb.foxtrot.team.Team;
 import cc.fyre.proton.util.UUIDUtils;
 import org.bson.types.ObjectId;
@@ -31,6 +28,7 @@ public class ConquestGame implements Listener {
     public ConquestGame() {
         Foxtrot.getInstance().getServer().getPluginManager().registerEvents(this, Foxtrot.getInstance());
 
+/*
         for (Event event : Foxtrot.getInstance().getEventHandler().getEvents()) {
             if (event.getType() != EventType.KOTH) continue;
             KOTH koth = (KOTH) event;
@@ -46,6 +44,7 @@ public class ConquestGame implements Listener {
                 koth.activate();
             }
         }
+*/
 
         Foxtrot.getInstance().getServer().broadcastMessage(ConquestHandler.PREFIX + " " + ChatColor.GOLD + "Conquest has started! Use /conquest for more information.");
         Foxtrot.getInstance().getConquestHandler().setGame(this);
@@ -129,6 +128,7 @@ public class ConquestGame implements Listener {
         }
     }
 
+/*
     @EventHandler
     public void onKOTHControlLost(KOTHControlLostEvent event) {
         if (!event.getKOTH().getName().startsWith(ConquestHandler.KOTH_NAME_PREFIX)) {
@@ -158,6 +158,7 @@ public class ConquestGame implements Listener {
             capper.sendMessage(ConquestHandler.PREFIX + " " + ChatColor.GOLD + "Attempting to capture " + capzone.getChatColor() + capzone.getName() + ChatColor.GOLD + "!" + ChatColor.AQUA + " (" + event.getKOTH().getRemainingCapTime() + "s)");
         }
     }
+*/
 
 
     @EventHandler

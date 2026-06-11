@@ -7,7 +7,7 @@ import net.minecraft.util.com.google.common.collect.ImmutableMap;
 import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.gameplay.events.region.cavern.CavernHandler;
 import net.frozenorb.foxtrot.gameplay.events.Event;
-import net.frozenorb.foxtrot.gameplay.events.koth.KOTH;
+import net.frozenorb.foxtrot.gameplay.events.koth.Koth;
 import net.frozenorb.foxtrot.gameplay.events.region.glowmtn.GlowHandler;
 import net.frozenorb.foxtrot.team.Team;
 import net.frozenorb.foxtrot.team.claims.LandBoard;
@@ -314,14 +314,8 @@ public class TeamListener implements Listener {
         if (!team.isMember(event.getPlayer().getUniqueId())) {
             if (!DTRBitmask.SAFE_ZONE.appliesAt(event.getBlock().getLocation()) && event.getItemInHand() != null
                     && event.getItemInHand().getType() == Material.WEB) {
-                for (Event playableEvent : Foxtrot.getInstance().getEventHandler().getEvents()) {
-                    if (!playableEvent.isActive() || !(playableEvent instanceof KOTH)) {
-                        continue;
-                    }
-
-                    KOTH koth = (KOTH) playableEvent;
-
-                    if (koth.onCap(event.getBlockPlaced().getLocation())) {
+                for (net.frozenorb.foxtrot.gameplay.events.koth.Koth koth : Foxtrot.getInstance().getKothManager().getActiveKoths()) {
+                    if (koth.getCaptureZone() != null && koth.getCaptureZone().contains(event.getBlockPlaced().getLocation())) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(ChatColor.YELLOW + "You can't place web on cap!");
                         event.getPlayer().setItemInHand(null);

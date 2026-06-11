@@ -3,10 +3,8 @@ package net.frozenorb.foxtrot.commands;
 import cc.fyre.proton.command.Command;
 import cc.fyre.proton.command.param.Parameter;
 import net.frozenorb.foxtrot.Foxtrot;
-import net.frozenorb.foxtrot.gameplay.loot.treasurecove.listeners.TreasureCoveListener;
 import net.frozenorb.foxtrot.util.ParticleEffect;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -15,28 +13,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class AddLoreCommand {
-
-    @Command(names = {"bard man"}, permission = "op")
-    public static void bardMan(Player player) {
-        final Location location = player.getLocation();
-
-        for (int x = 15; x >= -15; x--) {
-            for (int y = 15; y >= -15; y--) {
-                for (int z = 15; z >= -15; z--) {
-                    if (location.getBlock().getRelative(x, y, z).getType() == Material.LEVER) {
-                        player.sendMessage("Lever is at " + x + ", " + y + ", " + z);
-                    }
-                }
-            }
-        }
-        TreasureCoveListener.SPAWN_IN = System.currentTimeMillis()+ TimeUnit.MINUTES.toMillis(1);
-
-//        PvPClassHandler.getUltimate().put(player.getUniqueId(),90F);
-    }
 
     @Command(names = {"testparticle"}, permission = "op")
     public static void particle(Player player, @Parameter(name = "type")String type) {

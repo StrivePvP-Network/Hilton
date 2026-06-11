@@ -111,7 +111,7 @@ public class CombatLoggerListener implements Listener {
                 if (killerTeam != null) {
                     killerTeam.setKills(killerTeam.getKills() + 1);
                     killerTeam.recalculateGems();
-                    if (CustomTimerCreateCommand.isDoublePoints() || killerTeam.hasEndOutpost()) {
+                    if (CustomTimerCreateCommand.isDoublePoints()) {
                         killerTeam.setDoublePoints(killerTeam.getDoublePoints() + 1);
                     }
                 }

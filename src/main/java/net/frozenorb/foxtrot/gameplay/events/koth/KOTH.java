@@ -1,397 +1,297 @@
 package net.frozenorb.foxtrot.gameplay.events.koth;
 
-import cc.fyre.modsuite.mod.ModHandler;
-import com.lunarclient.apollo.Apollo;
-import com.lunarclient.apollo.common.location.ApolloBlockLocation;
-import com.lunarclient.apollo.module.waypoint.Waypoint;
-import com.lunarclient.apollo.module.waypoint.WaypointModule;
-import com.lunarclient.apollo.player.ApolloPlayer;
 import lombok.Getter;
 import lombok.Setter;
 import net.frozenorb.foxtrot.Foxtrot;
-import net.frozenorb.foxtrot.gameplay.events.Event;
 import net.frozenorb.foxtrot.gameplay.events.EventType;
-import net.frozenorb.foxtrot.gameplay.events.events.EventActivatedEvent;
-import net.frozenorb.foxtrot.gameplay.events.events.EventCapturedEvent;
-import net.frozenorb.foxtrot.gameplay.events.events.EventDeactivatedEvent;
-import net.frozenorb.foxtrot.gameplay.events.koth.events.EventControlTickEvent;
-import net.frozenorb.foxtrot.gameplay.events.koth.events.KOTHControlLostEvent;
 import net.frozenorb.foxtrot.team.Team;
+import net.frozenorb.foxtrot.util.CC;
 import net.frozenorb.foxtrot.util.Cuboid;
 import net.frozenorb.foxtrot.util.InventoryUtils;
-
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import java.awt.Color;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.BlockVector;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-public class KOTH implements Event {
+@Getter
+@Setter
+public class Koth {
 
-    @Getter
+    private KothManager manager;
     private String name;
-    @Getter
-    private BlockVector capLocation;
-    @Getter
-    private String world;
-    @Getter
-    private int capDistance;
-    @Getter
-    private int capTime;
-    @Getter
-    private boolean hidden = false;
-    @Getter
-    @Setter
-    private boolean mini = false;
-    @Getter
-    @Setter
-    boolean active;
-
-    @Getter
-    @Setter
-    private int pointsReward = 0;
-    @Getter
-    @Setter
-    private int antiCleanRadius = 0;
-    @Getter
-    @Setter
-    private String kothColor = "&9";
-    @Getter
-    private List<ItemStack> loot = new ArrayList<>();
-    @Getter
-    @Setter
+    private String color;
     private Cuboid captureZone;
 
-    @Getter
-    private transient String currentCapper;
-    @Getter
-    private transient int remainingCapTime;
-    @Getter
-    @Setter
-    private transient boolean terminate;
+    private List<Player> onCap;
+    private List<ItemStack> loot;
+    private Player capturing;
+    private BukkitRunnable bukkitTask;
 
-    @Getter
-    public boolean koth = true;
+    private boolean active;
+    private int pointsReward;
+    private long minutes;
+    private long remaining;
+    private long startTime;
 
-    @Getter
-    private EventType type = EventType.KOTH;
+    public Koth(KothManager manager, Map<String, Object> map) {
+        this.manager = manager;
 
-    public KOTH(String name, Location location) {
+        this.name = (String) map.get("name");
+        this.color = (String) map.get("color");
+        this.pointsReward = Integer.parseInt((String) map.get("pointsReward"));
+        this.active = Boolean.parseBoolean((String) map.get("active"));
+        this.minutes = Long.parseLong((String) map.get("minutes"));
+        this.loot = new ArrayList<>();
+
+        this.onCap = new ArrayList<>();
+
+        this.capturing = null;
+        this.bukkitTask = null;
+
+        this.remaining = minutes;
+        this.startTime = Long.parseLong((String) map.get("startTime"));
+
+        if (map.containsKey("captureZone")) {
+            Map<String, Object> czMap = (Map<String, Object>) map.get("captureZone");
+            this.captureZone = new Cuboid(czMap);
+        }
+    }
+
+    public Koth(KothManager manager, String name, String color, int pointsReward, long minutes) {
+        this.manager = manager;
+
         this.name = name;
-        this.capLocation = location.toVector().toBlockVector();
-        this.world = location.getWorld().getName();
-        this.capDistance = 3;
-        this.capTime = 60 * 15;
-        this.terminate = false;
+        this.color = color;
+        this.onCap = new ArrayList<>();
+        this.loot = new ArrayList<>();
 
-        Foxtrot.getInstance().getEventHandler().getEvents().add(this);
-        Foxtrot.getInstance().getEventHandler().saveEvents();
-    }
+        this.captureZone = null;
+        this.capturing = null;
+        this.bukkitTask = null;
 
-    public void setLocation(Location location) {
-        this.capLocation = location.toVector().toBlockVector();
-        this.world = location.getWorld().getName();
-        Foxtrot.getInstance().getEventHandler().saveEvents();
-    }
-
-    public void setCapDistance(int capDistance) {
-        this.capDistance = capDistance;
-        Foxtrot.getInstance().getEventHandler().saveEvents();
-    }
-
-    public java.awt.Color getWaypointColor() {
-        switch (this.getName()) {
-            case "Hell":
-            case "Conquest-Red":
-                return java.awt.Color.RED;
-            case "Conquest-Yellow":
-                return java.awt.Color.YELLOW;
-            case "Conquest-Green":
-                return java.awt.Color.GREEN;
-            case "Conquest-Middle":
-            case "Citadel":
-            case "End":
-                return Color.MAGENTA;
-            default:
-                return Color.blue;
-        }
-    }
-
-    public ChatColor getWaypointChatColor() {
-        switch (this.getName()) {
-            case "Hell":
-            case "Conquest-Red":
-                return ChatColor.RED;
-            case "Conquest-Yellow":
-                return ChatColor.YELLOW;
-            case "Conquest-Green":
-                return ChatColor.GREEN;
-            case "Conquest-Middle":
-            case "Citadel":
-            case "End":
-                return ChatColor.DARK_PURPLE;
-            default:
-                return ChatColor.AQUA;
-        }
-    }
-
-    public void setCapTime(int capTime) {
-        int oldCapTime = this.capTime;
-        this.capTime = capTime;
-
-        if (this.remainingCapTime > capTime) {
-            this.remainingCapTime = capTime;
-        } else if (remainingCapTime == oldCapTime) { // this will catch the time going up
-            this.remainingCapTime = capTime;
-        }
-
-        Foxtrot.getInstance().getEventHandler().saveEvents();
-    }
-
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
-        Foxtrot.getInstance().getEventHandler().saveEvents();
-    }
-
-    public boolean activate() {
-        if (active) {
-            return (false);
-        }
-
-        Foxtrot.getInstance().getServer().getPluginManager().callEvent(new EventActivatedEvent(this));
-
-        this.active = true;
-        this.currentCapper = null;
-        this.remainingCapTime = this.capTime;
-        this.terminate = false;
-
-        sendWaypoints();
-
-        return (true);
-    }
-
-    public boolean deactivate() {
-        if (!active) {
-            return (false);
-        }
-
-        Foxtrot.getInstance().getServer().getPluginManager().callEvent(new EventDeactivatedEvent(this));
-
+        this.pointsReward = pointsReward;
         this.active = false;
-        this.currentCapper = null;
-        this.remainingCapTime = this.capTime;
-        this.terminate = false;
 
-        removeWaypoints();
-
-        return (true);
+        this.minutes = (60 * 1000L) * minutes;
+        this.remaining = this.minutes;
+        this.startTime = 0L;
     }
 
-    public void startCapping(Player player) {
-        if (currentCapper != null) {
-            resetCapTime();
-        }
+    public Map<String, Object> serialize() {
+        Map<String, Object> map = new LinkedHashMap<>();
 
-        this.currentCapper = player.getName();
-        this.remainingCapTime = capTime;
-    }
-
-    public boolean finishCapping() {
-        Player capper = Foxtrot.getInstance().getServer().getPlayerExact(currentCapper);
-
-        if (capper == null) {
-            resetCapTime();
-            return (false);
-        }
-
-        EventCapturedEvent event = new EventCapturedEvent(this, capper);
-        Foxtrot.getInstance().getServer().getPluginManager().callEvent(event);
-
-        if (event.isCancelled()) {
-            resetCapTime();
-            return (false);
-        }
-
-        reward(capper);
-        deactivate();
-        return (true);
-    }
-
-    public void reward(Player player) {
-        Team team = Foxtrot.getInstance().getTeamHandler().getTeam(player);
-
-        if (pointsReward > 0 && team != null) {
-            team.setPoints(team.getPoints() + pointsReward);
-            team.sendMessage(ChatColor.GOLD + "[KingOfTheHill] " + ChatColor.YELLOW + "Your faction received "
-                    + ChatColor.BLUE + pointsReward + ChatColor.YELLOW + " points for capturing " + ChatColor.BLUE
-                    + getName() + ChatColor.YELLOW + ".");
-        }
-
-        ItemStack kothSign = Foxtrot.getInstance().getServerHandler().generateKOTHSign(getName(),
-                team == null ? player.getName() : team.getName(), EventType.KOTH);
-        if (player.getInventory().firstEmpty() == -1) {
-            player.getWorld().dropItemNaturally(player.getLocation(), kothSign);
-        } else {
-            player.getInventory().addItem(kothSign);
-        }
-
-        for (ItemStack item : loot) {
-            if (player.getInventory().firstEmpty() == -1) {
-                player.getWorld().dropItemNaturally(player.getLocation(), item);
-            } else {
-                player.getInventory().addItem(item);
-            }
-        }
-    }
-
-    public void resetCapTime() {
-        Foxtrot.getInstance().getServer().getPluginManager().callEvent(new KOTHControlLostEvent(this));
-
-        this.currentCapper = null;
-        this.remainingCapTime = capTime;
-
-        if (terminate) {
-            deactivate();
-            Foxtrot.getInstance().getServer().broadcastMessage(ChatColor.GOLD + "[KingOfTheHill] " + ChatColor.BLUE
-                    + getName() + ChatColor.YELLOW + " has been terminated.");
-        }
-    }
-
-    @Override
-    public void tick() {
-        if (currentCapper != null) {
-            Player capper = Foxtrot.getInstance().getServer().getPlayerExact(currentCapper);
-
-            if (capper == null || !onCap(capper.getLocation()) || capper.isDead()
-                    || capper.getGameMode() == GameMode.CREATIVE || ModHandler.INSTANCE.isInVanish(capper.getUniqueId())
-                    || Foxtrot.getInstance().getPvPTimerMap().hasTimer(capper.getUniqueId())
-                    || (Foxtrot.getInstance().getTeamHandler().getTeam(capper) != null && Foxtrot.getInstance().getTeamHandler().getTeam(capper).getStrikes() >= 3)) {
-                resetCapTime();
-            } else if (Foxtrot.getInstance().getTeamHandler().getTeam(capper) == null && isMini()) {
-                capper.sendMessage(ChatColor.RED + "You must be in a faction to capture a Mini KOTH!");
-                resetCapTime();
-            } else {
-                if (remainingCapTime % 60 == 0 && remainingCapTime > 1 && !isHidden()) {
-
-                    Team team = Foxtrot.getInstance().getTeamHandler().getTeam(capper);
-
-                    if (team != null) {
-                        for (Player player : Foxtrot.getInstance().getServer().getOnlinePlayers()) {
-                            if (team.isMember(player.getUniqueId()) && capper != player) {
-                                player.sendMessage(ChatColor.GOLD + "[KingOfTheHill]" + ChatColor.YELLOW
-                                        + " Your faction is controlling " + ChatColor.BLUE + getName()
-                                        + ChatColor.YELLOW + ".");
-                            }
-                        }
-                    }
-                }
-
-                if (remainingCapTime % 10 == 0 && remainingCapTime > 1 && !isHidden()) {
-                    capper.sendMessage(ChatColor.GOLD + "[KingOfTheHill]" + ChatColor.YELLOW + " Attempting to control "
-                            + ChatColor.BLUE + getName() + ChatColor.YELLOW + ".");
-                }
-
-                if (remainingCapTime <= 0) {
-                    finishCapping();
-                } else {
-                    Foxtrot.getInstance().getServer().getPluginManager().callEvent(new EventControlTickEvent(this));
-                }
-
-                this.remainingCapTime--;
-            }
-        } else {
-            List<Player> onCap = new ArrayList<>();
-
-            for (Player player : Foxtrot.getInstance().getServer().getOnlinePlayers()) {
-                if (onCap(player.getLocation())) {
-                    Team team = Foxtrot.getInstance().getTeamHandler().getTeam(player);
-                    if (team != null && team.getStrikes() >= 3) {
-                        if (player.getTicksLived() % 100 == 0) {
-                            player.sendMessage(ChatColor.RED + "Your faction has been disqualified from KOTHs due to 3 or more strikes!");
-                        }
-                        continue;
-                    }
-                    if (Foxtrot.getInstance().getBattlePassHandler() != null) {
-                        Foxtrot.getInstance().getBattlePassHandler().useProgress(player.getUniqueId(), progress -> {
-                            progress.setAttemptCaptureKoth(true);
-                            progress.requiresSave();
-
-                            Foxtrot.getInstance().getBattlePassHandler().checkCompletionsAsync(player);
-                        });
-                    }
-                }
-
-                Team team = Foxtrot.getInstance().getTeamHandler().getTeam(player);
-                if (team != null && team.getStrikes() >= 3) {
-                    continue;
-                }
-
-                if (onCap(player.getLocation()) && !player.isDead() && player.getGameMode() == GameMode.SURVIVAL
-                        && !ModHandler.INSTANCE.isInModMode(player.getUniqueId())
-                        && !Foxtrot.getInstance().getPvPTimerMap().hasTimer(player.getUniqueId())) {
-                    onCap.add(player);
-                }
-            }
-
-            Collections.shuffle(onCap);
-
-            if (onCap.size() != 0) {
-                startCapping(onCap.get(0));
-            }
-        }
-    }
-
-    public boolean onCap(Location location) {
-        if (!location.getWorld().getName().equalsIgnoreCase(world)) {
-            return (false);
-        }
+        map.put("name", name);
+        map.put("color", color);
+        map.put("pointsReward", String.valueOf(pointsReward));
+        map.put("active", String.valueOf(active));
+        map.put("minutes", String.valueOf(minutes));
+        map.put("startTime", String.valueOf(startTime));
 
         if (captureZone != null) {
-            return captureZone.contains(location);
+            map.put("captureZone", captureZone.serialize());
         }
 
-        int xDistance = Math.abs(location.getBlockX() - capLocation.getBlockX());
-        int yDistance = Math.abs(location.getBlockY() - capLocation.getBlockY());
-        int zDistance = Math.abs(location.getBlockZ() - capLocation.getBlockZ());
-
-        return xDistance <= capDistance && yDistance <= 5 && zDistance <= capDistance;
+        return map;
     }
 
-    private void sendWaypoints() {
-        Waypoint waypoint = Waypoint.builder()
-                .name(getName())
-                .location(ApolloBlockLocation.builder()
-                        .world(world)
-                        .x(capLocation.getBlockX())
-                        .y(capLocation.getBlockY())
-                        .z(capLocation.getBlockZ())
-                        .build())
-                .color(getWaypointColor())
-                .preventRemoval(false)
-                .hidden(false)
-                .build();
+    public void tick() {
+        long capMessage = 10;
+        long teamCapMessage = 60;
+        long remSimplified = remaining / 1000L;
 
-        WaypointModule waypointModule = Apollo.getModuleManager().getModule(WaypointModule.class);
+        if (capturing == null && !onCap.isEmpty()) {
+            Collections.shuffle(onCap);
+            capturing = onCap.get(0);
+        }
+
+        if (capturing != null) {
+            Team pt = Foxtrot.getInstance().getTeamHandler().getTeam(capturing);
+
+            if (pt != null && pt.getStrikes() >= 3) {
+                capturing.sendMessage(CC.translate("&cPlayer cannot capture while faction is disqualified."));
+                onCap.remove(capturing);
+                capturing = null;
+                remaining = minutes;
+
+                if (bukkitTask != null) {
+                    bukkitTask.cancel();
+                    bukkitTask = null;
+                }
+                return;
+            }
+
+            if (!capturing.isOnline() || capturing.isDead() ||
+                    Foxtrot.getInstance().getPvPTimerMap().hasTimer(capturing.getUniqueId()) ||
+                    (captureZone != null && !captureZone.contains(capturing.getLocation()))) {
+
+                checkLostCapMessage(capturing);
+                onCap.remove(capturing);
+                capturing = null;
+                remaining = minutes;
+
+                if (bukkitTask != null) {
+                    bukkitTask.cancel();
+                    bukkitTask = null;
+                }
+                return;
+            }
+        }
+
+        boolean isSame = remaining == minutes;
+        remaining = remaining - 1000L;
+
+        if (remaining <= 0L) {
+            this.handleCapture();
+            return;
+        }
+
+        if (isSame)
+            return;
+
+        if (capturing != null && remSimplified % teamCapMessage == 0 && remSimplified > 5) {
+            Team pt = Foxtrot.getInstance().getTeamHandler().getTeam(capturing);
+
+            if (pt != null) {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    if (pt.isMember(p.getUniqueId()) && p != capturing) {
+                        p.sendMessage(
+                                CC.translate("&6[KingOfTheHill] &eYour faction is controlling &9" + name + "&e."));
+                    }
+                }
+                return;
+            }
+        }
+
+        if (capturing != null && remSimplified % capMessage == 0 && remSimplified > 5) {
+            capturing.sendMessage(CC.translate("&6[KingOfTheHill] &eAttempting to control &9" + name + "&e."));
+        }
+    }
+
+    private void handleCapture() {
+        if (capturing == null)
+            return;
+
+        Bukkit.getLogger().info("[KOTH] Capture completed for '" + name + "' by '" + capturing.getName()
+                + "'. Issuing rewards and ending.");
+        this.reward();
+
+        Team pt = Foxtrot.getInstance().getTeamHandler().getTeam(capturing);
+
+        String factionName = (pt == null ? "None" : pt.getName());
+        String playerName = capturing.getName();
+
+        saveLastCapture(name, factionName, playerName);
+
+        String endMsg = CC.translate("&6[KingOfTheHill] " + color + name + " &ehas been controlled by &6"
+                + (pt == null ? "" : "[" + factionName + "] ") + "&f" + playerName + "&e!");
+
+        Bukkit.getConsoleSender().sendMessage(endMsg);
+
         for (Player player : Bukkit.getOnlinePlayers()) {
-            Optional<ApolloPlayer> apolloPlayer = Apollo.getPlayerManager().getPlayer(player.getUniqueId());
-            apolloPlayer.ifPresent(p -> waypointModule.displayWaypoint(p, waypoint));
+            player.sendMessage(endMsg);
+        }
+
+        this.end();
+        this.save();
+    }
+
+    public void start() {
+        Bukkit.getLogger().info("[KOTH] Starting KOTH '" + name + "' duration(ms)=" + minutes);
+        this.capturing = null;
+        this.active = true;
+        this.remaining = minutes;
+        this.startTime = System.currentTimeMillis();
+        this.onCap.clear();
+    }
+
+    public void end() {
+        Bukkit.getLogger().info("[KOTH] Ending KOTH '" + name + "'.");
+        this.capturing = null;
+        this.active = false;
+        this.remaining = minutes;
+        this.startTime = 0L;
+        this.onCap.clear();
+    }
+
+    public void reward() {
+        if (capturing == null)
+            return;
+
+        Team pt = Foxtrot.getInstance().getTeamHandler().getTeam(capturing);
+
+        if (pt != null) {
+            pt.setKothCaptures(pt.getKothCaptures() + 1);
+            pt.setPoints(pt.getPoints() + pointsReward);
+            pt.sendMessage(CC.translate(
+                    "&6[KingOfTheHill] &eYour faction received &9" + pointsReward + " &epoints for capturing."));
+        }
+
+        ItemStack rewardKey = InventoryUtils.generateKOTHRewardKey(name + " KOTH");
+        if (Foxtrot.getInstance().getMapHandler().isKitMap() || name.equalsIgnoreCase("End")
+                || name.equalsIgnoreCase("Hell")) {
+            rewardKey.setAmount(2);
+        }
+        capturing.getInventory().addItem(rewardKey);
+        if (!capturing.getInventory().contains(rewardKey)) {
+            capturing.getWorld().dropItemNaturally(capturing.getLocation(), rewardKey);
+        }
+
+        ItemStack kothSign = Foxtrot.getInstance().getServerHandler().generateKOTHSign(name,
+                pt == null ? capturing.getName() : pt.getName(), EventType.DTC); // Use DTC type just to get a generic
+                                                                                 // sign
+        capturing.getInventory().addItem(kothSign);
+        if (!capturing.getInventory().contains(kothSign)) {
+            capturing.getWorld().dropItemNaturally(capturing.getLocation(), kothSign);
         }
     }
 
-    private void removeWaypoints() {
-        WaypointModule waypointModule = Apollo.getModuleManager().getModule(WaypointModule.class);
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            Optional<ApolloPlayer> apolloPlayer = Apollo.getPlayerManager().getPlayer(player.getUniqueId());
-            apolloPlayer.ifPresent(p -> waypointModule.removeWaypoint(p, getName()));
+    public void checkLostCapMessage(Player player) {
+        long percent = (getRemaining() * 100) / minutes;
+
+        if (percent <= 90) {
+            Bukkit.broadcastMessage(CC.translate("&6[KingOfTheHill] &eControl of " + color + name + " &elost."));
         }
     }
 
+    public void save() {
+        manager.getKoths().put(name, this);
+        manager.save();
+    }
+
+    public void delete() {
+        manager.getKoths().remove(name);
+        manager.save();
+    }
+
+    private static final Map<String, CaptureData> lastCaptures = new HashMap<>();
+
+    private void saveLastCapture(String kothName, String factionName, String playerName) {
+        CaptureData captureData = new CaptureData(factionName, playerName);
+        lastCaptures.put(kothName, captureData);
+    }
+
+    public static class CaptureData {
+        private final String factionName;
+        private final String playerName;
+
+        public CaptureData(String factionName, String playerName) {
+            this.factionName = factionName;
+            this.playerName = playerName;
+        }
+
+        public String getFactionName() {
+            return factionName;
+        }
+
+        public String getPlayerName() {
+            return playerName;
+        }
+    }
+
+    public static CaptureData getLastCapture(String kothName) {
+        return lastCaptures.get(kothName);
+    }
 }

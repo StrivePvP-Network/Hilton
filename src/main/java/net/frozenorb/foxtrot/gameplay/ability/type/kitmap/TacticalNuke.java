@@ -2,7 +2,6 @@ package net.frozenorb.foxtrot.gameplay.ability.type.kitmap;
 
 import cc.fyre.modsuite.mod.ModHandler;
 import net.frozenorb.foxtrot.Foxtrot;
-import net.frozenorb.foxtrot.commands.KillTheKingCommand;
 import net.frozenorb.foxtrot.gameplay.ability.Ability;
 import net.frozenorb.foxtrot.gameplay.ability.Category;
 import net.frozenorb.foxtrot.gameplay.ability.listener.events.AbilityUseEvent;
@@ -144,7 +143,7 @@ public class TacticalNuke extends Ability {
                         continue;
                     }
 
-                    if (KillTheKingCommand.king != null && KillTheKingCommand.king.toString().equalsIgnoreCase(target.getUniqueId().toString())) {
+                    if (Foxtrot.getInstance().getKingManager().getKing() != null && Foxtrot.getInstance().getKingManager().getKing().getUniqueId().equals(target.getUniqueId())) {
                         continue;
                     }
 
