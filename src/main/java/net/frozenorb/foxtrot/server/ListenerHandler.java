@@ -75,6 +75,7 @@ public class ListenerHandler {
         instance.getServer().getPluginManager().registerEvents(new FlyListener(), instance);
         instance.getServer().getPluginManager().registerEvents(new AntiCleanListener(), instance);
         instance.getServer().getPluginManager().registerEvents(new SpawnerTrackerListener(), instance);
+        instance.getServer().getPluginManager().registerEvents(new TokenItemListener(), instance);
 
         instance.getServer().getPluginManager().registerEvents(new UnrepairableListener(), instance);
         instance.getServer().getPluginManager().registerEvents(new net.frozenorb.foxtrot.commands.listener.CheatListener(), instance);

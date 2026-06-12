@@ -171,7 +171,7 @@ public class ServerHandler {
             }
 
             Foxtrot.getInstance().getServer().broadcastMessage("");
-            Foxtrot.getInstance().getServer().broadcastMessage(ChatColor.RED + ChatColor.BOLD.toString() + "  Online Mythic Ranks");
+            Foxtrot.getInstance().getServer().broadcastMessage(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "  Online Mythic Ranks");
             Foxtrot.getInstance().getServer().broadcastMessage("");
             Foxtrot.getInstance().getServer().broadcastMessage("  " + (stringBuilder.length() == 0 ? "None" : stringBuilder.toString()));
             Foxtrot.getInstance().getServer().broadcastMessage("");

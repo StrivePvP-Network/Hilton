@@ -97,7 +97,7 @@ public class HelpfulCommands {
                     @Override
                     public List<String> getDescription(Player player) {
                         final List<String> toReturn = new ArrayList<>();
-
+                        // TODO: CHANGE THIS
                         toReturn.add(ChatColor.GRAY + "Here is the schedule for Sunday!");
                         toReturn.add("");
                         toReturn.add(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Scheduled Events");

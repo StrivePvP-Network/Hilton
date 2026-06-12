@@ -187,8 +187,7 @@ public class CrateHandler {
             giveArmor(player, armorType);
             player.getInventory().addItem(this.getRandomItem(player, crate, crate.getItems()));
         } else {
-            IntStream.range(0, 6)
-                    .forEach(it -> player.getInventory().addItem(this.getRandomItem(player, crate, crate.getItems())));
+            player.getInventory().addItem(this.getRandomItem(player, crate, crate.getItems()));
         }
 
     }

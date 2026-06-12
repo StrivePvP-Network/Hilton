@@ -63,4 +63,15 @@ public class TrollListeners implements Listener {
             }
         }
     }
+
+    @EventHandler
+    public void onPlayerAnimation(org.bukkit.event.player.PlayerAnimationEvent event) {
+        if (event.getAnimationType() == org.bukkit.event.player.PlayerAnimationType.ARM_SWING) {
+            Player player = event.getPlayer();
+            if (player.isSneaking() && spinning.contains(player.getUniqueId())) {
+                spinning.remove(player.getUniqueId());
+                player.sendMessage(net.frozenorb.foxtrot.util.CC.translate("&aYou stopped spinning"));
+            }
+        }
+    }
 }

@@ -128,6 +128,22 @@ public class HiltonCommand {
         }
 
         try {
+            if (Foxtrot.getInstance().getMapHandler().getStatsHandler() != null) {
+                Foxtrot.getInstance().getMapHandler().getStatsHandler().clearAll();
+                Foxtrot.getInstance().getMapHandler().getStatsHandler().clearLeaderboards();
+                cc.fyre.proton.Proton.getInstance().runRedisCommand(redis -> {
+                    for (String key : redis.keys(Bukkit.getServerName() + ":" + "stats2:*")) {
+                        redis.del(key);
+                    }
+                    return null;
+                });
+            }
+        } catch (Exception e) {
+            sender.sendMessage(ChatColor.RED + "Error wiping StatsHandler: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        try {
             com.mongodb.DBCollection playersCollection = Foxtrot.getInstance().getMongoPool()
                     .getDB(Foxtrot.MONGO_DB_NAME).getCollection("Players");
             playersCollection.drop();
