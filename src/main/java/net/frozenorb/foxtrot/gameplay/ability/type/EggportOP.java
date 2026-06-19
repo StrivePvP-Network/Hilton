@@ -28,6 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @author Hxmilton (JavaProject)
+ * @Contact hxmiltonn (discord)
+ */
+
 public class EggportOP extends Ability {
 
     public static final int SWAP_RADIUS = 15;
@@ -80,10 +85,16 @@ public class EggportOP extends Ability {
             return true;
         }
         if (Foxtrot.getInstance().getMapHandler().isKitMap()) {
-            return !DTRBitmask.KOTH.appliesAt(location) && !DTRBitmask.CONQUEST.appliesAt(location) && !DTRBitmask.CITADEL.appliesAt(location) && !DTRBitmask.DTC.appliesAt(location) && !DTRBitmask.SAFE_ZONE.appliesAt(location);
+            return !DTRBitmask.KOTH.appliesAt(location) && !DTRBitmask.CONQUEST.appliesAt(location)
+                    && !DTRBitmask.CITADEL.appliesAt(location) && !DTRBitmask.DTC.appliesAt(location)
+                    && !DTRBitmask.SAFE_ZONE.appliesAt(location);
         }
 
-        return !Foxtrot.getInstance().getServerHandler().isWarzone(location) && location.getWorld().getEnvironment() == World.Environment.NORMAL && !DTRBitmask.KOTH.appliesAt(location) && !DTRBitmask.CONQUEST.appliesAt(location) && !DTRBitmask.CITADEL.appliesAt(location) && !DTRBitmask.DTC.appliesAt(location) && !DTRBitmask.SAFE_ZONE.appliesAt(location);
+        return !Foxtrot.getInstance().getServerHandler().isWarzone(location)
+                && location.getWorld().getEnvironment() == World.Environment.NORMAL
+                && !DTRBitmask.KOTH.appliesAt(location) && !DTRBitmask.CONQUEST.appliesAt(location)
+                && !DTRBitmask.CITADEL.appliesAt(location) && !DTRBitmask.DTC.appliesAt(location)
+                && !DTRBitmask.SAFE_ZONE.appliesAt(location);
     }
 
     @Override
@@ -103,7 +114,8 @@ public class EggportOP extends Ability {
             return;
         }
 
-        event.getEntity().setMetadata("NinjaSwitch", new FixedMetadataValue(Foxtrot.getInstance(), player.getUniqueId().toString()));
+        event.getEntity().setMetadata("NinjaSwitch",
+                new FixedMetadataValue(Foxtrot.getInstance(), player.getUniqueId().toString()));
 
         this.applyCooldown(player);
     }
@@ -121,7 +133,8 @@ public class EggportOP extends Ability {
         final Player player = event.getPlayer();
 
         if (Foxtrot.getInstance().getPvPTimerMap().hasTimer(event.getPlayer().getUniqueId())) {
-            player.sendMessage(CC.translate("&cYou may not use &a&lNinja Switch &cwhile your &a&lPvP Timer &cis active!"));
+            player.sendMessage(
+                    CC.translate("&cYou may not use &a&lNinja Switch &cwhile your &a&lPvP Timer &cis active!"));
             player.updateInventory();
             event.setCancelled(true);
             return;
@@ -145,11 +158,13 @@ public class EggportOP extends Ability {
 
     @EventHandler(priority = EventPriority.NORMAL)
     private void onDamage(EntityDamageByEntityEvent event) {
-        if (event.isCancelled() || !(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Egg) || !event.getDamager().hasMetadata("NinjaSwitch")) {
+        if (event.isCancelled() || !(event.getEntity() instanceof Player) || !(event.getDamager() instanceof Egg)
+                || !event.getDamager().hasMetadata("NinjaSwitch")) {
             return;
         }
 
-        final Player shooter = Foxtrot.getInstance().getServer().getPlayer(UUID.fromString(event.getDamager().getMetadata("NinjaSwitch").get(0).asString()));
+        final Player shooter = Foxtrot.getInstance().getServer()
+                .getPlayer(UUID.fromString(event.getDamager().getMetadata("NinjaSwitch").get(0).asString()));
         final Player target = (Player) event.getEntity();
 
         if (shooter == null) {
@@ -171,7 +186,8 @@ public class EggportOP extends Ability {
 
             shooter.getInventory().addItem(this.getItem());
             shooter.updateInventory();
-            shooter.sendMessage(ChatColor.RED + "You may not swap locations with " + target.getDisplayName() + " who is in " + location + ChatColor.RED + ".");
+            shooter.sendMessage(ChatColor.RED + "You may not swap locations with " + target.getDisplayName()
+                    + " who is in " + location + ChatColor.RED + ".");
             return;
         }
 
@@ -191,14 +207,18 @@ public class EggportOP extends Ability {
 
         shooter.sendMessage("");
         shooter.sendMessage(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Ability Items");
-        shooter.sendMessage(ChatColor.GRAY + "You have hit a player with the " + this.getDisplayName() + ChatColor.GRAY + ".");
-        shooter.sendMessage(ChatColor.RED + "You have swapped positions with " + target.getName() + " and received Strength II!");
+        shooter.sendMessage(
+                ChatColor.GRAY + "You have hit a player with the " + this.getDisplayName() + ChatColor.GRAY + ".");
+        shooter.sendMessage(
+                ChatColor.RED + "You have swapped positions with " + target.getName() + " and received Strength II!");
         shooter.sendMessage("");
 
         target.sendMessage("");
         target.sendMessage(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Ability Items");
-        target.sendMessage(ChatColor.GRAY + "You have been hit with the " + this.getDisplayName() + ChatColor.GRAY + ".");
-        target.sendMessage(ChatColor.RED + "You have swapped positions with " + shooter.getName() + " and received Blindness II!");
+        target.sendMessage(
+                ChatColor.GRAY + "You have been hit with the " + this.getDisplayName() + ChatColor.GRAY + ".");
+        target.sendMessage(
+                ChatColor.RED + "You have swapped positions with " + shooter.getName() + " and received Blindness II!");
         target.sendMessage("");
     }
 

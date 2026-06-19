@@ -64,6 +64,11 @@ public class DeathbanArenaListener implements Listener {
                 || (line0.equalsIgnoreCase("Have a life?") && line1.equalsIgnoreCase("Click Here"))
                 || (sign.getLine(1) != null && sign.getLine(1).startsWith(ChatColor.BLUE + "- Respawn -"));
 
+        if (line0.equalsIgnoreCase("[KitDeathban]") || line1.equalsIgnoreCase("Deathban Kit")) {
+            player.performCommand("deathban gkit apply");
+            return;
+        }
+
         if (!isReviveSign) {
             return;
         }
@@ -209,7 +214,7 @@ public class DeathbanArenaListener implements Listener {
                 || event.getMessage().startsWith("/msg ") || event.getMessage().startsWith("/r ")
                 || event.getMessage().startsWith("/reply ") || event.getMessage().startsWith("/message ")
                 || event.getMessage().startsWith("/m ") || event.getMessage().startsWith("/w ")
-                || event.getMessage().startsWith("/tell ")) {
+                || event.getMessage().startsWith("/tell ") || event.getMessage().startsWith("/deathban")) {
             return;
         }
 
@@ -235,7 +240,7 @@ public class DeathbanArenaListener implements Listener {
             return;
         }
 
-        if (event.getLine(0) != null && event.getLine(0).startsWith("[Death")) {
+        if (event.getLine(0) != null && (event.getLine(0).startsWith("[Death") || event.getLine(0).equalsIgnoreCase("[KitDeathban]"))) {
             this.instance.getDeathbanArenaHandler().getDeathSigns().add(event.getBlock().getLocation());
             event.getPlayer().sendMessage(ChatColor.GREEN + "Dynamic death sign registered!");
         }
@@ -297,6 +302,13 @@ public class DeathbanArenaListener implements Listener {
                         "Have a life?",
                         ChatColor.GREEN + "Click Here",
                         ""
+                });
+            } else if (line0.equalsIgnoreCase("[KitDeathban]")) {
+                player.sendSignChange(sign.getLocation(), new String[] {
+                        ChatColor.STRIKETHROUGH + "-------------",
+                        ChatColor.DARK_RED + "Deathban Kit",
+                        ChatColor.GRAY + "Right-Click",
+                        ChatColor.STRIKETHROUGH + "-------------"
                 });
             }
         }

@@ -1,6 +1,5 @@
 package net.frozenorb.foxtrot.gameplay.ability.type.kitmap;
 
-import cc.fyre.modsuite.mod.ModHandler;
 import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.gameplay.ability.Ability;
 import net.frozenorb.foxtrot.gameplay.ability.Category;
@@ -151,7 +150,7 @@ public class TacticalNuke extends Ability {
                         continue;
                     }
 
-                    if (ModHandler.INSTANCE.isInModMode(target.getUniqueId())) {
+                    if (net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInModMode(target.getUniqueId())) {
                         continue;
                     }
 

@@ -1,6 +1,5 @@
 package net.frozenorb.foxtrot.gameplay.kitmap.kits;
 
-import cc.fyre.modsuite.mod.ModHandler;
 import cc.fyre.proton.util.TimeUtils;
 import net.minecraft.util.com.google.common.collect.Maps;
 import mkremins.fanciful.FancyMessage;
@@ -162,7 +161,7 @@ public class KitListener implements Listener {
             return;
         }
 
-        if (ModHandler.INSTANCE.isInModMode(player.getUniqueId())) {
+        if (net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInModMode(player.getUniqueId())) {
             player.sendMessage(ChatColor.RED + "You cannot use this while in mod mode.");
             return;
         }

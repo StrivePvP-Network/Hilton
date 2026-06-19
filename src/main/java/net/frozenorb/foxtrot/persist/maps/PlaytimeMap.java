@@ -73,7 +73,7 @@ public class PlaytimeMap extends PersistMap<Long> {
 
                     if (team != null) {
                         team.addPlaytimeGems(5);
-                        team.sendMessage(ChatColor.GREEN + "Your team received 5 gems thanks to " + ChatColor.AQUA + ChatColor.BOLD + player.getName() + ChatColor.GREEN + "'s play-time.");
+                        team.sendMessage(ChatColor.GREEN + "Your team received 3 tokens thanks to " + ChatColor.AQUA + ChatColor.BOLD + player.getName() + ChatColor.GREEN + "'s play-time.");
                     }
 
                     pendingReward.put(uuid, System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1));

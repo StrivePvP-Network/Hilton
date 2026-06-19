@@ -36,7 +36,7 @@ public class StatsCommand {
         sender.sendMessage(CC.translate("&cKill Streak: &f" + stats.getKillstreak()));
         sender.sendMessage(CC.translate("&cHighest Kill Streak: &f" + stats.getHighestKillstreak()));
         if (!Foxtrot.getInstance().getServerHandler().isTeams()) {
-            sender.sendMessage(CC.translate("&cCave Says Completed: &f" + stats.getCaveSaysCompleted()));
+            sender.sendMessage(CC.translate("&cStrive Says Completed: &f" + stats.getCaveSaysCompleted()));
         }
         sender.sendMessage(CC.translate("&cKDR: &f" + (stats.getDeaths() == 0 ? "Infinity" : Team.DTR_FORMAT.format((double) stats.getKills() / (double) stats.getDeaths()))));
         sender.sendMessage(CC.translate("&cKOTH Captures: &f" + stats.getKothCaptures()));

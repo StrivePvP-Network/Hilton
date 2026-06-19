@@ -1,6 +1,5 @@
 package net.frozenorb.foxtrot.team.dtr;
 
-import cc.fyre.modsuite.mod.ModHandler;
 import cc.fyre.proton.util.TimeUtils;
 import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.team.Team;

@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import cc.fyre.modsuite.mod.ModHandler;
 import cc.fyre.proton.tab.construct.TabLayout;
 import cc.fyre.proton.tab.provider.LayoutProvider;
 import cc.fyre.proton.util.TimeUtils;
@@ -318,7 +317,7 @@ public class FoxtrotTabLayoutProvider implements LayoutProvider {
             // Sort of weird way of getting player counts, but it does it in the least
             // iterations (1), which is what matters!
             for (Player other : Foxtrot.getInstance().getServer().getOnlinePlayers()) {
-                if (ModHandler.INSTANCE.isInVanish(other.getUniqueId())) {
+                if (net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInVanish(other.getUniqueId())) {
                     continue;
                 }
 

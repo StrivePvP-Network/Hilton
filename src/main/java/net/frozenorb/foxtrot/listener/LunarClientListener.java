@@ -1,8 +1,5 @@
 package net.frozenorb.foxtrot.listener;
 
-import cc.fyre.modsuite.mod.ModHandler;
-import cc.fyre.modsuite.mod.event.PlayerModModeEvent;
-import cc.fyre.modsuite.mod.event.PlayerVisibilityEvent;
 import cc.fyre.proton.Proton;
 import cc.fyre.proton.nametag.construct.NameTagInfo;
 import com.lunarclient.apollo.Apollo;
@@ -215,7 +212,7 @@ public class LunarClientListener implements Listener {
         List<Component> lines = new ArrayList<>();
         lines.add(parseLegacyToComponent(nameTag));
 
-        boolean isMod = ModHandler.INSTANCE.isInModMode(target.getUniqueId()) || ModHandler.INSTANCE.isInVanish(target.getUniqueId());
+        boolean isMod = net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInModMode(target.getUniqueId()) || net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInVanish(target.getUniqueId());
 
         if (isMod) {
             lines.add(parseLegacyToComponent(ChatColor.GRAY + "[" + ChatColor.BLUE + "Mod Mode" + ChatColor.GRAY + "]"));
@@ -249,15 +246,7 @@ public class LunarClientListener implements Listener {
         updateNametag(event.getEntity());
     }
 
-    @EventHandler
-    public void onModMode(PlayerModModeEvent event) {
-        Foxtrot.getInstance().getServer().getScheduler().runTaskLater(Foxtrot.getInstance(), () -> updateNametag(event.getPlayer()), 1L);
-    }
 
-    @EventHandler
-    public void onVisibility(PlayerVisibilityEvent event) {
-        Foxtrot.getInstance().getServer().getScheduler().runTaskLater(Foxtrot.getInstance(), () -> updateNametag(event.getPlayer()), 1L);
-    }
 
     public void updateSpawnWaypoint(Location location) {
         Waypoint waypoint = Waypoint.builder()

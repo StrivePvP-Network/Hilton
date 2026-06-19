@@ -1,6 +1,5 @@
 package net.frozenorb.foxtrot.gameplay.kitmap.game.command;
 
-import cc.fyre.modsuite.mod.ModHandler;
 import cc.fyre.proton.command.Command;
 import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.gameplay.kitmap.game.Game;
@@ -30,7 +29,7 @@ public class SpectateCommand {
             return;
         }
 
-        if (ModHandler.INSTANCE.isInModMode(player.getUniqueId())) {
+        if (net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInModMode(player.getUniqueId())) {
             player.sendMessage(ChatColor.RED + "You can't join the event while in mod-mode.");
             return;
         }

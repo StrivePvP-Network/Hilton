@@ -233,14 +233,6 @@ public class ArcherClass extends PvPClass {
                         ChatColor.BLUE + ChatColor.BOLD + "(0.5 hearts)");
             }
 
-            if (Foxtrot.getInstance().getBattlePassHandler() != null) {
-                Foxtrot.getInstance().getBattlePassHandler().useProgress(shooter.getUniqueId(), progress -> {
-                    progress.setArcherTags(progress.getArcherTags() + 1);
-                    progress.requiresSave();
-
-                    Foxtrot.getInstance().getBattlePassHandler().checkCompletionsAsync(shooter);
-                });
-            }
         }
     }
 

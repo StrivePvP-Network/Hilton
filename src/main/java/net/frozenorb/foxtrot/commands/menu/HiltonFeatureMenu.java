@@ -35,11 +35,7 @@ public class HiltonFeatureMenu extends Menu {
                 () -> Foxtrot.getInstance().getBossHandler()
                         .setDisabled(!Foxtrot.getInstance().getBossHandler().isDisabled())));
 
-        buttons.put(11, new FeatureButton(
-                "BattlePass",
-                () -> !Foxtrot.getInstance().getBattlePassHandler().isAdminDisabled(),
-                () -> Foxtrot.getInstance().getBattlePassHandler()
-                        .setAdminDisabled(!Foxtrot.getInstance().getBattlePassHandler().isAdminDisabled())));
+
 
         buttons.put(12, new FeatureButton(
                 "StriveSays",

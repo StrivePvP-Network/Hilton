@@ -1,6 +1,5 @@
 package net.frozenorb.foxtrot.gameplay.kitmap.game;
 
-import cc.fyre.modsuite.mod.ModHandler;
 import cc.fyre.proton.Proton;
 import cc.fyre.proton.util.TimeUtils;
 import net.minecraft.util.com.google.common.collect.ImmutableList;
@@ -265,7 +264,7 @@ public abstract class Game {
             return;
         }
 
-        if (ModHandler.INSTANCE.isInModMode(player.getUniqueId())) {
+        if (net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInModMode(player.getUniqueId())) {
             player.sendMessage(ChatColor.RED + "You can't join the event while in mod-mode.");
             return;
         }

@@ -74,11 +74,11 @@ public class AntiCleanListener implements Listener {
 
         if (victimOpponentTeam != null && victimOpponentTeam != damagerTeam) {
             damager.sendMessage(ChatColor
-                    .translate("&cYou may not hit &f" + victim.getName() + " &cas they have an &5&lAnti-Clean &ctag!"));
+                    .translate("&cYou may not hit &f" + victim.getName() + " &cas they have an &3&lAnti-Clean &ctag!"));
             event.setCancelled(true);
         } else if (damagerOpponentTeam != null && damagerOpponentTeam != victimTeam) {
             damager.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou may not hit &f" + victim.getName()
-                    + " &cas you have an &5&lAnti-Clean &ctag and they aren't the faction you were fighting!"));
+                    + " &cas you have an &3&lAnti-Clean &ctag and they aren't the faction you were fighting!"));
             event.setCancelled(true);
         }
 
@@ -115,13 +115,13 @@ public class AntiCleanListener implements Listener {
             return;
 
         if (!CACHE.containsKey(damagerTeam)) {
-            damagerTeam.sendMessage(ChatColor.translateAlternateColorCodes('&', "&5&lAnti-Clean &ctag has been activated because &f"
+            damagerTeam.sendMessage(ChatColor.translateAlternateColorCodes('&', "&3&lAnti-Clean &ctag has been activated because &f"
                     + damager.getName() + " &chit &f[" + victimTeam.getName() + "] " + victim.getName() + "&c!"));
         }
 
         if (!CACHE.containsKey(victimTeam)) {
             victimTeam.sendMessage(
-                    ChatColor.translateAlternateColorCodes('&', "&5&lAnti-Clean &ctag has been activated because &f" + victim.getName()
+                    ChatColor.translateAlternateColorCodes('&', "&3&lAnti-Clean &ctag has been activated because &f" + victim.getName()
                             + " &cwas hit by &f[" + damagerTeam.getName() + "] " + damager.getName() + "&c!"));
         }
 

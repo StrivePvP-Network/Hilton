@@ -81,7 +81,7 @@ public class SignSubclaimListener implements Listener {
         }
 
         if (!found) {
-            if (event.getPlayer().getName().length() > 15) {
+            if (event.getPlayer().getName().length() > 16) {
                 event.getBlock().breakNaturally();
                 event.getPlayer().sendMessage("§cYour name is too long for sign subclaims. Consider changing your username.");
                 return;

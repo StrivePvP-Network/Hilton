@@ -1,6 +1,5 @@
 package net.frozenorb.foxtrot.team;
 
-import cc.fyre.modsuite.mod.ModHandler;
 import cc.fyre.neutron.util.PlayerUtil;
 import cc.fyre.proton.serialization.LocationSerializer;
 
@@ -856,7 +855,7 @@ public class Team {
         for (UUID member : getMembers()) {
             Player exactPlayer = Foxtrot.getInstance().getServer().getPlayer(member);
 
-            if (exactPlayer != null && !ModHandler.INSTANCE.isInVanish(member)) {
+            if (exactPlayer != null && !net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInVanish(member)) {
                 amt++;
             }
         }
@@ -870,7 +869,7 @@ public class Team {
         for (UUID member : getMembers()) {
             Player exactPlayer = Foxtrot.getInstance().getServer().getPlayer(member);
 
-            if (exactPlayer != null && !ModHandler.INSTANCE.isInVanish(member)) {
+            if (exactPlayer != null && !net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInVanish(member)) {
                 players.add(exactPlayer);
             }
         }
@@ -884,7 +883,7 @@ public class Team {
         for (UUID member : getMembers()) {
             Player exactPlayer = Foxtrot.getInstance().getServer().getPlayer(member);
 
-            if (exactPlayer == null || ModHandler.INSTANCE.isInVanish(member)) {
+            if (exactPlayer == null || net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInVanish(member)) {
                 players.add(member);
             }
         }
@@ -1745,7 +1744,7 @@ public class Team {
         }
 
         FancyMessage leader = new FancyMessage(ChatColor.YELLOW + "Leader: "
-                + (owner == null || ModHandler.INSTANCE.isInVanish(owner.getUniqueId())
+                + (owner == null || net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInVanish(owner.getUniqueId())
                         ? (deathbanMap.isDeathbanned(getOwner()) ? ChatColor.RED : ChatColor.GRAY)
                         : ChatColor.GREEN)
                 + Proton.getInstance().getUuidCache().name(getOwner()) + ChatColor.YELLOW + "[" + ChatColor.GREEN

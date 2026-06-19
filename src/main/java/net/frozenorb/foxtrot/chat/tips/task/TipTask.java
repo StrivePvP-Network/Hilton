@@ -15,7 +15,8 @@ public class TipTask extends BukkitRunnable {
     private Foxtrot instance;
     private TipsHandler tipsHandler;
 
-    @Getter private List<String> queue = new ArrayList<>();
+    @Getter
+    private List<String> queue = new ArrayList<>();
 
     public TipTask(Foxtrot instance, TipsHandler tipsHandler) {
         this.instance = instance;
@@ -32,7 +33,7 @@ public class TipTask extends BukkitRunnable {
 
         if (this.tipsHandler.getTips().isEmpty()) {
             System.out.println("-------------------");
-            System.out.println("Tried to send a tip out, however none were found.");
+            System.out.println("No tips found. Add tips using /tips");
             System.out.println("-------------------");
             return;
         }

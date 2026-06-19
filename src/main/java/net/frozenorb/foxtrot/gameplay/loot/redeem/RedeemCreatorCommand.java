@@ -24,16 +24,23 @@ import java.util.stream.Collectors;
  * @Contact hxmiltonn (discord)
  */
 
+import net.frozenorb.foxtrot.gameplay.loot.redeem.menu.RedeemMenu;
+
 public class RedeemCreatorCommand {
 
     private static final List<String> ADDRESSES = new ArrayList<>();
 
     @Command(names = { "redeem", "redeemcreator", "creatorredeem",
             "support" }, description = "Redeem a creator", permission = "", async = true)
-    public static void execute(Player player, @Parameter(name = "creator") String creator) {
+    public static void execute(Player player, @Parameter(name = "creator", defaultValue = "OPEN_MENU") String creator) {
         if (Foxtrot.getInstance().getServerHandler().isTeams() || Foxtrot.getInstance().getMapHandler().isKitMap()) {
             player.sendMessage(ChatColor.RED + "This feature is disabled on "
                     + Foxtrot.getInstance().getServerHandler().getServerName() + ".");
+            return;
+        }
+
+        if (creator.equals("OPEN_MENU")) {
+            new RedeemMenu().openMenu(player);
             return;
         }
 
@@ -117,7 +124,7 @@ public class RedeemCreatorCommand {
         });
     }
 
-    @Command(names = { "partner add", "creator add" }, permission = "op")
+    @Command(names = { "partner add", "creator add", "partner editor add" }, permission = "foxtrot.partner.admin")
     public static void addPartner(Player player, @Parameter(name = "name") String name) {
         if (Foxtrot.getInstance().getRedeemCreatorHandler().getCreators().containsValue(name)) {
             player.sendMessage(ChatColor.RED + "Partner already exists!");
@@ -126,6 +133,22 @@ public class RedeemCreatorCommand {
 
         Foxtrot.getInstance().getRedeemCreatorHandler().addCreator(name);
         player.sendMessage(ChatColor.GREEN + "Added partner: " + name);
+    }
+
+    @Command(names = { "partner remove", "creator remove", "partner editor remove" }, permission = "foxtrot.partner.admin")
+    public static void removePartner(Player player, @Parameter(name = "name") String name) {
+        if (!Foxtrot.getInstance().getRedeemCreatorHandler().getCreators().containsValue(name)) {
+            player.sendMessage(ChatColor.RED + "Partner doesn't exist!");
+            return;
+        }
+
+        Foxtrot.getInstance().getRedeemCreatorHandler().removeCreator(name);
+        player.sendMessage(ChatColor.GREEN + "Removed partner: " + name);
+    }
+
+    @Command(names = { "partner editor", "creator editor" }, permission = "foxtrot.partner.admin")
+    public static void editor(Player player) {
+        new net.frozenorb.foxtrot.gameplay.loot.redeem.menu.PartnerEditorMenu().openMenu(player);
     }
 
     @Command(names = { "redeem edit rewards" }, permission = "partner.edit.rewards")

@@ -210,15 +210,6 @@ public class ShopMenu extends Menu {
 
                         Foxtrot.getInstance().getEconomyHandler().deposit(player.getUniqueId(), total);
                         removeItem(player, new ItemStack(entry.getKey(), 16), 16);
-
-                        if (Foxtrot.getInstance().getBattlePassHandler() != null) {
-                            Foxtrot.getInstance().getBattlePassHandler().useProgress(player.getUniqueId(), progress -> {
-                                progress.setValuablesSold(progress.getValuablesSold() + ((int) Math.round(total)));
-                                progress.requiresSave();
-
-                                Foxtrot.getInstance().getBattlePassHandler().checkCompletionsAsync(player);
-                            });
-                        }
                         return;
                     }
 
@@ -255,16 +246,6 @@ public class ShopMenu extends Menu {
                         soldItems.forEach(it -> player.getInventory().remove(it));
 
                         Foxtrot.getInstance().getEconomyHandler().deposit(player.getUniqueId(), Math.floor(amountPaid));
-
-                        if (Foxtrot.getInstance().getBattlePassHandler() != null) {
-                            double finalAmountPaid = amountPaid;
-                            Foxtrot.getInstance().getBattlePassHandler().useProgress(player.getUniqueId(), progress -> {
-                                progress.setValuablesSold(progress.getValuablesSold() + ((int) Math.round(finalAmountPaid)));
-                                progress.requiresSave();
-
-                                Foxtrot.getInstance().getBattlePassHandler().checkCompletionsAsync(player);
-                            });
-                        }
 
                         player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6You sold &f" + itemsSold + " blocks &6for &2$&a" + NumberFormat.getNumberInstance(Locale.US).format(Math.floor(amountPaid))));
                         return;

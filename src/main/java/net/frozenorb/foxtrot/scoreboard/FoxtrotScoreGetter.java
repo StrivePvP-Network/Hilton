@@ -1,7 +1,5 @@
 package net.frozenorb.foxtrot.scoreboard;
 
-import cc.fyre.modsuite.mod.ModHandler;
-import cc.fyre.modsuite.mod.ModHandler;
 import cc.fyre.neutron.Neutron;
 import cc.fyre.neutron.profile.Profile;
 import cc.fyre.proton.Proton;
@@ -568,7 +566,7 @@ public class FoxtrotScoreGetter implements ScoreGetter {
             scores.addAll(conquestScores);
         }
 
-        if (player.hasMetadata("STAFF_BOARD") || cc.fyre.modsuite.mod.ModHandler.INSTANCE.isInModMode(player.getUniqueId())) {
+        if (player.hasMetadata("STAFF_BOARD") || net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInModMode(player.getUniqueId())) {
 
             if (!scores.isEmpty()) {
                 scores.add("&f&7&m--------------------");
@@ -576,7 +574,7 @@ public class FoxtrotScoreGetter implements ScoreGetter {
 
             scores.add("&6&lStaff Mode:");
 
-            boolean vanished = cc.fyre.modsuite.mod.ModHandler.INSTANCE.isInVanish(player.getUniqueId());
+            boolean vanished = net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInVanish(player.getUniqueId());
             scores.add("&7\u00bb &eVisibility: " + (vanished ? "&aInvisible" : "&cVisible"));
 
             boolean staffChat = Profiles.getInstance().hasStaffChatEnabled(player);

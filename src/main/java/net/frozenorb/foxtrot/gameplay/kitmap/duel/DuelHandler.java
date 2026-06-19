@@ -1,6 +1,5 @@
 package net.frozenorb.foxtrot.gameplay.kitmap.duel;
 
-import cc.fyre.modsuite.mod.ModHandler;
 import cc.fyre.neutron.Neutron;
 import cc.fyre.neutron.profile.Profile;
 import lombok.Getter;
@@ -48,7 +47,7 @@ public class DuelHandler {
                 completions.clear();
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (!event.getPlayer().canSee(player) && ModHandler.INSTANCE.isInVanish(player.getUniqueId())) {
+                    if (!event.getPlayer().canSee(player) && net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInVanish(player.getUniqueId())) {
                         continue;
                     }
 
@@ -65,7 +64,7 @@ public class DuelHandler {
     // Invites
 
     public boolean canDuel(Player sender, Player target) {
-        if (ModHandler.INSTANCE.isInModMode(sender.getUniqueId())) {
+        if (net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInModMode(sender.getUniqueId())) {
             sender.sendMessage(ChatColor.RED + "You can't do this while in mod mode.");
             return false;
         }
@@ -104,7 +103,7 @@ public class DuelHandler {
     }
 
     public boolean canAccept(Player target, Player sender) {
-        if (ModHandler.INSTANCE.isInModMode(target.getUniqueId())) {
+        if (net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInModMode(target.getUniqueId())) {
             target.sendMessage(ChatColor.RED + "You can't do this while in mod mode.");
             return false;
         }

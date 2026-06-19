@@ -1,6 +1,5 @@
 package net.frozenorb.foxtrot.team.commands.team;
 
-import cc.fyre.modsuite.mod.ModHandler;
 import mkremins.fanciful.FancyMessage;
 import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.team.Team;
@@ -30,7 +29,7 @@ public class TeamListCommand {
 
                 // Sort of weird way of getting player counts, but it does it in the least iterations (1), which is what matters!
                 for (Player player : Foxtrot.getInstance().getServer().getOnlinePlayers()) {
-                    if (ModHandler.INSTANCE.isInVanish(player.getUniqueId())) {
+                    if (net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInVanish(player.getUniqueId())) {
                         continue;
                     }
 

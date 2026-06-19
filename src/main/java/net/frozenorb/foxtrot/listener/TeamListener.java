@@ -1,6 +1,5 @@
 package net.frozenorb.foxtrot.listener;
 
-import cc.fyre.modsuite.mod.ModHandler;
 import cc.fyre.neutron.util.PlayerUtil;
 import cc.fyre.proton.util.PlayerUtils;
 import net.minecraft.util.com.google.common.collect.ImmutableMap;
@@ -79,7 +78,7 @@ public class TeamListener implements Listener {
             return;
         }
 
-        if (ModHandler.INSTANCE.isInModMode(player.getUniqueId())) {
+        if (net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInModMode(player.getUniqueId())) {
             return;
         }
 

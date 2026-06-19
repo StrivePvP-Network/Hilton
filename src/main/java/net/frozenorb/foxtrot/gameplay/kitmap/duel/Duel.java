@@ -1,6 +1,5 @@
 package net.frozenorb.foxtrot.gameplay.kitmap.duel;
 
-import cc.fyre.modsuite.mod.ModHandler;
 import cc.fyre.proton.util.PlayerUtils;
 import lombok.Getter;
 import lombok.NonNull;
@@ -132,7 +131,7 @@ public class Duel {
 
         for (Player online : Bukkit.getOnlinePlayers()) {
             for (Player player : getPlayers()) {
-                if (!ModHandler.INSTANCE.isInVanish(player.getUniqueId()))
+                if (!net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInVanish(player.getUniqueId()))
                     player.showPlayer(online);
 
                 online.showPlayer(player);

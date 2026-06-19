@@ -1,6 +1,5 @@
 package net.frozenorb.foxtrot.server;
 
-import cc.fyre.modsuite.mod.ModHandler;
 import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.commands.CustomTimerCreateCommand;
 import net.frozenorb.foxtrot.team.Team;
@@ -25,7 +24,7 @@ public interface RegionMoveHandler {
         Team team = LandBoard.getInstance().getTeam(event.getTo());
         boolean deny = team != null && team.isClaimLocked() && !team.isMember(event.getPlayer().getUniqueId());
         if (CustomTimerCreateCommand.isSOTWTimer() && deny && event.getPlayer().getGameMode() != GameMode.CREATIVE) {
-            if (!ModHandler.INSTANCE.isInModMode(event.getPlayer().getUniqueId())) {
+            if (!net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInModMode(event.getPlayer().getUniqueId())) {
                 event.getPlayer().sendMessage(ChatColor.RED + "You cannot do this that claim is locked and SOTW is active!");
                 event.setTo(event.getFrom());
                 return (false);

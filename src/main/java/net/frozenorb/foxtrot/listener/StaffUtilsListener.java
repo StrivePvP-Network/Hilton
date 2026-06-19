@@ -1,7 +1,6 @@
 package net.frozenorb.foxtrot.listener;
 
 
-import cc.fyre.modsuite.mod.ModHandler;
 import net.frozenorb.foxtrot.Foxtrot;
 import net.frozenorb.foxtrot.team.Team;
 import org.bukkit.Location;
@@ -53,14 +52,14 @@ public class StaffUtilsListener implements Listener {
         if (lastDamageLocation != null
                 && event.getItem() != null
                 && event.getItem().getType() == Material.DIAMOND
-                && ModHandler.INSTANCE.isInModMode(event.getPlayer().getUniqueId())) {
+                && net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInModMode(event.getPlayer().getUniqueId())) {
             event.getPlayer().teleport(lastDamageLocation);
         }
     }
 
     @EventHandler
     public void onPlayerInteract2(PlayerInteractEvent event) {
-        if (event.getAction() == Action.PHYSICAL && ModHandler.INSTANCE.isInVanish(event.getPlayer().getUniqueId()) && (event.getClickedBlock().getType() == Material.CROPS || event.getClickedBlock().getType() == Material.SOIL)) {
+        if (event.getAction() == Action.PHYSICAL && net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInVanish(event.getPlayer().getUniqueId()) && (event.getClickedBlock().getType() == Material.CROPS || event.getClickedBlock().getType() == Material.SOIL)) {
             event.setCancelled(true);
         }
     }

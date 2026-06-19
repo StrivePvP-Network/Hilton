@@ -16,6 +16,8 @@ import java.util.Set;
 import java.util.HashSet;
 import net.frozenorb.foxtrot.gameplay.loot.crate.item.CrateItem;
 
+import static net.frozenorb.foxtrot.commands.SaveRedisCommand.saveData;
+
 /**
  * @author Hxmilton (JavaProject)
  * @Contact hxmiltonn (discord)
@@ -25,6 +27,7 @@ public final class RedeemCreatorHandler {
 
     @Getter private final Map<String, String> creators = new HashMap<>();
     @Getter private final List<CrateItem> rewards = new ArrayList<>();
+    @Getter private int rows = 3;
     private FileConfig fileConfig;
 
     public RedeemCreatorHandler() {
@@ -34,6 +37,12 @@ public final class RedeemCreatorHandler {
         fileConfig.save();
 
         Foxtrot.getInstance().getServer().getPluginManager().registerEvents(new net.frozenorb.foxtrot.gameplay.loot.redeem.listener.RedeemLootListener(), Foxtrot.getInstance());
+
+        if (config.contains("rows")) {
+            rows = config.getInt("rows");
+        } else {
+            rows = 3;
+        }
 
         if (config.getConfigurationSection("partners") != null) {
             for (String partner : config.getConfigurationSection("partners").getKeys(false)) {
@@ -66,14 +75,21 @@ public final class RedeemCreatorHandler {
         save();
     }
 
+    public void removeCreator(String name) {
+        creators.entrySet().removeIf(entry -> entry.getValue().equalsIgnoreCase(name));
+        save();
+    }
+
     public void save() {
         FileConfiguration config = fileConfig.getConfig();
         
         Set<String> uniquePartners = new HashSet<>(creators.values());
-        config.set("partners", null);
-        for (String partner : uniquePartners) {
-            config.set("partners." + partner + ".aliases", new ArrayList<String>());
+        fileConfig.getConfig().set("partners", null);
+        for (String partner : creators.values()) {
+            fileConfig.getConfig().set("partners." + partner + ".aliases", new ArrayList<String>());
         }
+        
+        fileConfig.getConfig().set("rows", rows);
 
         config.set("rewards", null);
         int i = 0;
@@ -101,5 +117,10 @@ public final class RedeemCreatorHandler {
 
     public void redeem(Player player, String creator) {
         Proton.getInstance().runRedisCommand(jedis -> jedis.set("redeemed_creator:" + player.getUniqueId().toString(), creator));
+    }
+    
+    public void setRows(int rows) {
+        this.rows = rows;
+        save();
     }
 }

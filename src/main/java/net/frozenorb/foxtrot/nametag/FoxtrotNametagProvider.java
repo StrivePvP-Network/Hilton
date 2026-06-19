@@ -1,6 +1,5 @@
 package net.frozenorb.foxtrot.nametag;
 
-import cc.fyre.modsuite.mod.ModHandler;
 import cc.fyre.neutron.Neutron;
 import cc.fyre.neutron.profile.Profile;
 import cc.fyre.proton.Proton;
@@ -94,7 +93,7 @@ public class FoxtrotNametagProvider extends NameTagProvider {
                 }
             } else {
                 if (target.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-                    if (!ModHandler.INSTANCE.isInModMode(viewer.getPlayer().getUniqueId())) {
+                    if (!net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInModMode(viewer.getPlayer().getUniqueId())) {
                         if (viewerTeam == null || !viewerTeam.isMember(target.getUniqueId())) {
                             return Proton.getInstance().getNameTagHandler().getINVISIBLE();
                         }
@@ -103,7 +102,7 @@ public class FoxtrotNametagProvider extends NameTagProvider {
             }
         } else {
             if (target.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-                if (!ModHandler.INSTANCE.isInModMode(viewer.getPlayer().getUniqueId())) {
+                if (!net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInModMode(viewer.getPlayer().getUniqueId())) {
                     if (viewerTeam == null || !viewerTeam.isMember(target.getUniqueId())) {
                         return Proton.getInstance().getNameTagHandler().getINVISIBLE();
                     }

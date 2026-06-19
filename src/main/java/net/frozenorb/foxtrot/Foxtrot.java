@@ -14,7 +14,6 @@ import lombok.Setter;
 
 import net.frozenorb.foxtrot.brewer.FancyBrewerModule;
 import net.frozenorb.foxtrot.chat.tips.TipsHandler;
-import net.frozenorb.foxtrot.chat.trivia.TriviaHandler;
 import net.frozenorb.foxtrot.commands.CustomTimerCreateCommand;
 import net.frozenorb.foxtrot.deathmessage.DeathMessageHandler;
 import net.frozenorb.foxtrot.economy.EconomyHandler;
@@ -44,9 +43,6 @@ import net.frozenorb.foxtrot.gameplay.kitmap.partner.PartnerCrateHandler;
 import net.frozenorb.foxtrot.gameplay.kitmap.tokens.TokensHandler;
 import net.frozenorb.foxtrot.gameplay.lettingIn.LettingInHandler;
 import net.frozenorb.foxtrot.gameplay.loot.airdrop.AirDropHandler;
-import net.frozenorb.foxtrot.gameplay.loot.battlepass.BattlePassHandler;
-import net.frozenorb.foxtrot.gameplay.loot.battlepass.challenge.Challenge;
-import net.frozenorb.foxtrot.gameplay.loot.battlepass.challenge.serializer.ChallengeSerializer;
 import net.frozenorb.foxtrot.gameplay.loot.crate.CrateBlockHandler;
 import net.frozenorb.foxtrot.gameplay.loot.crate.CrateHandler;
 import net.frozenorb.foxtrot.gameplay.loot.itemboxes.ItemBoxesHandler;
@@ -86,6 +82,7 @@ import net.frozenorb.foxtrot.team.dtr.DTRHandler;
 import net.frozenorb.foxtrot.util.CC;
 import net.frozenorb.foxtrot.util.PersistableLocation;
 import net.frozenorb.foxtrot.util.RegenUtils;
+import net.frozenorb.foxtrot.staff.StaffModeHandler;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -118,7 +115,6 @@ public class Foxtrot extends JavaPlugin {
             .registerTypeHierarchyAdapter(Vector.class, new VectorAdapter())
             .registerTypeHierarchyAdapter(BlockVector.class, new BlockVectorAdapter())
             .registerTypeHierarchyAdapter(PotionAdapter.class, new PotionAdapter())
-            .registerTypeAdapter(Challenge.class, new ChallengeSerializer())
             .setPrettyPrinting()
             .serializeNulls().create();
 
@@ -147,7 +143,7 @@ public class Foxtrot extends JavaPlugin {
     @Getter
     private QuestHandler questHandler;
     @Getter
-    private BattlePassHandler battlePassHandler;
+    private StaffModeHandler staffModeHandler;
     @Getter
     private WorldEditPlugin worldEdit;
     @Getter
@@ -312,8 +308,6 @@ public class Foxtrot extends JavaPlugin {
     private BountyCooldownMap bountyCooldownMap;
     @Getter
     private ReclaimMap reclaimMap;
-    @Getter
-    private TriviaHandler triviaHandler;
     @Getter
     private FuryHandler furyHandler;
     @Getter
@@ -622,7 +616,7 @@ public class Foxtrot extends JavaPlugin {
             this.itemBoxesHandler = new ItemBoxesHandler(this);
             this.clickItemHandler = new ClickItemHandler(this);
             this.furyHandler = new FuryHandler(this);
-            this.battlePassHandler = new BattlePassHandler();
+            this.staffModeHandler = new StaffModeHandler();
             this.lettingInHandler = new LettingInHandler(this);
             this.votePartyHandler = new VotePartyHandler(this);
         }
@@ -631,7 +625,6 @@ public class Foxtrot extends JavaPlugin {
         this.miniEventsHandler = new MiniEventsHandler(this);
         this.caveSaysHandler = new CaveSaysHandler(this);
         this.networkBoosterHandler = new NetworkBoosterHandler(this);
-        this.triviaHandler = new TriviaHandler(this);
         this.airDropHandler = new AirDropHandler(this);
         this.keyAllHandler = new KeyAllHandler(this);
         this.reclaimHandler = new ReclaimHandler(this);

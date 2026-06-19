@@ -1,6 +1,5 @@
 package net.frozenorb.foxtrot.listener;
 
-import cc.fyre.modsuite.mod.ModHandler;
 import cc.fyre.proton.serialization.LocationSerializer;
 import cc.fyre.proton.util.PlayerUtils;
 import com.mongodb.BasicDBObject;
@@ -321,7 +320,7 @@ public class CombatLoggerListener implements Listener {
             return;
         }
 
-        if (ModHandler.INSTANCE.isInModMode(event.getPlayer().getUniqueId()) || ModHandler.INSTANCE.isInVanish(event.getPlayer().getUniqueId())) {
+        if (net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInModMode(event.getPlayer().getUniqueId()) || net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInVanish(event.getPlayer().getUniqueId())) {
             return;
         }
 
@@ -369,7 +368,7 @@ public class CombatLoggerListener implements Listener {
             if (entity instanceof Player) {
                 Player other = (Player) entity;
 
-                if (ModHandler.INSTANCE.isInVanish(other.getUniqueId())) {
+                if (net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInVanish(other.getUniqueId())) {
                     continue;
                 }
 
@@ -387,7 +386,7 @@ public class CombatLoggerListener implements Listener {
             spawnCombatLogger = true;
         }
 
-        if (event.getPlayer().getGameMode() != GameMode.CREATIVE && !ModHandler.INSTANCE.isInVanish(event.getPlayer().getUniqueId()) && spawnCombatLogger && !event.getPlayer().isDead()) {
+        if (event.getPlayer().getGameMode() != GameMode.CREATIVE && !net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInVanish(event.getPlayer().getUniqueId()) && spawnCombatLogger && !event.getPlayer().isDead()) {
             Foxtrot.getInstance().getLogger().info(event.getPlayer().getName() + " combat logged at (" + event.getPlayer().getLocation().getBlockX() + ", " + event.getPlayer().getLocation().getBlockY() + ", " + event.getPlayer().getLocation().getBlockZ() + ")");
 
             ItemStack[] armor = event.getPlayer().getInventory().getArmorContents();
