@@ -197,6 +197,10 @@ public class LunarClientListener implements Listener {
         Foxtrot.getInstance().getServer().getOnlinePlayers().forEach(viewer -> {
             Optional<ApolloPlayer> apolloViewer = Apollo.getPlayerManager().getPlayer(viewer.getUniqueId());
             if (apolloViewer.isPresent()) {
+                if (!viewer.canSee(player)) {
+                    nametagModule.resetNametag(apolloViewer.get(), player.getUniqueId());
+                    return;
+                }
                 Nametag nametag = buildNametag(player, viewer);
                 nametagModule.overrideNametag(apolloViewer.get(), player.getUniqueId(), nametag);
             }

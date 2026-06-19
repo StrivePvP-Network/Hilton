@@ -166,6 +166,29 @@ public class StaffModeListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
+        Player player = event.getPlayer();
+        
+        for (Player online : Bukkit.getOnlinePlayers()) {
+            StaffModeHandler.VanishState state = handler.getVanishState(online.getUniqueId());
+            if (state == StaffModeHandler.VanishState.INVISIBLE) {
+                player.hidePlayer(online);
+            } else if (state == StaffModeHandler.VanishState.STAFF) {
+                if (!player.hasPermission("foxtrot.staff")) {
+                    player.hidePlayer(online);
+                } else {
+                    player.showPlayer(online);
+                }
+            }
+        }
+        
+        StaffModeHandler.VanishState myState = handler.getVanishState(player.getUniqueId());
+        if (myState != StaffModeHandler.VanishState.VISIBLE) {
+            handler.setVanish(player, myState);
+        }
+    }
+
+    @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player) {
             Player player = (Player) event.getWhoClicked();
@@ -194,6 +217,16 @@ public class StaffModeListener implements Listener {
     public void onEntityDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
+            if (handler.isInModMode(player.getUniqueId()) || handler.isInVanish(player.getUniqueId())) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamageByEntity(org.bukkit.event.entity.EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player) {
+            Player player = (Player) event.getDamager();
             if (handler.isInModMode(player.getUniqueId()) || handler.isInVanish(player.getUniqueId())) {
                 event.setCancelled(true);
             }
