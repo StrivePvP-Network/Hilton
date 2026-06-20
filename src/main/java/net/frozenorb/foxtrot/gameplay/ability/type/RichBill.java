@@ -31,16 +31,15 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author llanezsa (JavaProject)
+ * @author Fyre Games (JavaProject)
  * @Reworked Hxmilton
  */
-
 
 public class RichBill extends Ability {
 
     private final Table<UUID, UUID, Integer> hits = HashBasedTable.create();
     private final int requiredHits = 3;
-    private final int DURATION_SECONDS = 3;
+    private final int DURATION_SECONDS = 8;
 
     private final Map<UUID, ItemStack> cachedHelmets = new HashMap<>();
     private final Map<UUID, BukkitTask> activeTasks = new HashMap<>();
@@ -79,7 +78,6 @@ public class RichBill extends Ability {
     public Category getCategory() {
         return Category.PARTNER_CRATE;
     }
-
 
     @Override
     public String getDescription() {
@@ -140,23 +138,23 @@ public class RichBill extends Ability {
             return;
         }
 
-        AbilityUseEvent abilityUseEvent = new AbilityUseEvent(damager, target, damager.getLocation(), this, false);
-        Bukkit.getPluginManager().callEvent(abilityUseEvent);
-
-        if (abilityUseEvent.isCancelled()) {
-            return;
-        }
-
         UUID damagerId = damager.getUniqueId();
         UUID targetId = target.getUniqueId();
 
         int currentHits = hits.contains(damagerId, targetId) ? hits.get(damagerId, targetId) : 0;
-        currentHits++;
 
-        if (currentHits >= requiredHits) {
+        if (currentHits + 1 >= requiredHits) {
+            AbilityUseEvent abilityUseEvent = new AbilityUseEvent(damager, target, damager.getLocation(), this, false);
+            Bukkit.getPluginManager().callEvent(abilityUseEvent);
+
+            if (abilityUseEvent.isCancelled()) {
+                return;
+            }
+
             hits.remove(damagerId, targetId);
             activateEffect(damager, target);
         } else {
+            currentHits++;
             hits.put(damagerId, targetId, currentHits);
             damager.sendMessage(ChatColor.YELLOW + "You have hit " + ChatColor.GOLD + target.getName() + " "
                     + ChatColor.RED + currentHits + "/" + requiredHits + ChatColor.YELLOW + " times!");
@@ -251,6 +249,7 @@ public class RichBill extends Ability {
             event.setCancelled(true);
         }
     }
+
     @Override
     public Boolean DTR(Location location) {
         return isAllowedAtLocation(location);

@@ -83,6 +83,7 @@ import net.frozenorb.foxtrot.util.CC;
 import net.frozenorb.foxtrot.util.PersistableLocation;
 import net.frozenorb.foxtrot.util.RegenUtils;
 import net.frozenorb.foxtrot.staff.StaffModeHandler;
+import net.frozenorb.foxtrot.gameplay.cpscapper.CpsCapperManager;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -333,6 +334,8 @@ public class Foxtrot extends JavaPlugin {
     private FancyBrewerModule fancyBrewerModule;
     @Getter
     private VotePartyHandler votePartyHandler;
+    @Getter
+    private CpsCapperManager cpsCapperManager;
 
     @Getter
     @Setter
@@ -628,6 +631,7 @@ public class Foxtrot extends JavaPlugin {
         this.airDropHandler = new AirDropHandler(this);
         this.keyAllHandler = new KeyAllHandler(this);
         this.reclaimHandler = new ReclaimHandler(this);
+        this.cpsCapperManager = new CpsCapperManager(this);
 
         if (getConfig().getBoolean("cavern", false)) {
             cavernHandler = new CavernHandler();

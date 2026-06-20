@@ -35,7 +35,7 @@ public class StaffModeHandler {
         Foxtrot.getInstance().getServer().getPluginManager().registerEvents(new StaffModeListener(this),
                 Foxtrot.getInstance());
         Proton.getInstance().getCommandHandler().registerClass(this.getClass());
-
+        Proton.getInstance().getVisibilityHandler().registerHandler("FOXTROT_STAFF_VISIBILITY", new net.frozenorb.foxtrot.staff.StaffVisibilityAdapter(this));
     }
 
     public boolean isInModMode(UUID uuid) {
@@ -48,6 +48,10 @@ public class StaffModeHandler {
 
     public VanishState getVanishState(UUID uuid) {
         return vanishState.getOrDefault(uuid, VanishState.VISIBLE);
+    }
+
+    public boolean hasStaffPowers(UUID uuid) {
+        return isInModMode(uuid) || isInVanish(uuid);
     }
 
     @Command(names = { "mod", "h", "modmode", "staff", "staffmode" }, permission = "foxtrot.staff")
@@ -82,26 +86,25 @@ public class StaffModeHandler {
     public void enableModMode(Player player) {
         modMode.add(player.getUniqueId());
 
-        savedInventories.put(player.getUniqueId(), player.getInventory().getContents());
-        savedArmor.put(player.getUniqueId(), player.getInventory().getArmorContents());
+        savedInventories.put(player.getUniqueId(), player.getInventory().getContents().clone());
+        savedArmor.put(player.getUniqueId(), player.getInventory().getArmorContents().clone());
 
         player.getInventory().clear();
         player.getInventory().setArmorContents(null);
         player.setGameMode(GameMode.CREATIVE);
 
-        setVanish(player, VanishState.STAFF);
         giveModItems(player);
+        enableVanish(player);
 
         player.sendMessage(ChatColor.AQUA + "Mod Mode: " + ChatColor.GREEN + "Enabled");
         net.frozenorb.foxtrot.listener.LunarClientListener.updateNametag(player);
     }
 
     public void disableModMode(Player player) {
-        modMode.remove(player.getUniqueId());
+        player.setGameMode(GameMode.SURVIVAL);
 
         player.getInventory().clear();
         player.getInventory().setArmorContents(null);
-        player.setGameMode(GameMode.SURVIVAL);
 
         if (savedInventories.containsKey(player.getUniqueId())) {
             player.getInventory().setContents(savedInventories.remove(player.getUniqueId()));
@@ -111,44 +114,76 @@ public class StaffModeHandler {
             player.getInventory().setArmorContents(savedArmor.remove(player.getUniqueId()));
         }
 
-        setVanish(player, VanishState.VISIBLE);
+        player.updateInventory();
 
-        player.sendMessage(ChatColor.AQUA + "Mod Mode: " + ChatColor.RED + "Disabled");
+        modMode.remove(player.getUniqueId());
+
+        disableVanish(player);
+
+        player.sendMessage(ChatColor.GOLD + "Mod Mode: " + ChatColor.RED + "Disabled");
         net.frozenorb.foxtrot.listener.LunarClientListener.updateNametag(player);
     }
 
-    public void setVanish(Player player, VanishState state) {
-        vanishState.put(player.getUniqueId(), state);
-
-        if (state != VanishState.VISIBLE) {
-            player.setMetadata("invisible", new FixedMetadataValue(Foxtrot.getInstance(), true));
-            for (Player online : Bukkit.getOnlinePlayers()) {
-                if (state == VanishState.INVISIBLE) {
-                    online.hidePlayer(player);
-                } else if (state == VanishState.STAFF) {
-                    if (!online.hasPermission("foxtrot.staff") && !online.getUniqueId().equals(player.getUniqueId())) {
-                        online.hidePlayer(player);
-                    } else {
-                        online.showPlayer(player);
-                    }
-                }
-            }
-        } else {
-            player.removeMetadata("invisible", Foxtrot.getInstance());
-            for (Player online : Bukkit.getOnlinePlayers()) {
-                online.showPlayer(player);
-            }
-        }
+    public void enableVanish(Player player) {
+        vanishState.put(player.getUniqueId(), VanishState.STAFF);
+        player.setMetadata("invisible", new FixedMetadataValue(Foxtrot.getInstance(), true));
 
         if (isInModMode(player.getUniqueId())) {
-            short data = state == VanishState.VISIBLE ? (short) 8
-                    : (state == VanishState.STAFF ? (short) 10 : (short) 5);
+            short data = (short) 10;
             player.getInventory().setItem(8, ItemBuilder.of(Material.INK_SACK).data(data)
                     .name(ChatColor.AQUA + "Vanish Toggle").build());
             player.updateInventory();
         }
 
+        Proton.getInstance().getVisibilityHandler().update(player);
+
         net.frozenorb.foxtrot.listener.LunarClientListener.updateNametag(player);
+    }
+
+    public void disableVanish(Player player) {
+        vanishState.put(player.getUniqueId(), VanishState.VISIBLE);
+        player.removeMetadata("invisible", Foxtrot.getInstance());
+
+        if (isInModMode(player.getUniqueId())) {
+            short data = (short) 8;
+            player.getInventory().setItem(8, ItemBuilder.of(Material.INK_SACK).data(data)
+                    .name(ChatColor.AQUA + "Vanish Toggle").build());
+            player.updateInventory();
+        }
+
+        Proton.getInstance().getVisibilityHandler().update(player);
+
+        net.frozenorb.foxtrot.listener.LunarClientListener.updateNametag(player);
+    }
+
+    public void enableFullVanish(Player player) {
+        vanishState.put(player.getUniqueId(), VanishState.INVISIBLE);
+        player.setMetadata("invisible", new FixedMetadataValue(Foxtrot.getInstance(), true));
+
+        if (isInModMode(player.getUniqueId())) {
+            short data = (short) 5;
+            player.getInventory().setItem(8, ItemBuilder.of(Material.INK_SACK).data(data)
+                    .name(ChatColor.AQUA + "Vanish Toggle").build());
+            player.updateInventory();
+        }
+
+        Proton.getInstance().getVisibilityHandler().update(player);
+
+        net.frozenorb.foxtrot.listener.LunarClientListener.updateNametag(player);
+    }
+
+    public void setVanish(Player player, VanishState state) {
+        switch (state) {
+            case VISIBLE:
+                disableVanish(player);
+                break;
+            case STAFF:
+                enableVanish(player);
+                break;
+            case INVISIBLE:
+                enableFullVanish(player);
+                break;
+        }
     }
 
     public void giveModItems(Player player) {

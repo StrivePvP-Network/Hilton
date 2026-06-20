@@ -15,65 +15,55 @@ public class SettingsMenu extends Menu {
         return "Settings";
     }
 
+    public int size(Map<Integer, Button> buttons) {
+        return 45;
+    }
+
     @Override
     public Map<Integer, Button> getButtons(Player player) {
-        final Map<Integer, Button> toReturn = new HashMap<>();
+        Map<Integer, Button> buttons = new HashMap<>();
 
         for (int i = 0; i < 45; i++) {
-            toReturn.put(i, Button.placeholder(Material.STAINED_GLASS_PANE, (byte) 15, ""));
+            buttons.put(i, Button.placeholder(Material.STAINED_GLASS_PANE, (byte) 15, ""));
         }
 
-        for (SettingType value : SettingType.values()) {
-            toReturn.put(value.getSlot(), new Button() {
+        for (SettingType type : SettingType.values()) {
+            buttons.put(type.getSlot(), new Button() {
                 @Override
-                public String getName(Player player) {
-                    return ChatColor.BOLD + value.getDisplayName();
+                public String getName(Player p) {
+                    return ChatColor.DARK_RED + ChatColor.BOLD.toString() + type.getDisplayName();
                 }
 
                 @Override
-                public List<String> getDescription(Player player) {
-
-                    final List<String> lore = new ArrayList<>(value.getDescription());
-                    if (value.equals(SettingType.DTR_DISPLAY)) {
-                        lore.add("");
-                        lore.add(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Explanation");
-                        lore.add(ChatColor.GRAY + "Concept is the same, just how");
-                        lore.add(ChatColor.GRAY + "its shown is different. If you're");
-                        lore.add(ChatColor.GRAY + "3 DTR it will show as 3 green hearts.");
-                        lore.add("");
-                        lore.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fDTR Example: &a2.02/3.03 DTR"));
-                        lore.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fDTR in Hearts: &a&l❤❤❤&7&l❤"));
-                        lore.add("");
-                        lore.add(ChatColor.translateAlternateColorCodes('&', "&a❤: &cCurrent DTR"));
-                        lore.add(ChatColor.translateAlternateColorCodes('&', "&7❤: &cMissing DTR"));
-                        lore.add(ChatColor.translateAlternateColorCodes('&', "&4❤: &cRaidable"));
-                        lore.add(ChatColor.translateAlternateColorCodes('&', "&6❤: &cRegenerating DTR"));
-                        lore.add(ChatColor.translateAlternateColorCodes('&', "&e❤: &c1 DTR"));
+                public List<String> getDescription(Player p) {
+                    List<String> lore = new ArrayList<>();
+                    lore.add("");
+                    for (String desc : type.getDescription()) {
+                        lore.add(desc);
                     }
                     lore.add("");
-                    lore.add(ChatColor.translateAlternateColorCodes('&', "&4&l┃ &fStatus: " + (value.isEnabled(player) ? "&aEnabled" : "&cDisabled")));
+                    lore.add(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "\u2503 " + ChatColor.WHITE + "Status: " + (type.isEnabled(p) ? ChatColor.GREEN + "Enabled" : ChatColor.RED + "Disabled"));
                     lore.add("");
-
-                    if (!value.isEnabled(player)) {
-                        lore.add(ChatColor.GREEN + "Click to enable " + ChatColor.stripColor(value.getDisplayName()));
+                    if (!type.isEnabled(p)) {
+                        lore.add(ChatColor.GREEN + "Click to enable " + ChatColor.stripColor(type.getDisplayName()));
                     } else {
-                        lore.add(ChatColor.GREEN + "Click to disable " + ChatColor.stripColor(value.getDisplayName()));
+                        lore.add(ChatColor.GREEN + "Click to disable " + ChatColor.stripColor(type.getDisplayName()));
                     }
                     return lore;
                 }
 
                 @Override
-                public Material getMaterial(Player player) {
-                    return value.getMaterial();
+                public Material getMaterial(Player p) {
+                    return type.getMaterial();
                 }
 
                 @Override
-                public void clicked(Player player, int slot, ClickType clickType) {
-                    value.toggle(player);
+                public void clicked(Player p, int slot, ClickType clickType) {
+                    type.toggle(p);
                 }
             });
         }
 
-        return toReturn;
+        return buttons;
     }
 }

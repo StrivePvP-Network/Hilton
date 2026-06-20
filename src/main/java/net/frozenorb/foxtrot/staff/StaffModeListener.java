@@ -50,30 +50,33 @@ public class StaffModeListener implements Listener {
 
             if (item.getType() == Material.COMPASS) {
                 event.setCancelled(true);
-                if (event.getAction().name().contains("LEFT")) {
-                    BlockIterator iter = new BlockIterator(player, 10);
-                    Block lastBlock = iter.next();
-                    while (iter.hasNext()) {
-                        lastBlock = iter.next();
-                        if (lastBlock.getType() == Material.AIR) {
-                            continue;
+                try {
+                    if (event.getAction().name().contains("LEFT")) {
+                        BlockIterator iter = new BlockIterator(player, 10);
+                        Block lastBlock = iter.next();
+                        while (iter.hasNext()) {
+                            lastBlock = iter.next();
+                            if (lastBlock.getType() == Material.AIR) {
+                                continue;
+                            }
+                            break;
                         }
-                        break;
+                        if (lastBlock != null) {
+                            Location loc = lastBlock.getLocation();
+                            loc.setPitch(player.getLocation().getPitch());
+                            loc.setYaw(player.getLocation().getYaw());
+                            player.teleport(loc.add(0, 1, 0));
+                        }
+                    } else {
+                        Block targetBlock = player.getTargetBlock((java.util.HashSet<Byte>) null, 100);
+                        if (targetBlock != null) {
+                            Location loc = targetBlock.getLocation();
+                            loc.setPitch(player.getLocation().getPitch());
+                            loc.setYaw(player.getLocation().getYaw());
+                            player.teleport(loc.add(0, 1, 0));
+                        }
                     }
-                    if (lastBlock != null) {
-                        Location loc = lastBlock.getLocation();
-                        loc.setPitch(player.getLocation().getPitch());
-                        loc.setYaw(player.getLocation().getYaw());
-                        player.teleport(loc.add(0, 1, 0));
-                    }
-                } else {
-                    Block targetBlock = player.getTargetBlock((java.util.HashSet<Byte>) null, 100);
-                    if (targetBlock != null) {
-                        Location loc = targetBlock.getLocation();
-                        loc.setPitch(player.getLocation().getPitch());
-                        loc.setYaw(player.getLocation().getYaw());
-                        player.teleport(loc.add(0, 1, 0));
-                    }
+                } catch (Exception ignored) {
                 }
             } else if (item.getType() == Material.DIAMOND) {
                 event.setCancelled(true);
@@ -84,7 +87,7 @@ public class StaffModeListener implements Listener {
                     player.teleport(target);
                     player.sendMessage(ChatColor.AQUA + "Randomly teleported to " + ChatColor.WHITE + target.getName());
                 } else {
-                    player.sendMessage(ChatColor.RED + "No other players online!");
+                    player.sendMessage(ChatColor.RED + "Not enough players");
                 }
             } else if (item.getType() == Material.LEASH) {
                 event.setCancelled(true);
@@ -129,7 +132,7 @@ public class StaffModeListener implements Listener {
         if (item.getType() == Material.BOOK) {
             event.setCancelled(true);
             player.openInventory(target.getInventory());
-            player.sendMessage(ChatColor.AQUA + "Viewing inventory of " + ChatColor.WHITE + target.getName());
+            player.sendMessage(ChatColor.GOLD + "Viewing inventory of " + ChatColor.WHITE + target.getName());
         } else if (item.getType() == Material.ICE) {
             event.setCancelled(true);
             player.performCommand("freeze " + target.getName());
@@ -140,20 +143,11 @@ public class StaffModeListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        for (Player online : Bukkit.getOnlinePlayers()) {
-            StaffModeHandler.VanishState state = handler.getVanishState(online.getUniqueId());
-            if (state == StaffModeHandler.VanishState.INVISIBLE) {
-                player.hidePlayer(online);
-            } else if (state == StaffModeHandler.VanishState.STAFF) {
-                if (!player.hasPermission("foxtrot.staff")) {
-                    player.hidePlayer(online);
-                }
+        Bukkit.getScheduler().runTaskLater(Foxtrot.getInstance(), () -> {
+            if (player.hasPermission("foxtrot.staff")) {
+                handler.enableModMode(player);
             }
-        }
-
-        if (player.hasPermission("foxtrot.staff")) {
-            handler.enableModMode(player);
-        }
+        }, 2L);
     }
 
     @EventHandler
@@ -168,24 +162,7 @@ public class StaffModeListener implements Listener {
     @EventHandler
     public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
-        
-        for (Player online : Bukkit.getOnlinePlayers()) {
-            StaffModeHandler.VanishState state = handler.getVanishState(online.getUniqueId());
-            if (state == StaffModeHandler.VanishState.INVISIBLE) {
-                player.hidePlayer(online);
-            } else if (state == StaffModeHandler.VanishState.STAFF) {
-                if (!player.hasPermission("foxtrot.staff")) {
-                    player.hidePlayer(online);
-                } else {
-                    player.showPlayer(online);
-                }
-            }
-        }
-        
-        StaffModeHandler.VanishState myState = handler.getVanishState(player.getUniqueId());
-        if (myState != StaffModeHandler.VanishState.VISIBLE) {
-            handler.setVanish(player, myState);
-        }
+        cc.fyre.proton.Proton.getInstance().getVisibilityHandler().update(player);
     }
 
     @EventHandler
@@ -237,7 +214,8 @@ public class StaffModeListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         if (handler.isInModMode(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.RED + "You cannot break blocks whilst in Mod Mode.");
+            event.getPlayer().sendMessage(
+                    ChatColor.RED + ChatColor.BOLD.toString() + "You cannot break blocks whilst in Mod Mode.");
         }
     }
 
@@ -245,7 +223,8 @@ public class StaffModeListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         if (handler.isInModMode(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.RED + "You cannot place blocks whilst in Mod Mode.");
+            event.getPlayer().sendMessage(
+                    ChatColor.RED + ChatColor.BOLD.toString() + "You cannot place blocks whilst in Mod Mode.");
         }
     }
 }

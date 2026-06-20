@@ -192,6 +192,66 @@ public enum SettingType {
         public boolean isEnabled(Player player) {
             return Foxtrot.getInstance().getSaleTimersScoreboardMap().isSaleTimers(player.getUniqueId());
         }
+    },
+
+    GLOBAL_CHAT(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Global Chat",
+            Arrays.asList(ChatColor.GRAY + "Toggle being able to see", ChatColor.GRAY + "public chat messages."),
+            Material.PAPER, 10) {
+        @Override
+        public void toggle(Player p) {
+            boolean v = !Foxtrot.getInstance().getToggleGlobalChatMap().isGlobalChatToggled(p.getUniqueId());
+            Foxtrot.getInstance().getToggleGlobalChatMap().setGlobalChatToggled(p.getUniqueId(), v);
+        }
+
+        @Override
+        public boolean isEnabled(Player p) {
+            return Foxtrot.getInstance().getToggleGlobalChatMap().isGlobalChatToggled(p.getUniqueId());
+        }
+    },
+
+    COBBLE_PICKUP(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Cobblestone Pickup",
+            Arrays.asList(ChatColor.GRAY + "Toggle being able to pick up", ChatColor.GRAY + "cobblestone from the ground."),
+            Material.COBBLESTONE, 13) {
+        @Override
+        public void toggle(Player p) {
+            boolean v = !Foxtrot.getInstance().getCobblePickupMap().isCobblePickup(p.getUniqueId());
+            Foxtrot.getInstance().getCobblePickupMap().setCobblePickup(p.getUniqueId(), v);
+        }
+
+        @Override
+        public boolean isEnabled(Player p) {
+            return Foxtrot.getInstance().getCobblePickupMap().isCobblePickup(p.getUniqueId());
+        }
+    },
+
+    FOUND_DIAMONDS(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Found Diamonds",
+            Arrays.asList(ChatColor.GRAY + "Toggle being able to see", ChatColor.GRAY + "found diamonds alerts in chat."),
+            Material.DIAMOND, 16) {
+        @Override
+        public void toggle(Player p) {
+            boolean v = !Foxtrot.getInstance().getToggleFoundDiamondsMap().isFoundDiamondToggled(p.getUniqueId());
+            Foxtrot.getInstance().getToggleFoundDiamondsMap().setFoundDiamondToggled(p.getUniqueId(), v);
+        }
+
+        @Override
+        public boolean isEnabled(Player p) {
+            return Foxtrot.getInstance().getToggleFoundDiamondsMap().isFoundDiamondToggled(p.getUniqueId());
+        }
+    },
+
+    CLAIM_MESSAGES(ChatColor.DARK_RED + ChatColor.BOLD.toString() + "Claim Messages",
+            Arrays.asList(ChatColor.GRAY + "Toggle being able to see", ChatColor.GRAY + "claim enter/leave messages."),
+            Material.IRON_HOE, 28) {
+        @Override
+        public void toggle(Player p) {
+            boolean v = !Foxtrot.getInstance().getToggleClaimMessageMap().areClaimMessagesEnabled(p.getUniqueId());
+            Foxtrot.getInstance().getToggleClaimMessageMap().setClaimMessagesEnabled(p.getUniqueId(), v);
+        }
+
+        @Override
+        public boolean isEnabled(Player p) {
+            return Foxtrot.getInstance().getToggleClaimMessageMap().areClaimMessagesEnabled(p.getUniqueId());
+        }
     };
 
     @Getter

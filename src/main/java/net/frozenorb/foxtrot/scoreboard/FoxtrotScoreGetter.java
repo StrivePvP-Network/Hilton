@@ -128,10 +128,6 @@ public class FoxtrotScoreGetter implements ScoreGetter {
             scores.add("&4&lDeaths&7: &f" + (stats != null ? stats.getDeaths() : 0));
             if (ownerTeam != null) {
                 scores.add("&4&lClaim&7: &f" + ownerTeam.getName(player));
-            } else if (Foxtrot.getInstance().getServerHandler().isWarzone(player.getLocation())) {
-                scores.add("&4&lClaim&7: &cWarzone");
-            } else {
-                scores.add("&4&lClaim&7: &7Wilderness");
             }
 
             if (Foxtrot.getInstance().getMapHandler().isKitMap()) {
@@ -144,10 +140,6 @@ public class FoxtrotScoreGetter implements ScoreGetter {
             Team ownerTeam = LandBoard.getInstance().getTeam(player.getLocation());
             if (ownerTeam != null) {
                 scores.add("&4&lClaim&7: &f" + ownerTeam.getName(player));
-            } else if (Foxtrot.getInstance().getServerHandler().isWarzone(player.getLocation())) {
-                scores.add("&4&lClaim&7: &cWarzone");
-            } else {
-                scores.add("&4&lClaim&7: &7Wilderness");
             }
         }
 
@@ -321,7 +313,8 @@ public class FoxtrotScoreGetter implements ScoreGetter {
                 scores.add("&d&lMOTW&7: &c" + ScoreFunction.TIME_SIMPLE.apply(difference / 1000F));
             } else {
                 org.bukkit.Bukkit.getScheduler().runTask(Foxtrot.getInstance(), () -> {
-                    if (motwManager.isActive()) motwManager.stop();
+                    if (motwManager.isActive())
+                        motwManager.stop();
                 });
             }
         }
@@ -566,7 +559,8 @@ public class FoxtrotScoreGetter implements ScoreGetter {
             scores.addAll(conquestScores);
         }
 
-        if (player.hasMetadata("STAFF_BOARD") || net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInModMode(player.getUniqueId())) {
+        if (player.hasMetadata("STAFF_BOARD") || net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler()
+                .isInModMode(player.getUniqueId())) {
 
             if (!scores.isEmpty()) {
                 scores.add("&f&7&m--------------------");
@@ -574,7 +568,8 @@ public class FoxtrotScoreGetter implements ScoreGetter {
 
             scores.add("&6&lStaff Mode:");
 
-            boolean vanished = net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler().isInVanish(player.getUniqueId());
+            boolean vanished = net.frozenorb.foxtrot.Foxtrot.getInstance().getStaffModeHandler()
+                    .isInVanish(player.getUniqueId());
             scores.add("&7\u00bb &eVisibility: " + (vanished ? "&aInvisible" : "&cVisible"));
 
             boolean staffChat = Profiles.getInstance().hasStaffChatEnabled(player);
@@ -676,7 +671,7 @@ public class FoxtrotScoreGetter implements ScoreGetter {
         final List<String> toReturn = new ArrayList<>();
 
         for (Ability ability : Foxtrot.getInstance().getMapHandler().getAbilityHandler().getAbilities().values()) {
-            if (!ability.hasCooldown(player, false)) {
+            if (ability.getRemaining(player) <= 0) {
                 continue;
             }
 
